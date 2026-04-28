@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LensFlow — Global News</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tk:#30D5C8;
+  --tk-dim:rgba(48,213,200,0.12);
+  --tk-dark:#1aa89d;
+  --bg:#0f0f0f;
+  --bg2:#161616;
+  --bg3:#1e1e1e;
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.05);
+  --text:#e8e4dc;
+  --text2:#9a968f;
+  --text3:#5a5650;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ── NAVBAR ── */
+.navbar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:1.5rem;height:54px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none}
+.logo-mark{width:28px;height:28px;background:var(--tk);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:16px;height:16px}
+.logo-text{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);letter-spacing:-0.3px}
+.logo-text span{color:var(--tk)}
+.search-wrap{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);padding:4px 0;flex:1;max-width:360px;transition:border-color .2s}
+.search-wrap:focus-within{border-color:var(--tk)}
+.search-icon{opacity:.35;width:13px;height:13px;border:1.5px solid var(--text);border-radius:50%;position:relative;flex-shrink:0}
+.search-icon::after{content:'';position:absolute;width:4px;height:1.5px;background:var(--text);bottom:-3.5px;right:-3px;transform:rotate(45deg);border-radius:1px}
+.search-input{border:none;background:transparent;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'DM Sans',sans-serif}
+.search-input::placeholder{color:var(--text3)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.nav-date{font-size:11px;color:var(--text3);font-family:monospace;white-space:nowrap}
+.lang-dd{position:relative}
+.lang-btn{display:flex;align-items:center;gap:6px;background:var(--bg3);border:0.5px solid var(--border);border-radius:20px;padding:5px 12px;cursor:pointer;font-size:12px;color:var(--text);white-space:nowrap;transition:border-color .15s;font-family:'DM Sans',sans-serif}
+.lang-btn:hover{border-color:var(--tk)}
+.lang-arr{width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-top:3px solid var(--text3);transition:transform .15s}
+.lang-btn.open .lang-arr{transform:rotate(180deg)}
+.lang-menu{position:absolute;right:0;top:calc(100% + 6px);background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;min-width:150px;display:none;z-index:200}
+.lang-menu.open{display:block}
+.loption{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:13px;color:var(--text2);border-bottom:0.5px solid var(--border2);transition:all .1s}
+.loption:last-child{border-bottom:none}
+.loption:hover{background:var(--bg3);color:var(--text)}
+.loption.active{color:var(--tk)}
+.loflag{font-size:14px;width:18px;text-align:center}
+.loname{flex:1}
+.lochk{width:6px;height:6px;border-radius:50%;background:var(--tk);display:none;flex-shrink:0}
+.loption.active .lochk{display:block}
+
+/* ── TICKER ── */
+.ticker{background:var(--bg2);border-bottom:0.5px solid var(--border);overflow:hidden;height:34px;display:flex;align-items:center}
+.ticker-tag{background:var(--tk);color:#0a3a38;font-size:10px;font-weight:500;padding:0 10px 0 12px;height:100%;display:flex;align-items:center;flex-shrink:0;position:relative;letter-spacing:1px;text-transform:uppercase}
+.ticker-tag::after{content:'';position:absolute;right:-9px;top:0;width:0;height:0;border-top:34px solid transparent;border-left:9px solid var(--tk)}
+.ticker-overflow{overflow:hidden;flex:1;margin-left:14px;height:100%;display:flex;align-items:center;cursor:default}
+.ticker-track{display:flex;align-items:center;will-change:transform;white-space:nowrap}
+.t-item{display:inline-flex;align-items:center;gap:5px;padding:0 4px;flex-shrink:0}
+.t-num{font-size:10px;color:var(--tk);font-weight:500;font-family:monospace}
+.t-txt{font-size:12px;color:var(--text2)}
+.t-sep{display:inline-block;width:1px;height:14px;background:var(--border);margin:0 12px;vertical-align:middle;flex-shrink:0}
+.t-ad-wrap{display:inline-flex;align-items:center;padding:0 12px;flex-shrink:0}
+.t-ad{background:var(--bg3);border:0.5px dashed var(--border);border-radius:3px;padding:2px 10px;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── AD BAND ── */
+.ad-band{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:8px 2rem;display:flex;flex-direction:column;align-items:center;gap:5px}
+.ad-label-row{display:flex;align-items:center;gap:8px;width:100%;max-width:728px}
+.ad-line{flex:1;height:0.5px;background:var(--border)}
+.ad-label-txt{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;white-space:nowrap}
+.ad-slot{width:100%;max-width:728px;height:90px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center}
+.ad-slot-txt{font-size:12px;color:var(--text3);font-family:monospace}
+
+/* ── HERO SLIDER ── */
+.hero{background:var(--bg2);border-bottom:0.5px solid var(--border);overflow:hidden}
+.hero-track-wrap{overflow:hidden;cursor:grab;user-select:none}
+.hero-track-wrap:active{cursor:grabbing}
+.hero-track{display:flex;transition:transform .42s cubic-bezier(.25,.46,.45,.94)}
+.hero-slide{flex:0 0 100%;padding:2rem;display:grid;grid-template-columns:1fr 240px;gap:2rem;align-items:center;min-height:200px}
+.hero-slide.ad-slide{grid-template-columns:1fr;align-items:center;justify-items:center;min-height:160px;padding:1.5rem 2rem}
+.hero-accent{width:20px;height:2px;background:var(--tk);border-radius:2px;margin-bottom:10px}
+.hero-rank{font-size:10px;color:var(--text3);margin-bottom:5px;font-family:monospace;letter-spacing:.5px}
+.hero-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);line-height:1.35;margin-bottom:10px}
+.hero-summary{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.hero-meta{display:flex;align-items:center;gap:10px}
+.hero-src{font-size:11px;font-weight:500;color:var(--tk)}
+.hero-time{font-size:11px;color:var(--text3)}
+.hero-score{font-size:10px;background:var(--tk-dim);color:var(--tk-dark);padding:2px 8px;border-radius:20px;font-family:monospace}
+.hero-img{background:var(--bg3);border-radius:8px;height:140px;border:0.5px solid var(--border)}
+.hero-img img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.hero-ad-slot{width:100%;max-width:560px;height:72px;background:var(--bg3);border:0.5px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;gap:10px}
+.hero-ad-tag{font-size:9px;color:var(--text3);border:0.5px solid var(--border);padding:2px 6px;border-radius:2px;text-transform:uppercase;letter-spacing:1px}
+.hero-ad-txt{font-size:12px;color:var(--text3);font-family:monospace}
+.hero-controls{display:flex;align-items:center;justify-content:space-between;padding:10px 2rem;border-top:0.5px solid var(--border2)}
+.hero-dots{display:flex;gap:4px;align-items:center}
+.hdot{width:5px;height:5px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;flex-shrink:0}
+.hdot.active{width:16px;border-radius:3px;background:var(--tk)}
+.hdot.ad-dot{background:rgba(48,213,200,.2)}
+.hdot.ad-dot.active{background:var(--tk);opacity:.6}
+.hero-nav{display:flex;gap:5px}
+.hnav{width:26px;height:26px;border-radius:50%;border:0.5px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text2);transition:all .15s}
+.hnav:hover{border-color:var(--tk);color:var(--tk)}
+.hero-counter{font-size:10px;color:var(--text3);font-family:monospace}
+
+/* ── FILTERS ── */
+.filter-row{display:flex;align-items:center;gap:6px;overflow-x:auto;padding:1rem 2rem;scrollbar-width:none;background:var(--bg)}
+.filter-row::-webkit-scrollbar{display:none}
+.fbtn{font-size:12px;padding:5px 14px;border-radius:20px;border:0.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.fbtn:hover{border-color:var(--tk);color:var(--text)}
+.fbtn.active{background:var(--tk);color:#0a3a38;border-color:var(--tk);font-weight:500}
+
+/* ── CONTENT ── */
+.content{display:grid;grid-template-columns:1fr 260px;gap:2rem;padding:0 2rem 2rem}
+
+/* News Grid */
+.news-grid{display:grid;gap:1px;background:var(--border2)}
+.ncard{background:var(--bg);padding:14px 0;display:grid;grid-template-columns:1fr 72px;gap:12px;cursor:pointer;transition:background .15s}
+.ncard:hover{background:var(--bg2)}
+.ncard:hover{padding-left:8px;padding-right:8px;margin:0 -8px;border-radius:6px}
+.ncat{font-size:10px;color:var(--tk);text-transform:uppercase;letter-spacing:1px;font-weight:500;margin-bottom:4px}
+.ntitle{font-family:'DM Serif Display',serif;font-size:15px;color:var(--text);line-height:1.4;margin-bottom:5px}
+.nsummary{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:6px}
+.nmeta{display:flex;align-items:center;gap:8px}
+.nsrc{font-size:11px;color:var(--tk);font-weight:500}
+.ntime{font-size:11px;color:var(--text3)}
+.nimg{background:var(--bg3);border-radius:6px;border:0.5px solid var(--border2);overflow:hidden}
+.nimg img{width:100%;height:72px;object-fit:cover}
+.no-results{font-size:13px;color:var(--text3);padding:2rem 0;text-align:center}
+
+/* Sidebar */
+.sidebar{}
+.slabel{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;font-weight:500}
+.dcard{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;overflow:hidden}
+.dhead{padding:10px 14px;border-bottom:0.5px solid var(--border2);display:flex;align-items:center;gap:7px}
+.ddot{width:6px;height:6px;border-radius:50%;background:var(--tk);flex-shrink:0}
+.dlbl{font-size:12px;font-weight:500;color:var(--text)}
+.ddate{font-size:10px;color:var(--text3);margin-left:auto;font-family:monospace}
+.dtheme{padding:10px 14px;border-bottom:0.5px solid var(--border2);background:rgba(48,213,200,.05)}
+.dtlbl{font-size:9px;color:var(--tk-dark);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.dtxt{font-size:12px;color:var(--text);font-style:italic;line-height:1.4}
+.dstory{padding:9px 14px;border-bottom:0.5px solid var(--border2);display:flex;gap:7px;align-items:flex-start}
+.dstory:last-child{border-bottom:none}
+.drank{font-size:10px;color:var(--tk);font-weight:500;min-width:14px;margin-top:1px;flex-shrink:0;font-family:monospace}
+.dstitle{font-size:12px;color:var(--text2);line-height:1.4}
+
+/* Loading */
+.loading{display:flex;align-items:center;justify-content:center;padding:4rem;color:var(--text3);font-size:13px;gap:10px}
+.spin{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--tk);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Responsive */
+@media(max-width:768px){
+  .hero-slide{grid-template-columns:1fr;padding:1.5rem}
+  .hero-img{display:none}
+  .content{grid-template-columns:1fr;padding:0 1rem 1.5rem}
+  .sidebar{display:none}
+  .navbar{padding:0 1rem;gap:10px}
+  .filter-row{padding:.75rem 1rem}
+  .ad-band{padding:6px 1rem}
+  .hero-controls{padding:8px 1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="logo" href="/">
+    <div class="logo-mark"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5" stroke="#fff" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="#fff"/></svg></div>
+    <span class="logo-text">Lens<span>Flow</span></span>
+  </a>
+  <div class="search-wrap">
+    <div class="search-icon"></div>
+    <input class="search-input" id="srch" type="text" placeholder="Search news..." oninput="doSearch(this.value)">
+  </div>
+  <div class="nav-right">
+    <span class="nav-date" id="navDate"></span>
+    <div class="lang-dd" id="ldd">
+      <button class="lang-btn" id="ltrig" onclick="toggleMenu()">
+        <span id="tFlag">🇬🇧</span><span id="tName">EN</span><span class="lang-arr"></span>
+      </button>
+      <div class="lang-menu" id="lmenu">
+        <div class="loption active" onclick="setLang('en')"><span class="loflag">🇬🇧</span><span class="loname">English</span><span class="lochk"></span></div>
+        <div class="loption" onclick="setLang('fr')"><span class="loflag">🇫🇷</span><span class="loname">Français</span><span class="lochk"></span></div>
+        <div class="loption" onclick="setLang('de')"><span class="loflag">🇩🇪</span><span class="loname">Deutsch</span><span class="lochk"></span></div>
+        <div class="loption" onclick="setLang('es')"><span class="loflag">🇪🇸</span><span class="loname">Español</span><span class="lochk"></span></div>
+        <div class="loption" onclick="setLang('pt')"><span class="loflag">🇧🇷</span><span class="loname">Português</span><span class="lochk"></span></div>
+        <div class="loption" onclick="setLang('tr')"><span class="loflag">🇹🇷</span><span class="loname">Türkçe</span><span class="lochk"></span></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-tag" id="tickerTag">LIVE</div>
+  <div class="ticker-overflow" id="tover">
+    <div class="ticker-track" id="ttrack"></div>
+  </div>
+</div>
+
+<!-- AD 1 -->
+<div class="ad-band">
+  <div class="ad-label-row"><div class="ad-line"></div><span class="ad-label-txt">Reklam</span><div class="ad-line"></div></div>
+  <div class="ad-slot"><span class="ad-slot-txt">728 × 90</span></div>
+</div>
+
+<!-- HERO SLIDER -->
+<div class="hero">
+  <div class="hero-track-wrap" id="heroWrap">
+    <div class="hero-track" id="heroTrack">
+      <div class="hero-slide"><div><div class="loading"><div class="spin"></div> Haberler yükleniyor...</div></div></div>
+    </div>
+  </div>
+  <div class="hero-controls">
+    <div class="hero-dots" id="heroDots"></div>
+    <span class="hero-counter" id="heroCounter"></span>
+    <div class="hero-nav">
+      <button class="hnav" onclick="heroGo(-1)">←</button>
+      <button class="hnav" onclick="heroGo(1)">→</button>
+    </div>
+  </div>
+</div>
+
+<!-- AD 2 -->
+<div class="ad-band">
+  <div class="ad-label-row"><div class="ad-line"></div><span class="ad-label-txt">Reklam</span><div class="ad-line"></div></div>
+  <div class="ad-slot"><span class="ad-slot-txt">728 × 90</span></div>
+</div>
+
+<!-- FILTERS -->
+<div class="filter-row" id="filters"></div>
+
+<!-- CONTENT -->
+<div class="content">
+  <div>
+    <div class="news-grid" id="grid"><div class="loading"><div class="spin"></div></div></div>
+  </div>
+  <div class="sidebar">
+    <p class="slabel" id="dlabel">Daily Digest</p>
+    <div class="dcard" id="digestCard">
+      <div class="loading"><div class="spin"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, query, where, orderBy, limit, getDocs, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDIWhUUEmp1of0j8sjQxsDTa4xf8JQBEmo",
+  authDomain: "lensflow-67986.firebaseapp.com",
+  projectId: "lensflow-67986",
+  storageBucket: "lensflow-67986.firebasestorage.app",
+  messagingSenderId: "841039966563",
+  appId: "1:841039966563:web:2f47afce348c12e5abe356"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ── CONFIG ─────────────────────────────────────────────────────
+const LANG_CONFIG = {
+  en: { flag:'🇬🇧', name:'EN', ticker:'LIVE',  filters:['All','Politics','Economy','Technology','Science','Security','Environment','Health'], dl:'Daily Digest', dt:'AI Summary', dtl:'Theme of the Day', all:'All', ago:'h ago', ph:'Search news...' },
+  fr: { flag:'🇫🇷', name:'FR', ticker:'LIVE',  filters:['Tout','Politique','Économie','Technologie','Science','Sécurité','Environnement','Santé'], dl:'Résumé du jour', dt:'Résumé IA', dtl:'Thème du jour', all:'Tout', ago:'h', ph:'Rechercher...' },
+  de: { flag:'🇩🇪', name:'DE', ticker:'LIVE',  filters:['Alle','Politik','Wirtschaft','Technologie','Wissenschaft','Sicherheit','Umwelt','Gesundheit'], dl:'Tagesüberblick', dt:'KI-Zusammenfassung', dtl:'Thema des Tages', all:'Alle', ago:'Std.', ph:'Suchen...' },
+  es: { flag:'🇪🇸', name:'ES', ticker:'EN VIVO', filters:['Todo','Política','Economía','Tecnología','Ciencia','Seguridad','Medioambiente','Salud'], dl:'Resumen del día', dt:'Resumen IA', dtl:'Tema del día', all:'Todo', ago:'h', ph:'Buscar...' },
+  pt: { flag:'🇧🇷', name:'PT', ticker:'AO VIVO', filters:['Tudo','Política','Economia','Tecnologia','Ciência','Segurança','Meio Ambiente','Saúde'], dl:'Resumo do dia', dt:'Resumo IA', dtl:'Tema do dia', all:'Tudo', ago:'h', ph:'Pesquisar...' },
+  tr: { flag:'🇹🇷', name:'TR', ticker:'CANLI', filters:['Tümü','Siyaset','Ekonomi','Teknoloji','Bilim','Güvenlik','Çevre','Sağlık'], dl:'Günlük Özet', dt:'AI Özeti', dtl:'Günün Teması', all:'Tümü', ago:'sa önce', ph:'Haber ara...' },
+};
+const LOCALES = { en:'en-US', fr:'fr-FR', de:'de-DE', es:'es-ES', pt:'pt-BR', tr:'tr-TR' };
+const LANG_KEYS = ['en','fr','de','es','pt','tr'];
+
+// ── STATE ───────────────────────────────────────────────────────
+let lang = 'en';
+let allNews = [];
+let digestData = null;
+let searchQ = '';
+let activeFilter = null;
+let heroIdx = 0, heroSlides = [], heroTimer = null, dragStart = null;
+let tOfs = 0, tW = 0, tRAF = null, tPaused = false;
+
+// ── FIREBASE DATA ───────────────────────────────────────────────
+async function loadNews(langKey) {
+  const since = new Date();
+  since.setHours(since.getHours() - 25);
+  const q = query(
+    collection(db, 'haberler'),
+    where('dil', '==', langKey),
+    where('tarih', '>=', Timestamp.fromDate(since)),
+    orderBy('tarih', 'desc'),
+    limit(80)
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+async function loadDigest(langKey) {
+  const today = new Date().toISOString().split('T')[0];
+  try {
+    const q = query(
+      collection(db, 'output'),
+      where('lang', '==', langKey),
+      where('date', '==', today),
+      limit(1)
+    );
+    const snap = await getDocs(q);
+    if (!snap.empty) return snap.docs[0].data();
+  } catch(e) {}
+  return null;
+}
+
+// ── TICKER ──────────────────────────────────────────────────────
+function buildTicker(news) {
+  const cfg = LANG_CONFIG[lang];
+  document.getElementById('tickerTag').textContent = cfg.ticker;
+  const track = document.getElementById('ttrack');
+  track.innerHTML = '';
+  tOfs = 0;
+  if (tRAF) { cancelAnimationFrame(tRAF); tRAF = null; }
+
+  const items = news.slice(0, 15);
+  function makeChunk() {
+    const f = document.createDocumentFragment();
+    items.forEach((n, i) => {
+      if (i > 0 && i % 5 === 0) {
+        const ad = document.createElement('span');
+        ad.className = 't-ad-wrap';
+        ad.innerHTML = `<span class="t-ad">AD · 300×34</span>`;
+        f.appendChild(ad);
+        const s = document.createElement('span'); s.className = 't-sep'; f.appendChild(s);
+      }
+      const el = document.createElement('span');
+      el.className = 't-item';
+      el.innerHTML = `<span class="t-num">${String(i+1).padStart(2,'0')}</span><span class="t-txt">${n.baslik} — ${n.kaynak || ''}</span>`;
+      f.appendChild(el);
+      if (i < items.length - 1) { const s = document.createElement('span'); s.className = 't-sep'; f.appendChild(s); }
+    });
+    return f;
+  }
+  track.appendChild(makeChunk());
+  track.appendChild(makeChunk());
+  track.appendChild(makeChunk());
+
+  requestAnimationFrame(() => {
+    tW = track.scrollWidth / 3;
+    let last = null;
+    function step(ts) {
+      if (!tPaused) {
+        if (last !== null) { tOfs += (ts - last) * 0.04; if (tOfs >= tW) tOfs -= tW; }
+        last = ts;
+        track.style.transform = `translateX(-${tOfs}px)`;
+      } else { last = null; }
+      tRAF = requestAnimationFrame(step);
+    }
+    tRAF = requestAnimationFrame(step);
+  });
+}
+document.getElementById('tover').addEventListener('mouseenter', () => tPaused = true);
+document.getElementById('tover').addEventListener('mouseleave', () => tPaused = false);
+
+// ── HERO SLIDER ──────────────────────────────────────────────────
+function buildHero(news) {
+  const cfg = LANG_CONFIG[lang];
+  const track = document.getElementById('heroTrack');
+  const dots = document.getElementById('heroDots');
+  track.innerHTML = ''; dots.innerHTML = '';
+  heroIdx = 0; heroSlides = [];
+  clearInterval(heroTimer);
+
+  const top15 = news.slice(0, 15);
+  top15.forEach((n, i) => {
+    heroSlides.push({ type: 'news', ...n, rank: i + 1 });
+    if ((i + 1) === 5 || (i + 1) === 10) {
+      heroSlides.push({ type: 'ad', adNum: Math.floor((i + 1) / 5) });
+    }
+  });
+
+  heroSlides.forEach((s, i) => {
+    const slide = document.createElement('div');
+    if (s.type === 'ad') {
+      slide.className = 'hero-slide ad-slide';
+      slide.innerHTML = `<div class="hero-ad-slot"><span class="hero-ad-tag">REKLAM</span><span class="hero-ad-txt">600 × 80 — Reklam ${s.adNum}</span></div>`;
+    } else {
+      const timeAgo = s.tarih ? Math.round((Date.now() - s.tarih.toDate()) / 3600000) : '';
+      slide.className = 'hero-slide';
+      slide.innerHTML = `
+        <div>
+          <div class="hero-accent"></div>
+          <div class="hero-rank">#${s.rank} · ${s.kategori || ''}</div>
+          <div class="hero-title">${s.baslik}</div>
+          <div class="hero-meta">
+            <span class="hero-src">${s.kaynak || ''}</span>
+            <span class="hero-time">${timeAgo} ${cfg.ago}</span>
+          </div>
+        </div>
+        <div class="hero-img">${s.gorsel ? `<img src="${s.gorsel}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">` : ''}</div>`;
+    }
+    track.appendChild(slide);
+    const dot = document.createElement('div');
+    dot.className = 'hdot' + (s.type === 'ad' ? ' ad-dot' : '') + (i === 0 ? ' active' : '');
+    dot.onclick = () => heroGoTo(i);
+    dots.appendChild(dot);
+  });
+
+  updateHero();
+  heroTimer = setInterval(() => { heroIdx = (heroIdx + 1) % heroSlides.length; updateHero(); }, 5000);
+}
+
+function updateHero() {
+  document.getElementById('heroTrack').style.transform = `translateX(-${heroIdx * 100}%)`;
+  document.querySelectorAll('.hdot').forEach((d, i) => d.classList.toggle('active', i === heroIdx));
+  const total = heroSlides.filter(s => s.type === 'news').length;
+  const cur = heroSlides.slice(0, heroIdx + 1).filter(s => s.type === 'news').length;
+  document.getElementById('heroCounter').textContent = heroSlides[heroIdx]?.type === 'ad' ? 'AD' : `${cur} / ${total}`;
+}
+function heroGoTo(i) { heroIdx = i; updateHero(); clearInterval(heroTimer); heroTimer = setInterval(() => { heroIdx = (heroIdx + 1) % heroSlides.length; updateHero(); }, 5000); }
+window.heroGo = (dir) => heroGoTo((heroIdx + dir + heroSlides.length) % heroSlides.length);
+document.getElementById('heroWrap').addEventListener('mousedown', e => { dragStart = e.clientX; });
+document.getElementById('heroWrap').addEventListener('mouseup', e => { if (dragStart !== null && Math.abs(e.clientX - dragStart) > 40) heroGo(e.clientX < dragStart ? 1 : -1); dragStart = null; });
+
+// ── NEWS GRID ────────────────────────────────────────────────────
+function renderGrid() {
+  const cfg = LANG_CONFIG[lang];
+  let news = allNews;
+  if (activeFilter && activeFilter !== cfg.all) news = news.filter(n => n.kategori === activeFilter);
+  if (searchQ) news = news.filter(n => n.baslik?.toLowerCase().includes(searchQ));
+  const grid = document.getElementById('grid');
+  if (!news.length) { grid.innerHTML = `<div class="no-results">Sonuç bulunamadı.</div>`; return; }
+  grid.innerHTML = news.map(n => {
+    const timeAgo = n.tarih ? Math.round((Date.now() - n.tarih.toDate()) / 3600000) : '';
+    return `<div class="ncard">
+      <div>
+        <div class="ncat">${n.kategori || ''}</div>
+        <div class="ntitle">${n.baslik}</div>
+        <div class="nmeta"><span class="nsrc">${n.kaynak || ''}</span><span class="ntime">${timeAgo} ${cfg.ago}</span></div>
+      </div>
+      <div class="nimg">${n.gorsel ? `<img src="${n.gorsel}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">` : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── DIGEST ───────────────────────────────────────────────────────
+function renderDigest() {
+  const cfg = LANG_CONFIG[lang];
+  const today = new Date().toLocaleDateString(LOCALES[lang], { day:'numeric', month:'long', year:'numeric' });
+  document.getElementById('dlabel').textContent = cfg.dl;
+  const card = document.getElementById('digestCard');
+  if (!digestData) {
+    card.innerHTML = `<div class="dstory"><span class="dstitle" style="color:var(--text3)">Özet henüz hazır değil.</span></div>`;
+    return;
+  }
+  const result = digestData.result || {};
+  card.innerHTML = `
+    <div class="dhead"><div class="ddot"></div><span class="dlbl">${cfg.dt}</span><span class="ddate">${today}</span></div>
+    <div class="dtheme"><div class="dtlbl">${cfg.dtl}</div><div class="dtxt">${result.daily_theme || ''}</div></div>
+    ${(result.top_stories || []).map(s => `<div class="dstory"><span class="drank">#${s.rank}</span><span class="dstitle">${s.headline}</span></div>`).join('')}
+  `;
+}
+
+// ── FILTERS ──────────────────────────────────────────────────────
+function renderFilters() {
+  const cfg = LANG_CONFIG[lang];
+  document.getElementById('filters').innerHTML = cfg.filters.map((f, i) =>
+    `<button class="fbtn${i === 0 ? ' active' : ''}" onclick="setFilter('${f}')">${f}</button>`
+  ).join('');
+}
+window.setFilter = (f) => {
+  activeFilter = f;
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.toggle('active', b.textContent === f));
+  renderGrid();
+};
+window.doSearch = (q) => { searchQ = q.toLowerCase().trim(); renderGrid(); };
+
+// ── LANG ─────────────────────────────────────────────────────────
+window.toggleMenu = () => {
+  const open = document.getElementById('lmenu').classList.toggle('open');
+  document.getElementById('ltrig').classList.toggle('open', open);
+};
+document.addEventListener('click', e => {
+  if (!document.getElementById('ldd').contains(e.target)) {
+    document.getElementById('lmenu').classList.remove('open');
+    document.getElementById('ltrig').classList.remove('open');
+  }
+});
+window.setLang = async (l) => {
+  lang = l;
+  document.getElementById('lmenu').classList.remove('open');
+  document.getElementById('ltrig').classList.remove('open');
+  const cfg = LANG_CONFIG[l];
+  document.getElementById('tFlag').textContent = cfg.flag;
+  document.getElementById('tName').textContent = cfg.name;
+  document.getElementById('srch').placeholder = cfg.ph;
+  document.getElementById('srch').value = '';
+  searchQ = ''; activeFilter = null;
+  LANG_KEYS.forEach((k, i) => document.querySelectorAll('.loption')[i].classList.toggle('active', k === l));
+  setDate();
+  renderFilters();
+  await loadAndRender();
+};
+
+function setDate() {
+  document.getElementById('navDate').textContent = new Date().toLocaleDateString(LOCALES[lang], { day:'numeric', month:'short', year:'numeric' });
+}
+
+// ── MAIN LOAD ────────────────────────────────────────────────────
+async function loadAndRender() {
+  document.getElementById('grid').innerHTML = `<div class="loading"><div class="spin"></div></div>`;
+  document.getElementById('heroTrack').innerHTML = `<div class="hero-slide"><div class="loading"><div class="spin"></div></div></div>`;
+
+  try {
+    [allNews, digestData] = await Promise.all([loadNews(lang), loadDigest(lang)]);
+    buildTicker(allNews);
+    buildHero(allNews);
+    renderFilters();
+    renderGrid();
+    renderDigest();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('grid').innerHTML = `<div class="no-results">Veri yüklenemedi: ${e.message}</div>`;
+  }
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+setDate();
+loadAndRender();
+</script>
+</body>
+</html>
