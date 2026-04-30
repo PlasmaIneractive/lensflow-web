@@ -82,12 +82,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .hero-track-wrap:active{cursor:grabbing}
 .hero-track{display:flex;transition:transform .42s cubic-bezier(.25,.46,.45,.94)}
 .hero-section{position:relative}
-.hero-slide{flex:0 0 100%;padding:1.5rem 4rem;display:grid;grid-template-columns:1fr 340px;gap:1rem;align-items:center;min-height:220px;background:var(--bg2)}
+.hero-slide{flex:0 0 100%;padding:1.5rem 5rem;display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:center;min-height:240px;background:var(--bg2)}
 .hero-slide.ad-slide{grid-template-columns:1fr;align-items:center;justify-items:center;min-height:160px;background:var(--bg2);padding:1.5rem}
-.hero-img{background:var(--bg3);border-radius:8px;height:220px;overflow:hidden;border:0.5px solid var(--border)}
+.hero-img{background:var(--bg3);border-radius:0 8px 8px 0;height:240px;overflow:hidden;border:0.5px solid var(--border);border-left:none}
 .hero-img img{width:100%;height:100%;object-fit:cover}
-.hero-img-placeholder{background:var(--bg3);border-radius:8px;height:220px;border:0.5px solid var(--border)}
-.hero-text{}
+.hero-img-placeholder{background:var(--bg3);border-radius:0 8px 8px 0;height:240px;border:0.5px solid var(--border);border-left:none}
+.hero-text{padding:1.5rem 1rem 1.5rem 0;border:0.5px solid var(--border);border-right:none;border-radius:8px 0 0 8px;background:var(--bg3)}
 .hero-prev,.hero-next{position:absolute;top:calc(50% - 24px);transform:translateY(-50%);width:36px;height:36px;border-radius:50%;border:0.5px solid var(--border);background:rgba(15,15,15,0.8);backdrop-filter:blur(4px);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2);transition:all .15s;z-index:10}
 .hero-prev{left:12px}
 .hero-next{right:12px}
@@ -139,6 +139,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .nimg{background:var(--bg3);overflow:hidden;flex-shrink:0}
 .nimg img{width:100%;height:160px;object-fit:cover;display:block}
 .no-results{font-size:13px;color:var(--text3);padding:2rem 0;text-align:center}
+.mobile-search{display:none;align-items:center;gap:8px;background:var(--bg2);border-bottom:0.5px solid var(--border);padding:8px 1rem}
+.mobile-search .search-wrap{display:flex;flex:1;max-width:none;border-bottom:1px solid var(--border)}
 .load-more-wrap{display:flex;justify-content:center;padding:1.5rem 0;grid-column:1/-1}
 .ncard-ad{background:var(--bg2);border:0.5px dashed var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;height:120px;grid-column:1/-1;width:100%}
 .ncard-ad-label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase}
@@ -171,6 +173,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 /* ── TABLET (768px - 1024px) ── */
 @media(max-width:1024px) and (min-width:769px){
   .hero-prev,.hero-next{display:none}
+  .search-wrap{display:none}
+  .mobile-search{display:flex}
   .hero-slide{padding:1.5rem 2.5rem;grid-template-columns:1fr 260px;gap:1rem}
   .hero-img{height:180px}
   .hero-img-placeholder{height:180px}
@@ -187,6 +191,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 /* ── MOBİL (768px ve altı) ── */
 @media(max-width:768px){
   .hero-prev,.hero-next{display:none}
+  .search-wrap{display:none}
+  .mobile-search{display:flex}
   .navbar{padding:0 1rem;gap:8px;height:60px}
   .logo-text{font-size:18px}
   .logo-mark{width:28px;height:28px}
@@ -249,6 +255,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
   </div>
 </nav>
+
+<!-- MOBİL ARAMA -->
+<div class="mobile-search">
+  <div class="search-wrap" style="flex:1;max-width:none">
+    <div class="search-icon"></div>
+    <input class="search-input" id="srchMobile" type="text" placeholder="Search news..." oninput="doSearch(this.value)">
+  </div>
+</div>
 
 <!-- TICKER -->
 <div class="ticker">
@@ -605,7 +619,15 @@ window.setFilter = (f) => {
   });
   renderGrid();
 };
-window.doSearch = (q) => { searchQ = q.toLowerCase().trim(); renderGrid(); };
+window.doSearch = (q) => {
+  searchQ = q.toLowerCase().trim();
+  // İki kutuyu senkronize et
+  const s1 = document.getElementById('srch');
+  const s2 = document.getElementById('srchMobile');
+  if (s1 && s1.value !== q) s1.value = q;
+  if (s2 && s2.value !== q) s2.value = q;
+  renderGrid();
+};
 
 // ── LANG ─────────────────────────────────────────────────────────
 window.toggleMenu = () => {
