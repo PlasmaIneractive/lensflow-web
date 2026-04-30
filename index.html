@@ -326,7 +326,7 @@ let tOfs = 0, tW = 0, tRAF = null, tPaused = false;
 // ── FIREBASE DATA ───────────────────────────────────────────────
 async function loadNews(langKey) {
   const since = new Date();
-  since.setHours(since.getHours() - 25);
+  since.setHours(since.getHours() - 48);
   const q = query(
     collection(db, 'haberler'),
     where('dil', '==', langKey),
