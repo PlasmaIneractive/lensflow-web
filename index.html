@@ -168,15 +168,53 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* Responsive */
+/* ── TABLET (768px - 1024px) ── */
+@media(max-width:1024px) and (min-width:769px){
+  .hero-slide{padding:1.5rem 2.5rem;grid-template-columns:1fr 260px;gap:1rem}
+  .hero-img{height:180px}
+  .hero-img-placeholder{height:180px}
+  .content{grid-template-columns:1fr 220px;gap:1.25rem;padding:1rem 1.5rem 1.5rem}
+  .navbar{padding:0 1.25rem;height:70px}
+  .logo-text{font-size:20px}
+  .logo-mark{width:32px;height:32px}
+  .search-wrap{max-width:280px}
+  .news-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-prev{left:8px}
+  .hero-next{right:8px}
+}
+
+/* ── MOBİL (768px ve altı) ── */
 @media(max-width:768px){
-  .hero-slide{grid-template-columns:1fr;padding:1.5rem}
-  .hero-img,.hero-img-placeholder{display:none}
+  .navbar{padding:0 1rem;gap:8px;height:60px}
+  .logo-text{font-size:18px}
+  .logo-mark{width:28px;height:28px}
+  .logo-mark svg{width:16px;height:16px}
+  .search-wrap{max-width:none;flex:1}
+  .nav-date{display:none}
+  .lang-btn{padding:5px 10px;font-size:12px}
+
+  .ticker{height:38px}
+  .ticker-tag::after{border-top:38px solid transparent}
+
+  .ad-band{padding:6px 1rem}
+  .ad-slot{height:50px}
+
+  .hero-slide{grid-template-columns:1fr;padding:1.25rem 1rem;gap:1rem;min-height:auto}
+  .hero-img{height:200px;width:100%}
+  .hero-img-placeholder{height:200px}
+  .hero-title{font-size:18px}
+  .hero-rank{font-size:11px}
+  .hero-prev{left:6px;width:30px;height:30px;font-size:12px}
+  .hero-next{right:6px;width:30px;height:30px;font-size:12px}
+  .hero-controls{padding:6px 1rem}
+
+  .filter-row{padding:.75rem 1rem}
   .content{grid-template-columns:1fr;padding:0 1rem 1.5rem}
   .sidebar{display:none}
-  .navbar{padding:0 1rem;gap:10px}
-  .filter-row{padding:.75rem 1rem}
-  .ad-band{padding:6px 1rem}
-  .hero-controls{padding:8px 1rem}
+  .news-grid{grid-template-columns:1fr}
+  .ncard-ad{height:80px}
+
+  .load-more-wrap{grid-column:1}
 }
 </style>
 </head>
