@@ -373,7 +373,7 @@ function buildTicker(news) {
   function makeChunk() {
     const f = document.createDocumentFragment();
     items.forEach((n, i) => {
-      if (i > 0 && i % 10 === 0) {
+      if (i > 0 && i % 12 === 0) {
         const ad = document.createElement('span');
         ad.className = 't-ad-wrap';
         ad.innerHTML = `<span class="t-ad">AD · 300×34</span>`;
@@ -496,7 +496,7 @@ function renderCards() {
   let html = '';
   visible.forEach((n, i) => {
     // Her 5 haberden sonra reklam
-    if (i > 0 && i % 10 === 0) {
+    if (i > 0 && i % 12 === 0) {
       html += `<div class="ncard-ad"><span class="ncard-ad-label">Reklam</span><span class="ncard-ad-slot">728 × 90</span></div>`;
     }
     const timeAgo = n.tarih ? Math.round((Date.now() - n.tarih.toDate()) / 3600000) : '';
