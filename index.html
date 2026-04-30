@@ -120,18 +120,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .content{display:grid;grid-template-columns:1fr 260px;gap:2rem;padding:0 2rem 2rem}
 
 /* News Grid */
-.news-grid{display:grid;gap:1px;background:var(--border2)}
-.ncard{background:var(--bg);padding:14px 0;display:grid;grid-template-columns:1fr 72px;gap:12px;cursor:pointer;transition:background .15s}
-.ncard:hover{background:var(--bg2)}
-.ncard:hover{padding-left:8px;padding-right:8px;margin:0 -8px;border-radius:6px}
-.ncat{font-size:11px;color:var(--tk);text-transform:uppercase;letter-spacing:1px;font-weight:500;margin-bottom:4px}
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.ncard{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:border-color .15s}
+.ncard:hover{border-color:var(--tk)}
+
+.ncard-body{padding:12px 14px;flex:1;display:flex;flex-direction:column}
+.ncat{font-size:10px;color:var(--tk);text-transform:uppercase;letter-spacing:1px;font-weight:500;margin-bottom:5px}
 .ntitle{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);line-height:1.4;margin-bottom:5px}
 .nsummary{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:6px}
 .nmeta{display:flex;align-items:center;gap:8px}
 .nsrc{font-size:11px;color:var(--tk);font-weight:500}
 .ntime{font-size:11px;color:var(--text3)}
-.nimg{background:var(--bg3);border-radius:6px;border:0.5px solid var(--border2);overflow:hidden}
-.nimg img{width:100%;height:72px;object-fit:cover}
+.nimg{background:var(--bg3);overflow:hidden;flex-shrink:0}
+.nimg img{width:100%;height:160px;object-fit:cover;display:block}
 .no-results{font-size:13px;color:var(--text3);padding:2rem 0;text-align:center}
 .load-more-wrap{display:flex;justify-content:center;padding:1.5rem 0}
 .load-more-btn{background:transparent;border:0.5px solid var(--border);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 28px;border-radius:20px;cursor:pointer;transition:all .15s}
@@ -481,12 +482,12 @@ function renderGrid() {
     const timeAgo = n.tarih ? Math.round((Date.now() - n.tarih.toDate()) / 3600000) : '';
     const catLabel = catMap[n.kategori] || n.kategori || '';
     return `<div class="ncard">
-      <div>
+      <div class="nimg">${n.gorsel ? `<img src="${n.gorsel}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">` : ''}</div>
+      <div class="ncard-body">
         <div class="ncat">${catLabel}</div>
         <div class="ntitle">${n.baslik}</div>
-        <div class="nmeta"><span class="nsrc">${n.kaynak || ''}</span><span class="ntime">${timeAgo} ${cfg.ago}</span></div>
+        <div class="nmeta" style="margin-top:auto;padding-top:8px"><span class="nsrc">${n.kaynak || ''}</span><span class="ntime">${timeAgo} ${cfg.ago}</span></div>
       </div>
-      <div class="nimg">${n.gorsel ? `<img src="${n.gorsel}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">` : ''}</div>
     </div>`;
   }).join('');
 }
