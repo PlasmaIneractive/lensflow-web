@@ -170,6 +170,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 /* Responsive */
 /* ── TABLET (768px - 1024px) ── */
 @media(max-width:1024px) and (min-width:769px){
+  .hero-prev,.hero-next{display:none}
   .hero-slide{padding:1.5rem 2.5rem;grid-template-columns:1fr 260px;gap:1rem}
   .hero-img{height:180px}
   .hero-img-placeholder{height:180px}
@@ -185,6 +186,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 /* ── MOBİL (768px ve altı) ── */
 @media(max-width:768px){
+  .hero-prev,.hero-next{display:none}
   .navbar{padding:0 1rem;gap:8px;height:60px}
   .logo-text{font-size:18px}
   .logo-mark{width:28px;height:28px}
@@ -512,6 +514,8 @@ function heroGoTo(i) { heroIdx = i; updateHero(); clearInterval(heroTimer); hero
 window.heroGo = (dir) => heroGoTo((heroIdx + dir + heroSlides.length) % heroSlides.length);
 document.getElementById('heroWrap').addEventListener('mousedown', e => { dragStart = e.clientX; });
 document.getElementById('heroWrap').addEventListener('mouseup', e => { if (dragStart !== null && Math.abs(e.clientX - dragStart) > 40) heroGo(e.clientX < dragStart ? 1 : -1); dragStart = null; });
+document.getElementById('heroWrap').addEventListener('touchstart', e => { dragStart = e.touches[0].clientX; }, {passive:true});
+document.getElementById('heroWrap').addEventListener('touchend', e => { if (dragStart !== null && Math.abs(e.changedTouches[0].clientX - dragStart) > 40) heroGo(e.changedTouches[0].clientX < dragStart ? 1 : -1); dragStart = null; });
 
 // ── NEWS GRID ────────────────────────────────────────────────────
 const PAGE_SIZE = 20;
