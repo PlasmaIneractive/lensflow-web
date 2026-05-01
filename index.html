@@ -908,14 +908,14 @@ function icerikCıkar(html) {
   return '';
 }
 
-function closeReader() {
+window.closeReader = function closeReader() {
   document.getElementById('readerOverlay').classList.remove('open');
   document.getElementById('readerPanel').classList.remove('open');
   document.body.style.overflow = '';
 }
 
 // ESC ile kapat
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeReader(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') window.closeReader(); });
 
 // ── INIT ─────────────────────────────────────────────────────────
 setDate();
