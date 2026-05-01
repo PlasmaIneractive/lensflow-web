@@ -81,10 +81,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .hero-track-wrap{overflow:hidden;cursor:grab;user-select:none;position:relative;z-index:1}
 .hero-track-wrap:active{cursor:grabbing}
 .hero-track{display:flex;transition:transform .42s cubic-bezier(.25,.46,.45,.94)}
-.hero-slide{flex:0 0 100%;position:relative;height:500px;overflow:hidden;background:var(--bg3)}
+.hero-slide{flex:0 0 100%;position:relative;height:600px;overflow:hidden;background:var(--bg3);margin:0 50px;border-radius:12px}
 .hero-slide.ad-slide{display:flex;align-items:center;justify-content:center;height:120px;background:var(--bg2)}
-.hero-img{position:absolute;inset:0;width:100%;height:100%}
-.hero-img img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
+.hero-img img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
 .hero-img-placeholder{position:absolute;inset:0;background:var(--bg3)}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.05) 100%);z-index:1}
 .hero-text{position:absolute;bottom:0;left:0;right:0;padding:2rem 3rem;z-index:2}
@@ -644,19 +644,66 @@ function setDate() {
 }
 
 // ── MAIN LOAD ────────────────────────────────────────────────────
+// ── HABER PUANLAMA ───────────────────────────────────────────────
+function haberPuanla(news) {
+  const simdi = Date.now();
+  const altiSaat = 6 * 3600000;
+  const onIkiSaat = 12 * 3600000;
+  const kategoriPuan = {
+    'Son Dakika': 3, 'Siyaset': 2, 'Ekonomi': 2,
+    'Teknoloji': 1, 'Kultur Sanat': 1, 'Bilim': 1, 'Spor': 1
+  };
+  const puanli = news.map(n => {
+    let puan = 0;
+    const tarih = n.tarih ? n.tarih.toDate().getTime() : 0;
+    const yas = simdi - tarih;
+    if (n.gorsel && n.gorsel.trim()) puan += 3;
+    if (yas < altiSaat) puan += 3;
+    else if (yas < onIkiSaat) puan += 1;
+    puan += kategoriPuan[n.kategori] || 0;
+    return { ...n, _puan: puan };
+  });
+  puanli.sort((a, b) => b._puan - a._puan);
+  const secilen = [];
+  const kategoriSayac = {};
+  const kaynakSayac = {};
+  for (const n of puanli) {
+    const kat = n.kategori || 'Genel';
+    const kay = n.kaynak || '';
+    kategoriSayac[kat] = kategoriSayac[kat] || 0;
+    kaynakSayac[kay] = kaynakSayac[kay] || 0;
+    if (kategoriSayac[kat] < 3 && kaynakSayac[kay] < 2) {
+      secilen.push(n);
+      kategoriSayac[kat]++;
+      kaynakSayac[kay]++;
+    }
+    if (secilen.length >= 15) break;
+  }
+  if (secilen.length < 15) {
+    for (const n of puanli) {
+      if (!secilen.find(s => s.id === n.id)) {
+        secilen.push(n);
+        if (secilen.length >= 15) break;
+      }
+    }
+  }
+  return secilen;
+}
+
 async function loadAndRender() {
   document.getElementById('grid').innerHTML = `<div class="loading"><div class="spin"></div></div>`;
   document.getElementById('heroTrack').innerHTML = `<div class="hero-slide"><div class="loading"><div class="spin"></div></div></div>`;
   try {
     [allNews, digestData] = await Promise.all([loadNews(lang), loadDigest(lang)]);
+    const heroNews = haberPuanla(allNews);
     buildTicker(allNews);
-    buildHero(allNews);
+    buildHero(heroNews);
     renderFilters();
     renderGrid();
     renderDigest();
   } catch(e) {
     console.error(e);
-    document.getElementById('grid').innerHTML = `<div class="no-results">Veri yüklenemedi: ${e.message}</div>`;
+    document.getElementById('grid').innerHTML = `<div class="no-results">Veri yuklenemedi: ${e.message}</div>`;
   }
 }
 
