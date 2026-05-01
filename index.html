@@ -536,7 +536,7 @@ function buildHero(news) {
       slide.innerHTML = `<div class="hero-ad-slot"><span class="hero-ad-tag">REKLAM</span><span class="hero-ad-txt">600 × 80 — Reklam ${s.adNum}</span></div>`;
     } else {
       const timeAgo = s.tarih ? Math.round((Date.now() - s.tarih.toDate()) / 3600000) : '';
-      slide.className = 'hero-slide'; slide.style.cursor='pointer'; slide.onclick = () => openReader(JSON.stringify(s));
+      slide.className = 'hero-slide'; slide.style.cursor='pointer'; slide.dataset.haber = JSON.stringify(s).replace(/'/g, '&apos;'); slide.onclick = function(){ openReader(this); };
       const proxied = proxyImg(s.gorsel);
       const catMap = CATEGORY_MAP[lang];
       const catLabel = catMap[s.kategori] || s.kategori || '';
@@ -627,7 +627,7 @@ function renderCards() {
     const timeAgo = n.tarih ? Math.round((Date.now() - n.tarih.toDate()) / 3600000) : '';
     const catLabel = catMap[n.kategori] || n.kategori || '';
     const proxied = proxyImg(n.gorsel);
-    html += `<div class="ncard" onclick="openReader(${JSON.stringify(JSON.stringify(n))})">
+    html += `<div class="ncard" onclick="openReader(this)" data-haber='${JSON.stringify(n).replace(/'/g, "&apos;")}'>
       <div class="nimg">${proxied ? `<img src="${proxied}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">` : ''}</div>
       <div class="ncard-body">
         <div class="ncat">${catLabel}</div>
@@ -804,8 +804,9 @@ async function loadAndRender() {
 }
 
 // ── OKUMA PANELİ ─────────────────────────────────────────────────
-async function openReader(jsonStr) {
-  const haber = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
+async function openReader(el) {
+  const raw = el.dataset.haber ? el.dataset.haber.replace(/&apos;/g, "'") : '{}';
+  const haber = JSON.parse(raw);
   const overlay = document.getElementById('readerOverlay');
   const panel = document.getElementById('readerPanel');
   const body = document.getElementById('readerBody');
