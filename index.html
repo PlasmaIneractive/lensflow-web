@@ -414,7 +414,10 @@ function buildTicker(news) {
   tOfs = 0;
   if (tRAF) { cancelAnimationFrame(tRAF); tRAF = null; }
 
-  const items = news.slice(0, 15);
+  // Önce Son Dakika haberleri, yetmezse diğerleri
+  const sonDakika = news.filter(n => n.kategori === 'Son Dakika');
+  const diger = news.filter(n => n.kategori !== 'Son Dakika');
+  const items = [...sonDakika, ...diger].slice(0, 15);
   function makeChunk() {
     const f = document.createDocumentFragment();
     items.forEach((n, i) => {
