@@ -168,6 +168,33 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .spin{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--tk);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ── OKUMA PANELİ ── */
+.reader-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+.reader-overlay.open{opacity:1;pointer-events:all}
+.reader-panel{position:fixed;top:0;right:0;width:min(680px,100vw);height:100vh;background:var(--bg2);z-index:501;transform:translateX(100%);transition:transform .35s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;border-left:0.5px solid var(--border)}
+.reader-panel.open{transform:translateX(0)}
+.reader-header{padding:1rem 1.5rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.reader-header-left{display:flex;align-items:center;gap:10px}
+.reader-logo{font-family:'DM Serif Display',serif;font-size:16px;color:var(--tk)}
+.reader-close{width:32px;height:32px;border-radius:50%;border:0.5px solid var(--border);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text2);transition:all .15s}
+.reader-close:hover{border-color:var(--tk);color:var(--tk)}
+.reader-body{overflow-y:auto;flex:1;scroll-behavior:smooth}
+.reader-hero{width:100%;height:280px;object-fit:cover;display:block;background:var(--bg3)}
+.reader-hero-placeholder{width:100%;height:280px;background:var(--bg3)}
+.reader-content{padding:1.5rem}
+.reader-meta{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.reader-src{font-size:12px;font-weight:600;color:var(--tk)}
+.reader-time{font-size:12px;color:var(--text3)}
+.reader-cat{font-size:10px;color:var(--text3);background:var(--bg3);border:0.5px solid var(--border);padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:1px}
+.reader-title{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);line-height:1.35;margin-bottom:1.5rem}
+.reader-divider{height:0.5px;background:var(--border);margin-bottom:1.5rem}
+.reader-article{font-size:16px;color:var(--text2);line-height:1.8;white-space:pre-wrap}
+.reader-article p{margin-bottom:1rem}
+.reader-loading{display:flex;align-items:center;gap:10px;color:var(--text3);font-size:13px;padding:2rem 0}
+.reader-footer{padding:1rem 1.5rem;border-top:0.5px solid var(--border);flex-shrink:0}
+.reader-btn{display:block;width:100%;padding:12px;background:var(--tk);color:#0a3a38;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;text-decoration:none;transition:opacity .15s}
+.reader-btn:hover{opacity:0.85}
+
 /* Responsive */
 @media(max-width:1024px) and (min-width:769px){
   .hero-prev,.hero-next{display:none}
@@ -273,6 +300,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="hero-controls">
     <div class="hero-dots" id="heroDots"></div>
     <span class="hero-counter" id="heroCounter"></span>
+  </div>
+</div>
+
+<!-- OKUMA PANELİ -->
+<div class="reader-overlay" id="readerOverlay" onclick="closeReader()"></div>
+<div class="reader-panel" id="readerPanel">
+  <div class="reader-header">
+    <div class="reader-header-left">
+      <span class="reader-logo">LensFlow</span>
+    </div>
+    <button class="reader-close" onclick="closeReader()">✕</button>
+  </div>
+  <div class="reader-body" id="readerBody">
+    <div class="reader-loading"><div class="spin"></div> Yükleniyor...</div>
+  </div>
+  <div class="reader-footer">
+    <a class="reader-btn" id="readerLink" href="#" target="_blank">Kaynakta Oku →</a>
   </div>
 </div>
 
@@ -492,7 +536,7 @@ function buildHero(news) {
       slide.innerHTML = `<div class="hero-ad-slot"><span class="hero-ad-tag">REKLAM</span><span class="hero-ad-txt">600 × 80 — Reklam ${s.adNum}</span></div>`;
     } else {
       const timeAgo = s.tarih ? Math.round((Date.now() - s.tarih.toDate()) / 3600000) : '';
-      slide.className = 'hero-slide';
+      slide.className = 'hero-slide'; slide.style.cursor='pointer'; slide.onclick = () => openReader(JSON.stringify(s));
       const proxied = proxyImg(s.gorsel);
       const catMap = CATEGORY_MAP[lang];
       const catLabel = catMap[s.kategori] || s.kategori || '';
@@ -583,7 +627,7 @@ function renderCards() {
     const timeAgo = n.tarih ? Math.round((Date.now() - n.tarih.toDate()) / 3600000) : '';
     const catLabel = catMap[n.kategori] || n.kategori || '';
     const proxied = proxyImg(n.gorsel);
-    html += `<div class="ncard" onclick="window.open('${n.link || '#'}','_blank')">
+    html += `<div class="ncard" onclick="openReader(${JSON.stringify(JSON.stringify(n))})">
       <div class="nimg">${proxied ? `<img src="${proxied}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">` : ''}</div>
       <div class="ncard-body">
         <div class="ncat">${catLabel}</div>
@@ -758,6 +802,116 @@ async function loadAndRender() {
     document.getElementById('grid').innerHTML = `<div class="no-results">Veri yuklenemedi: ${e.message}</div>`;
   }
 }
+
+// ── OKUMA PANELİ ─────────────────────────────────────────────────
+async function openReader(jsonStr) {
+  const haber = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
+  const overlay = document.getElementById('readerOverlay');
+  const panel = document.getElementById('readerPanel');
+  const body = document.getElementById('readerBody');
+  const link = document.getElementById('readerLink');
+  const cfg = LANG_CONFIG[lang];
+  const catMap = CATEGORY_MAP[lang];
+
+  // Paneli aç
+  overlay.classList.add('open');
+  panel.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Link
+  if(link) { link.href = haber.link || '#'; }
+
+  // Görsel ve temel bilgiler
+  const proxied = proxyImg(haber.gorsel);
+  const timeAgo = haber.tarih ? Math.round((Date.now() - (haber.tarih.toDate ? haber.tarih.toDate().getTime() : new Date(haber.tarih).getTime())) / 3600000) : '';
+  const catLabel = catMap[haber.kategori] || haber.kategori || '';
+
+  body.innerHTML = `
+    ${proxied ? `<img class="reader-hero" src="${proxied}" alt="" onerror="this.className='reader-hero-placeholder'">` : '<div class="reader-hero-placeholder"></div>'}
+    <div class="reader-content">
+      <div class="reader-meta">
+        <span class="reader-src">${haber.kaynak || ''}</span>
+        <span class="reader-time">${timeAgo} ${cfg.ago}</span>
+        <span class="reader-cat">${catLabel}</span>
+      </div>
+      <div class="reader-title">${haber.baslik}</div>
+      <div class="reader-divider"></div>
+      <div class="reader-loading" id="readerArticle"><div class="spin"></div> İçerik yükleniyor...</div>
+    </div>`;
+
+  // İçeriği çek
+  if (haber.link && haber.link !== '#') {
+    try {
+      const proxyUrl = 'https://img.lensflow.news/?url=' + encodeURIComponent(haber.link);
+      const res = await fetch(proxyUrl);
+      if (res.ok) {
+        const html = await res.text();
+        const article = icerikCıkar(html);
+        const el = document.getElementById('readerArticle');
+        if (el) {
+          if (article) {
+            el.className = 'reader-article';
+            el.innerHTML = article;
+          } else {
+            el.className = 'reader-article';
+            el.innerHTML = '<p style="color:var(--text3)">İçerik bu siteden yüklenemiyor. Kaynakta okumak için aşağıdaki butonu kullanın.</p>';
+          }
+        }
+      }
+    } catch(e) {
+      const el = document.getElementById('readerArticle');
+      if(el) { el.className = 'reader-article'; el.innerHTML = '<p style="color:var(--text3)">İçerik yüklenemedi. Kaynakta okumak için aşağıdaki butonu kullanın.</p>'; }
+    }
+  }
+}
+
+function icerikCıkar(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  // Gereksiz elementleri kaldır
+  ['script','style','nav','header','footer','aside','iframe','form',
+   '.ad','#ad','.advertisement','.social','[class*="share"]',
+   '[class*="related"]','[class*="comment"]','[class*="newsletter"]'].forEach(sel => {
+    try { doc.querySelectorAll(sel).forEach(el => el.remove()); } catch(e) {}
+  });
+
+  // Makale içeriğini bul
+  const selectors = ['article','[role="main"]','main','.article-body',
+    '.post-content','.entry-content','.story-body','.article-content',
+    '.content-body','#article-body','.article__body'];
+
+  for (const sel of selectors) {
+    const el = doc.querySelector(sel);
+    if (el && el.textContent.trim().length > 200) {
+      return el.innerHTML
+        .replace(/<img[^>]*>/gi, '')
+        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+        .replace(/(<\/p>|<\/h[1-6]>|<\/li>)/gi, '$1
+');
+    }
+  }
+
+  // Paragrafları topla
+  const paragraphs = doc.querySelectorAll('p');
+  const texts = Array.from(paragraphs)
+    .map(p => p.textContent.trim())
+    .filter(t => t.length > 80);
+  if (texts.length > 2) {
+    return texts.map(t => `<p>${t}</p>`).join('');
+  }
+  return '';
+}
+
+function closeReader() {
+  document.getElementById('readerOverlay').classList.remove('open');
+  document.getElementById('readerPanel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ESC ile kapat
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeReader(); });
 
 // ── INIT ─────────────────────────────────────────────────────────
 setDate();
