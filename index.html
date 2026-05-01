@@ -528,11 +528,32 @@ const PAGE_SIZE = 20;
 let visibleCount = PAGE_SIZE;
 let filteredNews = [];
 
+function gridPuanla(news) {
+  const simdi = Date.now();
+  const altiSaat = 6 * 3600000;
+  const onIkiSaat = 12 * 3600000;
+  const kategoriPuan = {
+    'Son Dakika': 3, 'Siyaset': 2, 'Ekonomi': 2,
+    'Teknoloji': 1, 'Kultur Sanat': 1, 'Bilim': 1, 'Spor': 1
+  };
+  return news.map(n => {
+    let puan = 0;
+    const tarih = n.tarih ? n.tarih.toDate().getTime() : 0;
+    const yas = simdi - tarih;
+    if (n.gorsel && n.gorsel.trim()) puan += 3;
+    if (yas < altiSaat) puan += 3;
+    else if (yas < onIkiSaat) puan += 1;
+    puan += kategoriPuan[n.kategori] || 0;
+    return { ...n, _puan: puan };
+  }).sort((a, b) => b._puan - a._puan);
+}
+
 function renderGrid() {
-  filteredNews = allNews;
+  let base = allNews;
   const cfg = LANG_CONFIG[lang];
-  if (activeFilter && activeFilter !== cfg.allKey) filteredNews = filteredNews.filter(n => n.kategori === activeFilter);
-  if (searchQ) filteredNews = filteredNews.filter(n => n.baslik?.toLowerCase().includes(searchQ));
+  if (activeFilter && activeFilter !== cfg.allKey) base = base.filter(n => n.kategori === activeFilter);
+  if (searchQ) base = base.filter(n => n.baslik?.toLowerCase().includes(searchQ));
+  filteredNews = gridPuanla(base);
   visibleCount = PAGE_SIZE;
   renderCards();
 }
@@ -560,11 +581,23 @@ function renderCards() {
       </div>
     </div>`;
   });
-  const hasMore = visibleCount < filteredNews.length;
-  if (hasMore) {
-    html += `<div class="load-more-wrap"><button class="load-more-btn" onclick="loadMore()">Daha fazla göster (${filteredNews.length - visibleCount} haber)</button></div>`;
+  if (visibleCount < filteredNews.length) {
+    html += `<div class="load-more-wrap"><div id="infiniteAnchor" style="height:10px"></div></div>`;
   }
   grid.innerHTML = html;
+
+  // Intersection observer ile sonsuz kaydırma
+  const anchor = document.getElementById('infiniteAnchor');
+  if (anchor) {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        observer.disconnect();
+        visibleCount += PAGE_SIZE;
+        renderCards();
+      }
+    }, { rootMargin: '200px' });
+    observer.observe(anchor);
+  }
 }
 
 window.loadMore = () => { visibleCount += PAGE_SIZE; renderCards(); };
