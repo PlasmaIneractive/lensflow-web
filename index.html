@@ -88,10 +88,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .hero-img-placeholder{position:absolute;inset:0;background:var(--bg3)}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.05) 100%);z-index:1}
 .hero-text{position:absolute;bottom:0;left:0;right:0;padding:2rem 3rem;z-index:2}
-.hero-prev,.hero-next{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;border:0.5px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:rgba(255,255,255,0.7);transition:all .15s;z-index:10}
-.hero-prev{left:16px}
-.hero-next{right:16px}
-.hero-prev:hover,.hero-next:hover{border-color:var(--tk);color:var(--tk);background:rgba(0,0,0,0.8)}
+.hero-prev,.hero-next{position:absolute;top:0;width:50px;height:100%;border:none;background:rgba(15,15,15,0.6);backdrop-filter:blur(4px);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(255,255,255,0.6);transition:all .15s;z-index:10}
+.hero-prev{left:0}
+.hero-next{right:0}
+.hero-prev:hover,.hero-next:hover{color:var(--tk);background:rgba(15,15,15,0.85)}
 .hero-accent{width:24px;height:2px;background:var(--tk);border-radius:2px;margin-bottom:8px}
 .hero-rank{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:6px;font-family:monospace;letter-spacing:.5px}
 .hero-title{font-family:'DM Serif Display',serif;font-size:28px;color:#fff;line-height:1.3;margin-bottom:10px;text-shadow:0 1px 4px rgba(0,0,0,0.5)}
