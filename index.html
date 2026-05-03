@@ -312,18 +312,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 
 <!-- OKUMA PANELİ -->
-<div class="reader-overlay" id="readerOverlay" onclick="window._bridge.close()"></div>
+<div class="reader-overlay" id="readerOverlay" onclick="closeReader()"></div>
 <div class="reader-panel" id="readerPanel">
   <div class="reader-header">
     <div class="reader-header-left">
       <span class="reader-logo">LensFlow</span>
     </div>
-    <button class="reader-close" onclick="window._bridge.close()">✕</button>
+    <button class="reader-close" onclick="closeReader()">✕</button>
   </div>
   <div class="reader-tabs">
-    <button class="reader-tab active" id="tabOzet" onclick="window._bridge.switchTab('ozet')">✦ Özet</button>
-    <button class="reader-tab" id="tabOkuma" onclick="window._bridge.switchTab('okuma')">◎ Okuma Modu</button>
-    <button class="reader-tab" id="tabKaynak" onclick="window._bridge.switchTab('kaynak')">↗ Kaynağından Oku</button>
+    <button class="reader-tab active" id="tabOzet" onclick="switchTab('ozet')">✦ Özet</button>
+    <button class="reader-tab" id="tabOkuma" onclick="switchTab('okuma')">◎ Okuma Modu</button>
+    <button class="reader-tab" id="tabKaynak" onclick="switchTab('kaynak')">↗ Kaynağından Oku</button>
   </div>
   <div class="reader-body" id="readerBody">
     <div class="reader-loading"><div class="spin"></div> Yükleniyor...</div>
@@ -634,7 +634,7 @@ function renderCards() {
     const timeAgo = n.tarih ? Math.round((Date.now() - n.tarih.toDate()) / 3600000) : '';
     const catLabel = catMap[n.kategori] || n.kategori || '';
     const proxied = proxyImg(n.gorsel);
-    html += `<div class="ncard" onclick="window._bridge.openByIndex(${i})">
+    html += `<div class="ncard" onclick="openReaderByIndex(${i})">
       <div class="nimg">${proxied ? `<img src="${proxied}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">` : ''}</div>
       <div class="ncard-body">
         <div class="ncat">${catLabel}</div>
@@ -1064,6 +1064,32 @@ window._bridge = {
     document.body.style.overflow = '';
   }
 };
+</script>
+
+<script>
+// ── READER PANELİ JS (module dışında) ────────────────────────────
+var _readerReady = false;
+
+function _waitBridge(cb) {
+  if (window._bridge) { cb(); }
+  else { setTimeout(function(){ _waitBridge(cb); }, 50); }
+}
+
+function openReaderByIndex(i) {
+  _waitBridge(function(){ window._bridge.openByIndex(i); });
+}
+
+function openReaderByHero(i) {
+  _waitBridge(function(){ window._bridge.openByHero(i); });
+}
+
+function switchTab(tab) {
+  _waitBridge(function(){ window._bridge.switchTab(tab); });
+}
+
+function closeReader() {
+  _waitBridge(function(){ window._bridge.close(); });
+}
 </script>
 </body>
 </html>
