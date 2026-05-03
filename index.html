@@ -321,9 +321,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="reader-close" onclick="closeReader()">✕</button>
   </div>
   <div class="reader-tabs">
-    <button class="reader-tab active" id="tabOzet" onclick="switchTab('ozet')">✦ Özet</button>
-    <button class="reader-tab" id="tabOkuma" onclick="switchTab('okuma')">◎ Okuma Modu</button>
-    <button class="reader-tab" id="tabKaynak" onclick="switchTab('kaynak')">↗ Kaynağından Oku</button>
+    <button class="reader-tab active" id="tabOzet" onclick="window.switchTab('ozet')">✦ Özet</button>
+    <button class="reader-tab" id="tabOkuma" onclick="window.switchTab('okuma')">◎ Okuma Modu</button>
+    <button class="reader-tab" id="tabKaynak" onclick="window.switchTab('kaynak')">↗ Kaynağından Oku</button>
   </div>
   <div class="reader-body" id="readerBody">
     <div class="reader-loading"><div class="spin"></div> Yükleniyor...</div>
