@@ -10,28 +10,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-:root{
-  --tk:#30D5C8;
-  --tk-dim:rgba(48,213,200,0.12);
-  --tk-dark:#1aa89d;
-  --bg:#0f0f0f;
-  --bg2:#161616;
-  --bg3:#1e1e1e;
-  --border:rgba(255,255,255,0.08);
-  --border2:rgba(255,255,255,0.05);
-  --text:#e8e4dc;
-  --text2:#9a968f;
-  --text3:#5a5650;
-}
+:root{--tk:#30D5C8;--tk-dim:rgba(48,213,200,0.12);--tk-dark:#1aa89d;--bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.05);--text:#e8e4dc;--text2:#9a968f;--text3:#5a5650}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
-
-/* ── NAVBAR ── */
 .navbar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:1.5rem;height:82px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
 .logo{display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none}
 .logo-mark{width:52px;height:52px;background:transparent;border-radius:8px;display:flex;align-items:center;justify-content:center}
-.logo-mark svg{width:22px;height:22px}
+.logo-mark img{width:100%;height:100%;object-fit:contain}
 .logo-text{font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);letter-spacing:-0.3px}
 .logo-text span{color:var(--tk)}
 .search-wrap{display:flex;align-items:center;gap:10px;border-bottom:1.5px solid var(--border);padding:6px 0;flex:1;max-width:420px;transition:border-color .2s}
@@ -57,8 +43,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .loname{flex:1}
 .lochk{width:6px;height:6px;border-radius:50%;background:var(--tk);display:none;flex-shrink:0}
 .loption.active .lochk{display:block}
-
-/* ── TICKER ── */
 .ticker{background:var(--bg2);border-bottom:0.5px solid var(--border);overflow:hidden;height:48px;display:flex;align-items:center}
 .ticker-tag{background:var(--tk);color:#0a3a38;font-size:13px;font-weight:500;padding:0 10px 0 12px;height:100%;display:flex;align-items:center;flex-shrink:0;position:relative;letter-spacing:1px;text-transform:uppercase}
 .ticker-tag::after{content:'';position:absolute;right:-9px;top:0;width:0;height:0;border-top:48px solid transparent;border-left:9px solid var(--tk)}
@@ -68,26 +52,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .t-num{font-size:13px;color:var(--tk);font-weight:500;font-family:monospace}
 .t-txt{font-size:15px;color:var(--text2)}
 .t-sep{display:inline-block;width:1px;height:14px;background:var(--border);margin:0 12px;vertical-align:middle;flex-shrink:0}
-.t-ad-wrap{display:inline-flex;align-items:center;padding:0 12px;flex-shrink:0}
-.t-ad{background:var(--bg3);border:0.5px dashed var(--border);border-radius:3px;padding:2px 10px;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.5px}
-
-/* ── AD BAND ── */
 .ad-band{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:8px 2rem;display:flex;flex-direction:column;align-items:center;gap:5px}
 .ad-label-row{display:flex;align-items:center;gap:8px;width:100%;max-width:728px}
 .ad-line{flex:1;height:0.5px;background:var(--border)}
 .ad-label-txt{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;white-space:nowrap}
 .ad-slot{width:100%;max-width:728px;height:90px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center}
 .ad-slot-txt{font-size:12px;color:var(--text3);font-family:monospace}
-
-/* ── HERO SLIDER ── */
 .hero{background:var(--bg2);border-bottom:0.5px solid var(--border);position:relative;overflow:hidden}
-.hero-track-wrap{overflow:visible;cursor:grab;user-select:none;position:relative;z-index:1;padding:0}
+.hero-track-wrap{overflow:visible;cursor:grab;user-select:none;position:relative;z-index:1}
 .hero-track-wrap:active{cursor:grabbing}
 .hero-track{display:flex;transition:transform .42s cubic-bezier(.25,.46,.45,.94)}
-.hero-slide{flex:0 0 calc(100% - 100px);position:relative;height:600px;overflow:hidden;background:var(--bg3);border-radius:12px;margin:0 50px}
-.hero-slide.ad-slide{display:flex;align-items:center;justify-content:center;height:120px;background:var(--bg2)}
-.hero-img{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
-.hero-img img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
+.hero-slide{flex:0 0 calc(100% - 100px);position:relative;height:600px;overflow:hidden;background:var(--bg3);border-radius:12px;margin:0 50px;cursor:pointer}
+.hero-slide.ad-slide{display:flex;align-items:center;justify-content:center;height:120px;background:var(--bg2);cursor:default}
+.hero-img{position:absolute;inset:0;width:100%;height:100%}
+.hero-img img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
 .hero-img-placeholder{position:absolute;inset:0;background:var(--bg3)}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.05) 100%);z-index:1}
 .hero-text{position:absolute;bottom:0;left:0;right:0;padding:2rem 3rem;z-index:2}
@@ -111,44 +89,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .hdot.ad-dot{background:rgba(48,213,200,.2)}
 .hdot.ad-dot.active{background:var(--tk);opacity:.6}
 .hero-counter{font-size:10px;color:var(--text3);font-family:monospace}
-
-/* ── FILTERS ── */
 .filter-row{display:flex;align-items:center;justify-content:space-between;gap:0;padding:0 2rem;scrollbar-width:none;background:var(--bg);border-bottom:0.5px solid var(--border);overflow-x:auto}
 .filter-row::-webkit-scrollbar{display:none}
 .fbtn{font-size:14px;padding:10px 18px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;flex:1;font-weight:700;letter-spacing:0.3px;text-align:center;margin:8px 4px}
 .fbtn:hover{border-color:var(--tk);color:var(--text);background:var(--bg3)}
 .fbtn.active{background:var(--tk);color:#0a3a38;border-color:var(--tk);font-weight:700}
-
-/* ── CONTENT ── */
-.content{display:grid;grid-template-columns:1fr;gap:1.5rem;padding:1rem 2rem 2rem}
-
-/* News Grid */
-.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
-.ncard{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:border-color .15s}
-.ncard:hover{border-color:var(--tk)}
-.ncard-body{padding:12px 14px;flex:1;display:flex;flex-direction:column}
-.ncat{font-size:10px;color:var(--tk);text-transform:uppercase;letter-spacing:1px;font-weight:500;margin-bottom:5px}
-.ntitle{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);line-height:1.4;margin-bottom:5px}
-.nsummary{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:6px}
-.nmeta{display:flex;align-items:center;gap:8px}
-.nsrc{font-size:11px;color:var(--tk);font-weight:500}
-.ntime{font-size:11px;color:var(--text3)}
-.nimg{background:var(--bg3);overflow:hidden;flex-shrink:0}
-.nimg img{width:100%;height:160px;object-fit:cover;display:block}
-.no-results{font-size:13px;color:var(--text3);padding:2rem 0;text-align:center}
-.mobile-search{display:none;align-items:center;gap:8px;background:var(--bg2);border-bottom:0.5px solid var(--border);padding:8px 1rem}
-.mobile-search .search-wrap{display:flex;flex:1;max-width:none;border-bottom:1px solid var(--border)}
-.load-more-wrap{display:flex;justify-content:center;padding:1.5rem 0;grid-column:1/-1}
-.ncard-ad{background:var(--bg2);border:0.5px dashed var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;height:120px;grid-column:1/-1;width:100%}
-.ncard-ad-label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase}
-.ncard-ad-slot{font-size:12px;color:var(--text3);font-family:monospace}
-.load-more-btn{background:transparent;border:0.5px solid var(--border);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 28px;border-radius:20px;cursor:pointer;transition:all .15s}
-.load-more-btn:hover{border-color:var(--tk);color:var(--tk)}
-
-/* Sidebar */
-.sidebar{display:none}
-.slabel{display:none}
-/* Yatay Digest */
 .digest-band{background:var(--bg2);border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);padding:1rem 2rem;display:flex;align-items:flex-start;gap:2rem;overflow-x:auto;scrollbar-width:none}
 .digest-band::-webkit-scrollbar{display:none}
 .digest-left{flex-shrink:0;min-width:160px}
@@ -161,95 +106,81 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .dstory{display:flex;gap:6px;align-items:flex-start;background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;padding:8px 12px;min-width:200px;max-width:240px;flex-shrink:0}
 .drank{font-size:10px;color:var(--tk);font-weight:500;min-width:14px;margin-top:1px;flex-shrink:0;font-family:monospace}
 .dstitle{font-size:12px;color:var(--text2);line-height:1.4}
-.dcard{display:none}
-
-/* Loading */
+.content{display:grid;grid-template-columns:1fr;gap:1.5rem;padding:1rem 2rem 2rem}
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.ncard{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:border-color .15s}
+.ncard:hover{border-color:var(--tk)}
+.ncard-body{padding:12px 14px;flex:1;display:flex;flex-direction:column}
+.ncat{font-size:10px;color:var(--tk);text-transform:uppercase;letter-spacing:1px;font-weight:500;margin-bottom:5px}
+.ntitle{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);line-height:1.4;margin-bottom:5px}
+.nmeta{display:flex;align-items:center;gap:8px}
+.nsrc{font-size:11px;color:var(--tk);font-weight:500}
+.ntime{font-size:11px;color:var(--text3)}
+.nimg{background:var(--bg3);overflow:hidden;flex-shrink:0}
+.nimg img{width:100%;height:160px;object-fit:cover;display:block}
+.no-results{font-size:13px;color:var(--text3);padding:2rem 0;text-align:center}
+.mobile-search{display:none;align-items:center;gap:8px;background:var(--bg2);border-bottom:0.5px solid var(--border);padding:8px 1rem}
+.mobile-search .search-wrap{display:flex;flex:1;max-width:none;border-bottom:1px solid var(--border)}
+.ncard-ad{background:var(--bg2);border:0.5px dashed var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;height:120px;grid-column:1/-1;width:100%}
+.ncard-ad-label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase}
+.ncard-ad-slot{font-size:12px;color:var(--text3);font-family:monospace}
 .loading{display:flex;align-items:center;justify-content:center;padding:4rem;color:var(--text3);font-size:13px;gap:10px}
 .spin{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--tk);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* ── OKUMA PANELİ ── */
+/* READER */
 .reader-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
 .reader-overlay.open{opacity:1;pointer-events:all}
 .reader-panel{position:fixed;top:0;right:0;width:min(680px,100vw);height:100vh;background:var(--bg2);z-index:501;transform:translateX(100%);transition:transform .35s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;border-left:0.5px solid var(--border)}
 .reader-panel.open{transform:translateX(0)}
 .reader-header{padding:1rem 1.5rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.reader-header-left{display:flex;align-items:center;gap:10px}
 .reader-logo{font-family:'DM Serif Display',serif;font-size:16px;color:var(--tk)}
 .reader-close{width:32px;height:32px;border-radius:50%;border:0.5px solid var(--border);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text2);transition:all .15s}
 .reader-close:hover{border-color:var(--tk);color:var(--tk)}
 .reader-tabs{display:flex;border-bottom:0.5px solid var(--border);flex-shrink:0}
 .reader-tab{flex:1;padding:12px 8px;border:none;background:transparent;color:var(--text3);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
 .reader-tab:hover{color:var(--text);background:var(--bg3)}
-.reader-tab.active{color:var(--tk);border-bottom-color:var(--tk);background:transparent}
-.reader-summary{padding:1.5rem;font-size:15px;color:var(--text2);line-height:1.8}
-.reader-summary-loading{display:flex;align-items:center;gap:10px;color:var(--text3);font-size:13px;padding:1rem 0}
-.reader-summary-text{white-space:pre-wrap}
-.reader-kaynak-frame{width:100%;height:calc(100vh - 200px);border:none;background:var(--bg3)}
-.reader-body{overflow-y:auto;flex:1;scroll-behavior:smooth}
+.reader-tab.active{color:var(--tk);border-bottom-color:var(--tk)}
+.reader-body{overflow-y:auto;flex:1}
 .reader-hero{width:100%;height:280px;object-fit:cover;display:block;background:var(--bg3)}
 .reader-hero-placeholder{width:100%;height:280px;background:var(--bg3)}
 .reader-content{padding:1.5rem}
-.reader-meta{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.reader-meta{display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap}
 .reader-src{font-size:12px;font-weight:600;color:var(--tk)}
 .reader-time{font-size:12px;color:var(--text3)}
 .reader-cat{font-size:10px;color:var(--text3);background:var(--bg3);border:0.5px solid var(--border);padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:1px}
-.reader-title{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);line-height:1.35;margin-bottom:1.5rem}
+.reader-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);line-height:1.35;margin-bottom:1.5rem}
 .reader-divider{height:0.5px;background:var(--border);margin-bottom:1.5rem}
-.reader-article{font-size:16px;color:var(--text2);line-height:1.8;white-space:pre-wrap}
+.reader-article{font-size:15px;color:var(--text2);line-height:1.8}
 .reader-article p{margin-bottom:1rem}
-.reader-loading{display:flex;align-items:center;gap:10px;color:var(--text3);font-size:13px;padding:2rem 0}
+.reader-summary-text{font-size:15px;color:var(--text2);line-height:1.8}
+.reader-loading-msg{display:flex;align-items:center;gap:10px;color:var(--text3);font-size:13px;padding:1rem 0}
 .reader-footer{padding:1rem 1.5rem;border-top:0.5px solid var(--border);flex-shrink:0}
 .reader-btn{display:block;width:100%;padding:12px;background:var(--tk);color:#0a3a38;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;text-decoration:none;transition:opacity .15s}
 .reader-btn:hover{opacity:0.85}
-
-/* Responsive */
+.sidebar{display:none}
 @media(max-width:1024px) and (min-width:769px){
-  .hero-prev,.hero-next{display:none}
-  .search-wrap{display:none}
-  .mobile-search{display:flex}
-  .hero-slide{height:320px}
-  .hero-text{padding:1.5rem 2rem}
-  .content{grid-template-columns:1fr 220px;gap:1.25rem;padding:1rem 1.5rem 1.5rem}
-  .navbar{padding:0 1.25rem;height:70px}
-  .logo-text{font-size:20px}
-  .logo-mark{width:32px;height:32px}
+  .search-wrap{display:none}.mobile-search{display:flex}
+  .hero-slide{height:320px}.hero-text{padding:1.5rem 2rem}
+  .content{padding:1rem 1.5rem 1.5rem}.navbar{padding:0 1.25rem;height:70px}
   .news-grid{grid-template-columns:repeat(2,1fr)}
 }
-
 @media(max-width:768px){
-  .hero-prev,.hero-next{display:none}
-  .search-wrap{display:none}
-  .mobile-search{display:flex}
-  .navbar{padding:0 1rem;gap:8px;height:60px}
-  .logo-text{font-size:18px}
-  .logo-mark{width:28px;height:28px}
-  .logo-mark svg{width:16px;height:16px}
-  .nav-date{display:none}
-  .lang-btn{padding:5px 10px;font-size:12px}
-  .ticker{height:38px}
-  .ticker-tag::after{border-top:38px solid transparent}
-  .ad-band{padding:6px 1rem}
-  .ad-slot{height:50px}
-  .hero-slide{height:260px}
-  .hero-title{font-size:20px}
-  .hero-text{padding:1.25rem 1.25rem}
-  .hero-controls{padding:6px 1rem}
-  .filter-row{padding:.75rem 1rem}
-  .content{grid-template-columns:1fr;padding:0 1rem 1.5rem}
-  .sidebar{display:none}
-  .news-grid{grid-template-columns:1fr}
-  .ncard-ad{height:80px}
-  .load-more-wrap{grid-column:1}
+  .hero-prev,.hero-next{display:none}.search-wrap{display:none}.mobile-search{display:flex}
+  .navbar{padding:0 1rem;gap:8px;height:60px}.logo-text{font-size:18px}
+  .logo-mark{width:28px;height:28px}.nav-date{display:none}.lang-btn{padding:5px 10px;font-size:12px}
+  .ticker{height:38px}.ticker-tag::after{border-top:38px solid transparent}
+  .ad-band{padding:6px 1rem}.ad-slot{height:50px}
+  .hero-slide{height:260px}.hero-title{font-size:20px}.hero-text{padding:1.25rem 1.25rem}
+  .hero-controls{padding:6px 1rem}.filter-row{padding:.75rem 1rem}
+  .content{padding:0 1rem 1.5rem}.news-grid{grid-template-columns:1fr}.ncard-ad{height:80px}
+  .reader-panel{width:100vw}
 }
 </style>
 </head>
 <body>
-
-<!-- NAVBAR -->
 <nav class="navbar">
   <a class="logo" href="/">
-    <div class="logo-mark" style="background:transparent;padding:2px"><img src="logo.png" style="width:100%;height:100%;object-fit:contain"></div>
+    <div class="logo-mark"><img src="logo.png" alt="LensFlow"></div>
     <span class="logo-text">Lens<span>Flow</span></span>
   </a>
   <div class="search-wrap">
@@ -273,30 +204,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
   </div>
 </nav>
-
-<!-- MOBİL ARAMA -->
 <div class="mobile-search">
   <div class="search-wrap" style="flex:1;max-width:none">
     <div class="search-icon"></div>
     <input class="search-input" id="srchMobile" type="text" placeholder="Search news..." oninput="doSearch(this.value)">
   </div>
 </div>
-
-<!-- TICKER -->
 <div class="ticker">
   <div class="ticker-tag" id="tickerTag">LIVE</div>
   <div class="ticker-overflow" id="tover">
     <div class="ticker-track" id="ttrack"></div>
   </div>
 </div>
-
-<!-- AD 1 -->
 <div class="ad-band">
   <div class="ad-label-row"><div class="ad-line"></div><span class="ad-label-txt">Reklam</span><div class="ad-line"></div></div>
   <div class="ad-slot"><span class="ad-slot-txt">728 × 90</span></div>
 </div>
-
-<!-- HERO SLIDER -->
 <div class="hero">
   <div class="hero-track-wrap" id="heroWrap">
     <div class="hero-track" id="heroTrack">
@@ -310,30 +233,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <span class="hero-counter" id="heroCounter"></span>
   </div>
 </div>
-
-<!-- OKUMA PANELİ -->
-<div class="reader-overlay" id="readerOverlay" onclick="closeReader()"></div>
-<div class="reader-panel" id="readerPanel">
-  <div class="reader-header">
-    <div class="reader-header-left">
-      <span class="reader-logo">LensFlow</span>
-    </div>
-    <button class="reader-close" onclick="closeReader()">✕</button>
-  </div>
-  <div class="reader-tabs">
-    <button class="reader-tab active" id="tabOzet" onclick="switchTab('ozet')">✦ Özet</button>
-    <button class="reader-tab" id="tabOkuma" onclick="switchTab('okuma')">◎ Okuma Modu</button>
-    <button class="reader-tab" id="tabKaynak" onclick="switchTab('kaynak')">↗ Kaynağından Oku</button>
-  </div>
-  <div class="reader-body" id="readerBody">
-    <div class="reader-loading"><div class="spin"></div> Yükleniyor...</div>
-  </div>
-</div>
-
-<!-- FILTERS -->
 <div class="filter-row" id="filters"></div>
-
-<!-- DAILY DIGEST BAND -->
 <div class="digest-band" id="digestBand" style="display:none">
   <div class="digest-left">
     <div style="display:flex;align-items:center;gap:6px"><div class="ddot"></div><span class="dlbl" id="dlabel">Daily Digest</span></div>
@@ -343,19 +243,31 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
   <div class="digest-stories" id="digestStories"></div>
 </div>
-
-<!-- CONTENT -->
+<!-- READER PANELİ -->
+<div class="reader-overlay" id="readerOverlay"></div>
+<div class="reader-panel" id="readerPanel">
+  <div class="reader-header">
+    <span class="reader-logo">LensFlow</span>
+    <button class="reader-close" id="readerCloseBtn">✕</button>
+  </div>
+  <div class="reader-tabs">
+    <button class="reader-tab active" id="tabOzet">✦ Özet</button>
+    <button class="reader-tab" id="tabOkuma">◎ Okuma Modu</button>
+    <button class="reader-tab" id="tabKaynak">↗ Kaynağından Oku</button>
+  </div>
+  <div class="reader-body" id="readerBody">
+    <div class="loading"><div class="spin"></div></div>
+  </div>
+</div>
 <div class="content">
   <div>
     <div class="news-grid" id="grid"><div class="loading"><div class="spin"></div></div></div>
   </div>
-
 </div>
 
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, query, where, orderBy, limit, getDocs, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, updateDoc, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDIWhUUEmp1of0j8sjQxsDTa4xf8JQBEmo",
@@ -365,73 +277,35 @@ const firebaseConfig = {
   messagingSenderId: "841039966563",
   appId: "1:841039966563:web:2f47afce348c12e5abe356"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ── GÖRSEL PROXY ────────────────────────────────────────────────
 const IMG_PROXY = 'https://img.lensflow.news/?url=';
 function proxyImg(url) {
   if (!url) return '';
-  try { new URL(url); return IMG_PROXY + encodeURIComponent(url); }
-  catch(e) { return ''; }
+  try { new URL(url); return IMG_PROXY + encodeURIComponent(url); } catch(e) { return ''; }
 }
 
-// ── CONFIG ─────────────────────────────────────────────────────
 const CATEGORY_MAP = {
-  en: {
-    'Tümü':'All','Son Dakika':'Breaking','Siyaset':'Politics','Ekonomi':'Economy',
-    'Teknoloji':'Technology','Kültür Sanat':'Culture & Arts','Bilim':'Science','Spor':'Sports',
-    'Genel':'General','Haber Ajansı':'News Agency','Dünya':'World','Sağlık':'Health',
-    'Çevre':'Environment','Eğitim':'Education','TV & Radyo':'TV & Radio','Güvenlik':'Security'
-  },
-  fr: {
-    'Tümü':'Tout','Son Dakika':'Flash','Siyaset':'Politique','Ekonomi':'Économie',
-    'Teknoloji':'Technologie','Kültür Sanat':'Culture & Arts','Bilim':'Science','Spor':'Sport',
-    'Genel':'Général','Haber Ajansı':'Agence','Dünya':'Monde','Sağlık':'Santé',
-    'Çevre':'Environnement','Eğitim':'Éducation','TV & Radyo':'TV & Radio','Güvenlik':'Sécurité'
-  },
-  de: {
-    'Tümü':'Alle','Son Dakika':'Eilmeldung','Siyaset':'Politik','Ekonomi':'Wirtschaft',
-    'Teknoloji':'Technologie','Kültür Sanat':'Kultur & Kunst','Bilim':'Wissenschaft','Spor':'Sport',
-    'Genel':'Allgemein','Haber Ajansı':'Agentur','Dünya':'Welt','Sağlık':'Gesundheit',
-    'Çevre':'Umwelt','Eğitim':'Bildung','TV & Radyo':'TV & Radio','Güvenlik':'Sicherheit'
-  },
-  es: {
-    'Tümü':'Todo','Son Dakika':'Última hora','Siyaset':'Política','Ekonomi':'Economía',
-    'Teknoloji':'Tecnología','Kültür Sanat':'Cultura y Arte','Bilim':'Ciencia','Spor':'Deporte',
-    'Genel':'General','Haber Ajansı':'Agencia','Dünya':'Mundo','Sağlık':'Salud',
-    'Çevre':'Medioambiente','Eğitim':'Educación','TV & Radyo':'TV & Radio','Güvenlik':'Seguridad'
-  },
-  pt: {
-    'Tümü':'Tudo','Son Dakika':'Urgente','Siyaset':'Política','Ekonomi':'Economia',
-    'Teknoloji':'Tecnologia','Kültür Sanat':'Cultura e Arte','Bilim':'Ciência','Spor':'Esporte',
-    'Genel':'Geral','Haber Ajansı':'Agência','Dünya':'Mundo','Sağlık':'Saúde',
-    'Çevre':'Meio Ambiente','Eğitim':'Educação','TV & Radyo':'TV & Rádio','Güvenlik':'Segurança'
-  },
-  tr: {
-    'Tümü':'Tümü','Son Dakika':'Son Dakika','Siyaset':'Siyaset','Ekonomi':'Ekonomi',
-    'Teknoloji':'Teknoloji','Kültür Sanat':'Kültür Sanat','Bilim':'Bilim','Spor':'Spor',
-    'Genel':'Genel','Haber Ajansı':'Haber Ajansı','Dünya':'Dünya','Sağlık':'Sağlık',
-    'Çevre':'Çevre','Eğitim':'Eğitim','TV & Radyo':'TV & Radyo','Güvenlik':'Güvenlik'
-  }
+  en:{'Tümü':'All','Son Dakika':'Breaking','Siyaset':'Politics','Ekonomi':'Economy','Teknoloji':'Technology','Kültür Sanat':'Culture & Arts','Bilim':'Science','Spor':'Sports','Genel':'General','Haber Ajansı':'News Agency','Dünya':'World','Sağlık':'Health','Çevre':'Environment','Eğitim':'Education','TV & Radyo':'TV & Radio','Güvenlik':'Security'},
+  fr:{'Tümü':'Tout','Son Dakika':'Flash','Siyaset':'Politique','Ekonomi':'Économie','Teknoloji':'Technologie','Kültür Sanat':'Culture & Arts','Bilim':'Science','Spor':'Sport','Genel':'Général','Haber Ajansı':'Agence','Dünya':'Monde','Sağlık':'Santé','Çevre':'Environnement','Eğitim':'Éducation','TV & Radyo':'TV & Radio','Güvenlik':'Sécurité'},
+  de:{'Tümü':'Alle','Son Dakika':'Eilmeldung','Siyaset':'Politik','Ekonomi':'Wirtschaft','Teknoloji':'Technologie','Kültür Sanat':'Kultur & Kunst','Bilim':'Wissenschaft','Spor':'Sport','Genel':'Allgemein','Haber Ajansı':'Agentur','Dünya':'Welt','Sağlık':'Gesundheit','Çevre':'Umwelt','Eğitim':'Bildung','TV & Radyo':'TV & Radio','Güvenlik':'Sicherheit'},
+  es:{'Tümü':'Todo','Son Dakika':'Última hora','Siyaset':'Política','Ekonomi':'Economía','Teknoloji':'Tecnología','Kültür Sanat':'Cultura y Arte','Bilim':'Ciencia','Spor':'Deporte','Genel':'General','Haber Ajansı':'Agencia','Dünya':'Mundo','Sağlık':'Salud','Çevre':'Medioambiente','Eğitim':'Educación','TV & Radyo':'TV & Radio','Güvenlik':'Seguridad'},
+  pt:{'Tümü':'Tudo','Son Dakika':'Urgente','Siyaset':'Política','Ekonomi':'Economia','Teknoloji':'Tecnologia','Kültür Sanat':'Cultura e Arte','Bilim':'Ciência','Spor':'Esporte','Genel':'Geral','Haber Ajansı':'Agência','Dünya':'Mundo','Sağlık':'Saúde','Çevre':'Meio Ambiente','Eğitim':'Educação','TV & Radyo':'TV & Rádio','Güvenlik':'Segurança'},
+  tr:{'Tümü':'Tümü','Son Dakika':'Son Dakika','Siyaset':'Siyaset','Ekonomi':'Ekonomi','Teknoloji':'Teknoloji','Kültür Sanat':'Kültür Sanat','Bilim':'Bilim','Spor':'Spor','Genel':'Genel','Haber Ajansı':'Haber Ajansı','Dünya':'Dünya','Sağlık':'Sağlık','Çevre':'Çevre','Eğitim':'Eğitim','TV & Radyo':'TV & Radyo','Güvenlik':'Güvenlik'}
 };
-
 const LANG_CONFIG = {
-  en: { flag:'🇬🇧', name:'EN', ticker:'LIVE', dl:'Daily Digest', dt:'AI Summary', dtl:'Theme of the Day', allKey:'Tümü', ago:'h ago', ph:'Search news...' },
-  fr: { flag:'🇫🇷', name:'FR', ticker:'LIVE', dl:'Résumé du jour', dt:'Résumé IA', dtl:'Thème du jour', allKey:'Tümü', ago:'h', ph:'Rechercher...' },
-  de: { flag:'🇩🇪', name:'DE', ticker:'LIVE', dl:'Tagesüberblick', dt:'KI-Zusammenfassung', dtl:'Thema des Tages', allKey:'Tümü', ago:'Std.', ph:'Suchen...' },
-  es: { flag:'🇪🇸', name:'ES', ticker:'EN VIVO', dl:'Resumen del día', dt:'Resumen IA', dtl:'Tema del día', allKey:'Tümü', ago:'h', ph:'Buscar...' },
-  pt: { flag:'🇧🇷', name:'PT', ticker:'AO VIVO', dl:'Resumo do dia', dt:'Resumo IA', dtl:'Tema do dia', allKey:'Tümü', ago:'h', ph:'Pesquisar...' },
-  tr: { flag:'🇹🇷', name:'TR', ticker:'CANLI', dl:'Günlük Özet', dt:'AI Özeti', dtl:'Günün Teması', allKey:'Tümü', ago:'sa önce', ph:'Haber ara...' },
+  en:{flag:'🇬🇧',name:'EN',ticker:'LIVE',dl:'Daily Digest',dt:'AI Summary',dtl:'Theme of the Day',allKey:'Tümü',ago:'h ago',ph:'Search news...'},
+  fr:{flag:'🇫🇷',name:'FR',ticker:'LIVE',dl:'Résumé du jour',dt:'Résumé IA',dtl:'Thème du jour',allKey:'Tümü',ago:'h',ph:'Rechercher...'},
+  de:{flag:'🇩🇪',name:'DE',ticker:'LIVE',dl:'Tagesüberblick',dt:'KI-Zusammenfassung',dtl:'Thema des Tages',allKey:'Tümü',ago:'Std.',ph:'Suchen...'},
+  es:{flag:'🇪🇸',name:'ES',ticker:'EN VIVO',dl:'Resumen del día',dt:'Resumen IA',dtl:'Tema del día',allKey:'Tümü',ago:'h',ph:'Buscar...'},
+  pt:{flag:'🇧🇷',name:'PT',ticker:'AO VIVO',dl:'Resumo do dia',dt:'Resumo IA',dtl:'Tema do dia',allKey:'Tümü',ago:'h',ph:'Pesquisar...'},
+  tr:{flag:'🇹🇷',name:'TR',ticker:'CANLI',dl:'Günlük Özet',dt:'AI Özeti',dtl:'Günün Teması',allKey:'Tümü',ago:'sa önce',ph:'Haber ara...'}
 };
-const LOCALES = { en:'en-US', fr:'fr-FR', de:'de-DE', es:'es-ES', pt:'pt-BR', tr:'tr-TR' };
+const LOCALES = {en:'en-US',fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-BR',tr:'tr-TR'};
 const LANG_KEYS = ['en','fr','de','es','pt','tr'];
-
-// Filtre sırası
 const FILTER_ORDER = ['Tümü','Son Dakika','Siyaset','Ekonomi','Teknoloji','Kültür Sanat','Bilim','Spor'];
 
-// ── STATE ───────────────────────────────────────────────────────
 let lang = 'en';
 let allNews = [];
 let digestData = null;
@@ -439,35 +313,25 @@ let searchQ = '';
 let activeFilter = null;
 let heroIdx = 0, heroSlides = [], heroTimer = null, dragStart = null;
 let tOfs = 0, tW = 0, tRAF = null, tPaused = false;
+const PAGE_SIZE = 20;
+let visibleCount = PAGE_SIZE;
+let filteredNews = [];
 
-// ── FIREBASE DATA ───────────────────────────────────────────────
 async function loadNews(langKey) {
-  const q = query(
-    collection(db, 'haberler'),
-    where('dil', '==', langKey),
-    orderBy('tarih', 'desc'),
-    limit(500)
-  );
+  const q = query(collection(db,'haberler'),where('dil','==',langKey),orderBy('tarih','desc'),limit(500));
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  return snap.docs.map(d => ({id:d.id,...d.data()}));
 }
-
 async function loadDigest(langKey) {
   const today = new Date().toISOString().split('T')[0];
   try {
-    const q = query(
-      collection(db, 'output'),
-      where('lang', '==', langKey),
-      where('date', '==', today),
-      limit(1)
-    );
+    const q = query(collection(db,'output'),where('lang','==',langKey),where('date','==',today),limit(1));
     const snap = await getDocs(q);
     if (!snap.empty) return snap.docs[0].data();
   } catch(e) {}
   return null;
 }
 
-// ── TICKER ──────────────────────────────────────────────────────
 function buildTicker(news) {
   const cfg = LANG_CONFIG[lang];
   document.getElementById('tickerTag').textContent = cfg.ticker;
@@ -475,39 +339,29 @@ function buildTicker(news) {
   track.innerHTML = '';
   tOfs = 0;
   if (tRAF) { cancelAnimationFrame(tRAF); tRAF = null; }
-
-  // Önce Son Dakika haberleri, yetmezse diğerleri
   const sonDakika = news.filter(n => n.kategori === 'Son Dakika');
   const diger = news.filter(n => n.kategori !== 'Son Dakika');
   const items = [...sonDakika, ...diger].slice(0, 15);
   function makeChunk() {
     const f = document.createDocumentFragment();
     items.forEach((n, i) => {
-      if (i > 0 && i % 18 === 0) {
-        const ad = document.createElement('span');
-        ad.className = 't-ad-wrap';
-        ad.innerHTML = `<span class="t-ad">AD · 300×34</span>`;
-        f.appendChild(ad);
-        const s = document.createElement('span'); s.className = 't-sep'; f.appendChild(s);
-      }
       const el = document.createElement('span');
       el.className = 't-item';
-      el.innerHTML = `<span class="t-num">${String(i+1).padStart(2,'0')}</span><span class="t-txt">${n.baslik} — ${n.kaynak || ''}</span>`;
+      el.innerHTML = `<span class="t-num">${String(i+1).padStart(2,'0')}</span><span class="t-txt">${n.baslik} — ${n.kaynak||''}</span>`;
       f.appendChild(el);
-      if (i < items.length - 1) { const s = document.createElement('span'); s.className = 't-sep'; f.appendChild(s); }
+      if (i < items.length-1) { const s = document.createElement('span'); s.className = 't-sep'; f.appendChild(s); }
     });
     return f;
   }
   track.appendChild(makeChunk());
   track.appendChild(makeChunk());
   track.appendChild(makeChunk());
-
   requestAnimationFrame(() => {
     tW = track.scrollWidth / 3;
     let last = null;
     function step(ts) {
       if (!tPaused) {
-        if (last !== null) { tOfs += (ts - last) * 0.04; if (tOfs >= tW) tOfs -= tW; }
+        if (last !== null) { tOfs += (ts-last)*0.04; if (tOfs >= tW) tOfs -= tW; }
         last = ts;
         track.style.transform = `translateX(-${tOfs}px)`;
       } else { last = null; }
@@ -519,7 +373,30 @@ function buildTicker(news) {
 document.getElementById('tover').addEventListener('mouseenter', () => tPaused = true);
 document.getElementById('tover').addEventListener('mouseleave', () => tPaused = false);
 
-// ── HERO SLIDER ──────────────────────────────────────────────────
+function haberPuanla(news) {
+  const simdi = Date.now();
+  const altiSaat = 6*3600000, onIkiSaat = 12*3600000;
+  const kp = {'Son Dakika':3,'Siyaset':2,'Ekonomi':2,'Teknoloji':1,'Kültür Sanat':1,'Bilim':1,'Spor':1};
+  const puanli = news.map(n => {
+    let p = 0;
+    const yas = simdi - (n.tarih ? n.tarih.toDate().getTime() : 0);
+    if (n.gorsel && n.gorsel.trim()) p += 3;
+    if (yas < altiSaat) p += 3; else if (yas < onIkiSaat) p += 1;
+    p += kp[n.kategori] || 0;
+    return {...n, _puan: p};
+  });
+  puanli.sort((a,b) => b._puan - a._puan);
+  const sec = [], ks = {}, kas = {};
+  for (const n of puanli) {
+    const k = n.kategori||'Genel', ka = n.kaynak||'';
+    ks[k] = ks[k]||0; kas[ka] = kas[ka]||0;
+    if (ks[k] < 3 && kas[ka] < 2) { sec.push(n); ks[k]++; kas[ka]++; }
+    if (sec.length >= 15) break;
+  }
+  if (sec.length < 15) { for (const n of puanli) { if (!sec.find(s => s.id===n.id)) { sec.push(n); if (sec.length>=15) break; } } }
+  return sec;
+}
+
 function buildHero(news) {
   const cfg = LANG_CONFIG[lang];
   const track = document.getElementById('heroTrack');
@@ -527,96 +404,75 @@ function buildHero(news) {
   track.innerHTML = ''; dots.innerHTML = '';
   heroIdx = 0; heroSlides = [];
   clearInterval(heroTimer);
-
-  const top15 = news.slice(0, 15);
-  top15.forEach((n, i) => {
-    heroSlides.push({ type: 'news', ...n, rank: i + 1 });
-    if ((i + 1) === 5 || (i + 1) === 10) {
-      heroSlides.push({ type: 'ad', adNum: Math.floor((i + 1) / 5) });
-    }
+  news.forEach((n, i) => {
+    heroSlides.push({type:'news',...n,rank:i+1});
+    if ((i+1)===5||(i+1)===10) heroSlides.push({type:'ad',adNum:Math.floor((i+1)/5)});
   });
-
   heroSlides.forEach((s, i) => {
     const slide = document.createElement('div');
     if (s.type === 'ad') {
       slide.className = 'hero-slide ad-slide';
-      slide.innerHTML = `<div class="hero-ad-slot"><span class="hero-ad-tag">REKLAM</span><span class="hero-ad-txt">600 × 80 — Reklam ${s.adNum}</span></div>`;
+      slide.innerHTML = `<div class="hero-ad-slot"><span class="hero-ad-tag">REKLAM</span><span class="hero-ad-txt">600×80</span></div>`;
     } else {
-      const timeAgo = s.tarih ? Math.round((Date.now() - s.tarih.toDate()) / 3600000) : '';
-      slide.className = 'hero-slide'; slide.style.cursor='pointer'; const heroIdx2 = i; slide.onclick = () => openReaderByHero(heroIdx2);
+      const timeAgo = s.tarih ? Math.round((Date.now()-s.tarih.toDate().getTime())/3600000) : '';
+      slide.className = 'hero-slide';
       const proxied = proxyImg(s.gorsel);
-      const catMap = CATEGORY_MAP[lang];
-      const catLabel = catMap[s.kategori] || s.kategori || '';
+      const catLabel = CATEGORY_MAP[lang][s.kategori]||s.kategori||'';
       slide.innerHTML = `
-        ${proxied ? `<div class="hero-img"><img src="${proxied}" alt="" loading="lazy" onerror="this.parentElement.className='hero-img-placeholder'"></div>` : `<div class="hero-img-placeholder"></div>`}
+        ${proxied ? `<div class="hero-img"><img src="${proxied}" alt="" loading="lazy" onerror="this.parentElement.className='hero-img-placeholder'"></div>` : '<div class="hero-img-placeholder"></div>'}
         <div class="hero-overlay"></div>
         <div class="hero-text">
           <div class="hero-accent"></div>
           <div class="hero-rank">#${s.rank} · ${catLabel}</div>
           <div class="hero-title">${s.baslik}</div>
-          <div class="hero-meta">
-            <span class="hero-src">${s.kaynak || ''}</span>
-            <span class="hero-time">${timeAgo} ${cfg.ago}</span>
-          </div>
+          <div class="hero-meta"><span class="hero-src">${s.kaynak||''}</span><span class="hero-time">${timeAgo} ${cfg.ago}</span></div>
         </div>`;
+      const heroI = i;
+      slide.onclick = () => window.LF.openReader(heroSlides[heroI]);
     }
     track.appendChild(slide);
     const dot = document.createElement('div');
-    dot.className = 'hdot' + (s.type === 'ad' ? ' ad-dot' : '') + (i === 0 ? ' active' : '');
+    dot.className = 'hdot'+(s.type==='ad'?' ad-dot':'')+(i===0?' active':'');
     dot.onclick = () => heroGoTo(i);
     dots.appendChild(dot);
   });
-
   updateHero();
-  heroTimer = setInterval(() => { heroIdx = (heroIdx + 1) % heroSlides.length; updateHero(); }, 5000);
+  heroTimer = setInterval(() => { heroIdx=(heroIdx+1)%heroSlides.length; updateHero(); }, 5000);
 }
-
 function updateHero() {
-  document.getElementById('heroTrack').style.transform = `translateX(-${heroIdx * 100}%)`;
-  document.querySelectorAll('.hdot').forEach((d, i) => d.classList.toggle('active', i === heroIdx));
-  const total = heroSlides.filter(s => s.type === 'news').length;
-  const cur = heroSlides.slice(0, heroIdx + 1).filter(s => s.type === 'news').length;
-  document.getElementById('heroCounter').textContent = heroSlides[heroIdx]?.type === 'ad' ? 'AD' : `${cur} / ${total}`;
+  document.getElementById('heroTrack').style.transform = `translateX(-${heroIdx*100}%)`;
+  document.querySelectorAll('.hdot').forEach((d,i) => d.classList.toggle('active', i===heroIdx));
+  const total = heroSlides.filter(s => s.type==='news').length;
+  const cur = heroSlides.slice(0,heroIdx+1).filter(s => s.type==='news').length;
+  document.getElementById('heroCounter').textContent = heroSlides[heroIdx]?.type==='ad' ? 'AD' : `${cur} / ${total}`;
 }
-function heroGoTo(i) { heroIdx = i; updateHero(); clearInterval(heroTimer); heroTimer = setInterval(() => { heroIdx = (heroIdx + 1) % heroSlides.length; updateHero(); }, 5000); }
-window.heroGo = (dir) => heroGoTo((heroIdx + dir + heroSlides.length) % heroSlides.length);
-document.getElementById('heroWrap').addEventListener('mousedown', e => { dragStart = e.clientX; });
-document.getElementById('heroWrap').addEventListener('mouseup', e => { if (dragStart !== null && Math.abs(e.clientX - dragStart) > 40) heroGo(e.clientX < dragStart ? 1 : -1); dragStart = null; });
-document.getElementById('heroWrap').addEventListener('touchstart', e => { dragStart = e.touches[0].clientX; }, {passive:true});
-document.getElementById('heroWrap').addEventListener('touchend', e => { if (dragStart !== null && Math.abs(e.changedTouches[0].clientX - dragStart) > 40) heroGo(e.changedTouches[0].clientX < dragStart ? 1 : -1); dragStart = null; });
-
-// ── NEWS GRID ────────────────────────────────────────────────────
-const PAGE_SIZE = 20;
-window.window.visibleCount = PAGE_SIZE;
-window.filteredNews = [];
+function heroGoTo(i) { heroIdx=i; updateHero(); clearInterval(heroTimer); heroTimer=setInterval(()=>{heroIdx=(heroIdx+1)%heroSlides.length;updateHero();},5000); }
+window.heroGo = dir => heroGoTo((heroIdx+dir+heroSlides.length)%heroSlides.length);
+document.getElementById('heroWrap').addEventListener('mousedown', e => { dragStart=e.clientX; });
+document.getElementById('heroWrap').addEventListener('mouseup', e => { if (dragStart!==null&&Math.abs(e.clientX-dragStart)>40) heroGo(e.clientX<dragStart?1:-1); dragStart=null; });
+document.getElementById('heroWrap').addEventListener('touchstart', e => { dragStart=e.touches[0].clientX; },{passive:true});
+document.getElementById('heroWrap').addEventListener('touchend', e => { if (dragStart!==null&&Math.abs(e.changedTouches[0].clientX-dragStart)>40) heroGo(e.changedTouches[0].clientX<dragStart?1:-1); dragStart=null; });
 
 function gridPuanla(news) {
   const simdi = Date.now();
-  const altiSaat = 6 * 3600000;
-  const onIkiSaat = 12 * 3600000;
-  const kategoriPuan = {
-    'Son Dakika': 3, 'Siyaset': 2, 'Ekonomi': 2,
-    'Teknoloji': 1, 'Kultur Sanat': 1, 'Bilim': 1, 'Spor': 1
-  };
+  const kp = {'Son Dakika':3,'Siyaset':2,'Ekonomi':2,'Teknoloji':1,'Kültür Sanat':1,'Bilim':1,'Spor':1};
   return news.map(n => {
-    let puan = 0;
-    const tarih = n.tarih ? n.tarih.toDate().getTime() : 0;
-    const yas = simdi - tarih;
-    if (n.gorsel && n.gorsel.trim()) puan += 3;
-    if (yas < altiSaat) puan += 3;
-    else if (yas < onIkiSaat) puan += 1;
-    puan += kategoriPuan[n.kategori] || 0;
-    return { ...n, _puan: puan };
-  }).sort((a, b) => b._puan - a._puan);
+    let p = 0;
+    const yas = simdi-(n.tarih?n.tarih.toDate().getTime():0);
+    if (n.gorsel&&n.gorsel.trim()) p+=3;
+    if (yas<6*3600000) p+=3; else if (yas<12*3600000) p+=1;
+    p+=kp[n.kategori]||0;
+    return {...n,_puan:p};
+  }).sort((a,b) => b._puan-a._puan);
 }
 
 function renderGrid() {
   let base = allNews;
   const cfg = LANG_CONFIG[lang];
-  if (activeFilter && activeFilter !== cfg.allKey) base = base.filter(n => n.kategori === activeFilter);
-  if (searchQ) base = base.filter(n => n.baslik?.toLowerCase().includes(searchQ));
-  window.filteredNews = gridPuanla(base);
-  window.visibleCount = PAGE_SIZE;
+  if (activeFilter && activeFilter!==cfg.allKey) base=base.filter(n=>n.kategori===activeFilter);
+  if (searchQ) base=base.filter(n=>n.baslik?.toLowerCase().includes(searchQ));
+  filteredNews = gridPuanla(base);
+  visibleCount = PAGE_SIZE;
   renderCards();
 }
 
@@ -624,178 +480,227 @@ function renderCards() {
   const cfg = LANG_CONFIG[lang];
   const catMap = CATEGORY_MAP[lang];
   const grid = document.getElementById('grid');
-  if (!window.filteredNews.length) { grid.innerHTML = `<div class="no-results">Sonuç bulunamadı.</div>`; return; }
-  const visible = window.filteredNews.slice(0, window.visibleCount);
+  if (!filteredNews.length) { grid.innerHTML=`<div class="no-results">Sonuç bulunamadı.</div>`; return; }
+  const visible = filteredNews.slice(0, visibleCount);
   let html = '';
   visible.forEach((n, i) => {
-    if (i > 0 && i % 18 === 0) {
-      html += `<div class="ncard-ad"><span class="ncard-ad-label">Reklam</span><span class="ncard-ad-slot">728 × 90</span></div>`;
-    }
-    const timeAgo = n.tarih ? Math.round((Date.now() - n.tarih.toDate()) / 3600000) : '';
-    const catLabel = catMap[n.kategori] || n.kategori || '';
+    if (i>0 && i%18===0) html+=`<div class="ncard-ad"><span class="ncard-ad-label">Reklam</span><span class="ncard-ad-slot">728×90</span></div>`;
+    const timeAgo = n.tarih ? Math.round((Date.now()-n.tarih.toDate().getTime())/3600000) : '';
+    const catLabel = catMap[n.kategori]||n.kategori||'';
     const proxied = proxyImg(n.gorsel);
-    html += `<div class="ncard" onclick="openReaderByIndex(${i})">
-      <div class="nimg">${proxied ? `<img src="${proxied}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">` : ''}</div>
+    html+=`<div class="ncard" onclick="window.LF.openReader(window.LF.news[${i}])">
+      <div class="nimg">${proxied?`<img src="${proxied}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">`:''}</div>
       <div class="ncard-body">
         <div class="ncat">${catLabel}</div>
         <div class="ntitle">${n.baslik}</div>
-        <div class="nmeta" style="margin-top:auto;padding-top:8px"><span class="nsrc">${n.kaynak || ''}</span><span class="ntime">${timeAgo} ${cfg.ago}</span></div>
+        <div class="nmeta" style="margin-top:auto;padding-top:8px"><span class="nsrc">${n.kaynak||''}</span><span class="ntime">${timeAgo} ${cfg.ago}</span></div>
       </div>
     </div>`;
   });
-  if (window.visibleCount < window.filteredNews.length) {
-    html += `<div class="load-more-wrap"><div id="infiniteAnchor" style="height:10px"></div></div>`;
+  if (visibleCount < filteredNews.length) {
+    html+=`<div style="grid-column:1/-1;height:10px" id="infiniteAnchor"></div>`;
   }
   grid.innerHTML = html;
-
-  // Intersection observer ile sonsuz kaydırma
+  window.LF.news = filteredNews;
   const anchor = document.getElementById('infiniteAnchor');
   if (anchor) {
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        observer.disconnect();
-        window.visibleCount += PAGE_SIZE;
-        renderCards();
-      }
-    }, { rootMargin: '200px' });
-    observer.observe(anchor);
+    const obs = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) { obs.disconnect(); visibleCount+=PAGE_SIZE; renderCards(); }
+    }, {rootMargin:'200px'});
+    obs.observe(anchor);
   }
 }
 
-window.loadMore = () => { window.visibleCount += PAGE_SIZE; renderCards(); };
+function renderFilters() {
+  const cfg = LANG_CONFIG[lang];
+  const catMap = CATEGORY_MAP[lang];
+  const mevcut = new Set(allNews.map(n=>n.kategori).filter(Boolean));
+  const siralı = FILTER_ORDER.filter(k=>k==='Tümü'||mevcut.has(k));
+  document.getElementById('filters').innerHTML = siralı.map((k,i)=>{
+    const label = catMap[k]||k;
+    return `<button class="fbtn${i===0?' active':''}" onclick="window.LF.setFilter('${k}')">${label}</button>`;
+  }).join('');
+}
 
-// ── DIGEST ───────────────────────────────────────────────────────
 function renderDigest() {
   const cfg = LANG_CONFIG[lang];
-  const today = new Date().toLocaleDateString(LOCALES[lang], { day:'numeric', month:'long', year:'numeric' });
+  const today = new Date().toLocaleDateString(LOCALES[lang],{day:'numeric',month:'long',year:'numeric'});
   const band = document.getElementById('digestBand');
   if (!digestData) { if(band) band.style.display='none'; return; }
-  const result = digestData.result || {};
-  if (!result.top_stories || !result.top_stories.length) { if(band) band.style.display='none'; return; }
+  const result = digestData.result||{};
+  if (!result.top_stories?.length) { if(band) band.style.display='none'; return; }
   if(band) band.style.display='flex';
-  const dlabel = document.getElementById('dlabel');
-  const ddate = document.getElementById('digestDate');
-  const dthemeLabel = document.getElementById('digestThemeLabel');
-  const dtheme = document.getElementById('digestTheme');
-  const dstories = document.getElementById('digestStories');
-  if(dlabel) dlabel.textContent = cfg.dl;
-  if(ddate) ddate.textContent = today;
-  if(dthemeLabel) dthemeLabel.textContent = cfg.dtl;
-  if(dtheme) dtheme.textContent = result.daily_theme || '';
-  if(dstories) dstories.innerHTML = (result.top_stories || []).map(s =>
+  document.getElementById('dlabel').textContent = cfg.dl;
+  document.getElementById('digestDate').textContent = today;
+  document.getElementById('digestThemeLabel').textContent = cfg.dtl;
+  document.getElementById('digestTheme').textContent = result.daily_theme||'';
+  document.getElementById('digestStories').innerHTML = (result.top_stories||[]).map(s=>
     `<div class="dstory"><span class="drank">#${s.rank}</span><span class="dstitle">${s.headline}</span></div>`
   ).join('');
 }
 
-// ── FILTERS ──────────────────────────────────────────────────────
-function renderFilters() {
-  const cfg = LANG_CONFIG[lang];
-  const catMap = CATEGORY_MAP[lang];
-  const mevcut = new Set(allNews.map(n => n.kategori).filter(Boolean));
-  const siralı = FILTER_ORDER.filter(k => k === 'Tümü' || mevcut.has(k));
-  document.getElementById('filters').innerHTML = siralı.map((firebaseKey, i) => {
-    const label = catMap[firebaseKey] || firebaseKey;
-    return `<button class="fbtn${i === 0 ? ' active' : ''}" onclick="setFilter('${firebaseKey}')">${label}</button>`;
-  }).join('');
-}
-window.setFilter = (f) => {
-  activeFilter = f;
-  document.querySelectorAll('.fbtn').forEach(b => {
-    const key = b.getAttribute('onclick').match(/'([^']+)'/)?.[1];
-    b.classList.toggle('active', key === f);
-  });
-  renderGrid();
-};
-window.doSearch = (q) => {
-  searchQ = q.toLowerCase().trim();
-  const s1 = document.getElementById('srch');
-  const s2 = document.getElementById('srchMobile');
-  if (s1 && s1.value !== q) s1.value = q;
-  if (s2 && s2.value !== q) s2.value = q;
-  renderGrid();
-};
-
-// ── LANG ─────────────────────────────────────────────────────────
-window.toggleMenu = () => {
-  const open = document.getElementById('lmenu').classList.toggle('open');
-  document.getElementById('ltrig').classList.toggle('open', open);
-};
-document.addEventListener('click', e => {
-  if (!document.getElementById('ldd').contains(e.target)) {
-    document.getElementById('lmenu').classList.remove('open');
-    document.getElementById('ltrig').classList.remove('open');
-  }
-});
-window.setLang = async (l) => {
-  lang = l;
+window.toggleMenu = () => { const o=document.getElementById('lmenu').classList.toggle('open'); document.getElementById('ltrig').classList.toggle('open',o); };
+document.addEventListener('click', e => { if (!document.getElementById('ldd').contains(e.target)) { document.getElementById('lmenu').classList.remove('open'); document.getElementById('ltrig').classList.remove('open'); } });
+window.setLang = async l => {
+  lang=l;
   document.getElementById('lmenu').classList.remove('open');
   document.getElementById('ltrig').classList.remove('open');
-  const cfg = LANG_CONFIG[l];
-  document.getElementById('tFlag').textContent = cfg.flag;
-  document.getElementById('tName').textContent = cfg.name;
-  document.getElementById('srch').placeholder = cfg.ph;
-  document.getElementById('srch').value = '';
-  searchQ = ''; activeFilter = null;
-  LANG_KEYS.forEach((k, i) => document.querySelectorAll('.loption')[i].classList.toggle('active', k === l));
-  setDate();
+  const cfg=LANG_CONFIG[l];
+  document.getElementById('tFlag').textContent=cfg.flag;
+  document.getElementById('tName').textContent=cfg.name;
+  document.getElementById('srch').placeholder=cfg.ph;
+  document.getElementById('srch').value='';
+  searchQ=''; activeFilter=null;
+  LANG_KEYS.forEach((k,i)=>document.querySelectorAll('.loption')[i].classList.toggle('active',k===l));
+  document.getElementById('navDate').textContent=new Date().toLocaleDateString(LOCALES[l],{day:'numeric',month:'short',year:'numeric'});
   renderFilters();
   await loadAndRender();
 };
+window.doSearch = q => {
+  searchQ=q.toLowerCase().trim();
+  const s1=document.getElementById('srch'),s2=document.getElementById('srchMobile');
+  if(s1&&s1.value!==q)s1.value=q;
+  if(s2&&s2.value!==q)s2.value=q;
+  renderGrid();
+};
 
-function setDate() {
-  document.getElementById('navDate').textContent = new Date().toLocaleDateString(LOCALES[lang], { day:'numeric', month:'short', year:'numeric' });
+// ── READER ────────────────────────────────────────────────────────
+function icerikCikar(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html,'text/html');
+  ['script','style','nav','header','footer','aside','iframe','form'].forEach(sel => {
+    try { doc.querySelectorAll(sel).forEach(el=>el.remove()); } catch(e) {}
+  });
+  const sels = ['article','[role="main"]','main','.article-body','.post-content','.entry-content','.story-body','.article-content','.content-body'];
+  for (const sel of sels) {
+    const el = doc.querySelector(sel);
+    if (el && el.textContent.trim().length > 200) {
+      return el.innerHTML.replace(/<img[^>]*>/gi,'').replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'');
+    }
+  }
+  const ps = doc.querySelectorAll('p');
+  const texts = Array.from(ps).map(p=>p.textContent.trim()).filter(t=>t.length>80);
+  if (texts.length > 2) return texts.map(t=>`<p>${t}</p>`).join('');
+  return '';
 }
 
-// ── MAIN LOAD ────────────────────────────────────────────────────
-// ── HABER PUANLAMA ───────────────────────────────────────────────
-function haberPuanla(news) {
-  const simdi = Date.now();
-  const altiSaat = 6 * 3600000;
-  const onIkiSaat = 12 * 3600000;
-  const kategoriPuan = {
-    'Son Dakika': 3, 'Siyaset': 2, 'Ekonomi': 2,
-    'Teknoloji': 1, 'Kultur Sanat': 1, 'Bilim': 1, 'Spor': 1
-  };
-  const puanli = news.map(n => {
-    let puan = 0;
-    const tarih = n.tarih ? n.tarih.toDate().getTime() : 0;
-    const yas = simdi - tarih;
-    if (n.gorsel && n.gorsel.trim()) puan += 3;
-    if (yas < altiSaat) puan += 3;
-    else if (yas < onIkiSaat) puan += 1;
-    puan += kategoriPuan[n.kategori] || 0;
-    return { ...n, _puan: puan };
-  });
-  puanli.sort((a, b) => b._puan - a._puan);
-  const secilen = [];
-  const kategoriSayac = {};
-  const kaynakSayac = {};
-  for (const n of puanli) {
-    const kat = n.kategori || 'Genel';
-    const kay = n.kaynak || '';
-    kategoriSayac[kat] = kategoriSayac[kat] || 0;
-    kaynakSayac[kay] = kaynakSayac[kay] || 0;
-    if (kategoriSayac[kat] < 3 && kaynakSayac[kay] < 2) {
-      secilen.push(n);
-      kategoriSayac[kat]++;
-      kaynakSayac[kay]++;
+async function readerRenderTab(tab, haber) {
+  const body = document.getElementById('readerBody');
+  const cfg = LANG_CONFIG[lang];
+  const catMap = CATEGORY_MAP[lang];
+  const proxied = proxyImg(haber.gorsel);
+  const timeAgo = haber.tarih ? Math.round((Date.now()-(haber.tarih.toDate?haber.tarih.toDate().getTime():new Date(haber.tarih).getTime()))/3600000) : '';
+  const catLabel = catMap[haber.kategori]||haber.kategori||'';
+
+  const heroHtml = proxied
+    ? `<img class="reader-hero" src="${proxied}" alt="" onerror="this.outerHTML='<div class=reader-hero-placeholder></div>'">`
+    : '<div class="reader-hero-placeholder"></div>';
+  const metaHtml = `<div class="reader-content">
+    <div class="reader-meta"><span class="reader-src">${haber.kaynak||''}</span><span class="reader-time">${timeAgo} ${cfg.ago}</span><span class="reader-cat">${catLabel}</span></div>
+    <div class="reader-title">${haber.baslik}</div>
+    <div class="reader-divider"></div>`;
+
+  if (tab === 'ozet') {
+    const ozetField = 'ozet_'+lang;
+    if (haber[ozetField]) {
+      body.innerHTML = heroHtml + metaHtml + `<div class="reader-summary-text">${haber[ozetField]}</div></div>`;
+      return;
     }
-    if (secilen.length >= 15) break;
-  }
-  if (secilen.length < 15) {
-    for (const n of puanli) {
-      if (!secilen.find(s => s.id === n.id)) {
-        secilen.push(n);
-        if (secilen.length >= 15) break;
+    body.innerHTML = heroHtml + metaHtml + `<div class="reader-loading-msg"><div class="spin"></div> AI özet hazırlanıyor...</div></div>`;
+    try {
+      const res = await fetch('https://img.lensflow.news/ozet', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({baslik:haber.baslik, kaynak:haber.kaynak||'', lang})
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const ozet = data.ozet||'';
+        haber[ozetField] = ozet;
+        try { await updateDoc(doc(db,'haberler',haber.id),{[ozetField]:ozet}); } catch(e) {}
+        const el = body.querySelector('.reader-loading-msg');
+        if (el) { el.outerHTML = `<div class="reader-summary-text">${ozet}</div>`; }
+      }
+    } catch(e) {
+      const el = body.querySelector('.reader-loading-msg');
+      if(el) el.outerHTML = `<div class="reader-summary-text" style="color:var(--text3)">Özet yüklenemedi.</div>`;
+    }
+  } else if (tab === 'okuma') {
+    body.innerHTML = heroHtml + metaHtml + `<div class="reader-loading-msg" id="articleContent"><div class="spin"></div> İçerik yükleniyor...</div></div>`;
+    if (haber.link && haber.link !== '#') {
+      try {
+        const res = await fetch('https://img.lensflow.news/?url='+encodeURIComponent(haber.link));
+        if (res.ok) {
+          const html = await res.text();
+          const article = icerikCikar(html);
+          const el = document.getElementById('articleContent');
+          if (el) { el.className='reader-article'; el.innerHTML=article||'<p style="color:var(--text3)">İçerik bu siteden yüklenemiyor.</p>'; }
+        }
+      } catch(e) {
+        const el = document.getElementById('articleContent');
+        if(el) { el.className='reader-article'; el.innerHTML='<p style="color:var(--text3)">İçerik yüklenemedi.</p>'; }
       }
     }
   }
-  return secilen;
 }
 
+// LF global namespace
+window.LF = {
+  news: [],
+  currentHaber: null,
+  currentTab: 'ozet',
+
+  openReader(haber) {
+    if (!haber) return;
+    this.currentHaber = haber;
+    this.currentTab = 'ozet';
+    document.getElementById('readerOverlay').classList.add('open');
+    document.getElementById('readerPanel').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.querySelectorAll('.reader-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById('tabOzet').classList.add('active');
+    readerRenderTab('ozet', haber);
+  },
+
+  switchTab(tab) {
+    if (!this.currentHaber) return;
+    if (tab === 'kaynak') {
+      window.open(this.currentHaber.link||'#','_blank');
+      return;
+    }
+    this.currentTab = tab;
+    document.querySelectorAll('.reader-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
+    readerRenderTab(tab, this.currentHaber);
+  },
+
+  closeReader() {
+    document.getElementById('readerOverlay').classList.remove('open');
+    document.getElementById('readerPanel').classList.remove('open');
+    document.body.style.overflow = '';
+  },
+
+  setFilter(f) {
+    activeFilter = f;
+    document.querySelectorAll('.fbtn').forEach(b => {
+      const key = b.getAttribute('onclick').match(/'([^']+)'/)?.[1];
+      b.classList.toggle('active', key===f);
+    });
+    renderGrid();
+  }
+};
+
+// Reader event listeners
+document.getElementById('readerOverlay').addEventListener('click', () => window.LF.closeReader());
+document.getElementById('readerCloseBtn').addEventListener('click', () => window.LF.closeReader());
+document.getElementById('tabOzet').addEventListener('click', () => window.LF.switchTab('ozet'));
+document.getElementById('tabOkuma').addEventListener('click', () => window.LF.switchTab('okuma'));
+document.getElementById('tabKaynak').addEventListener('click', () => window.LF.switchTab('kaynak'));
+document.addEventListener('keydown', e => { if(e.key==='Escape') window.LF.closeReader(); });
+
 async function loadAndRender() {
-  document.getElementById('grid').innerHTML = `<div class="loading"><div class="spin"></div></div>`;
-  document.getElementById('heroTrack').innerHTML = `<div class="hero-slide"><div class="loading"><div class="spin"></div></div></div>`;
+  document.getElementById('grid').innerHTML=`<div class="loading"><div class="spin"></div></div>`;
+  document.getElementById('heroTrack').innerHTML=`<div class="hero-slide"><div class="loading"><div class="spin"></div></div></div>`;
   try {
     [allNews, digestData] = await Promise.all([loadNews(lang), loadDigest(lang)]);
     const heroNews = haberPuanla(allNews);
@@ -806,290 +711,12 @@ async function loadAndRender() {
     renderDigest();
   } catch(e) {
     console.error(e);
-    document.getElementById('grid').innerHTML = `<div class="no-results">Veri yuklenemedi: ${e.message}</div>`;
+    document.getElementById('grid').innerHTML=`<div class="no-results">Veri yüklenemedi: ${e.message}</div>`;
   }
 }
 
-// ── OKUMA PANELİ ─────────────────────────────────────────────────
-window.openReaderByIndex = (i) => openReaderData(window.filteredNews[i]);
-window.openReaderByHero = (i) => openReaderData(heroSlides[i]);
-
-async function openReader(haber) { return openReaderData(haber); }
-
-window.currentHaber = null;
-window.window.currentTab = 'ozet';
-
-window.switchTab = async function(tab) {
-  window.currentTab = tab;
-  document.querySelectorAll('.reader-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
-  if (window.currentHaber) await renderTab(tab, currentHaber);
-};
-
-async function renderTab(tab, haber) {
-  const body = document.getElementById('readerBody');
-  const cfg = LANG_CONFIG[lang];
-
-  if (tab === 'ozet') {
-    // Firebase'den ozet var mi kontrol et
-    const ozetField = 'ozet_' + lang;
-    if (haber[ozetField]) {
-      body.innerHTML = `
-        <div class="reader-hero-wrap">${proxyImg(haber.gorsel) ? `<img class="reader-hero" src="${proxyImg(haber.gorsel)}" alt="" onerror="this.className='reader-hero-placeholder'">` : '<div class="reader-hero-placeholder"></div>'}</div>
-        <div class="reader-content">
-          <div class="reader-meta"><span class="reader-src">${haber.kaynak||''}</span><span class="reader-cat">${CATEGORY_MAP[lang][haber.kategori]||haber.kategori||''}</span></div>
-          <div class="reader-title">${haber.baslik}</div>
-          <div class="reader-divider"></div>
-          <div class="reader-summary"><div class="reader-summary-text">${haber[ozetField]}</div></div>
-        </div>`;
-      return;
-    }
-
-    // Ozet yok, API'den çek
-    body.innerHTML = `
-      <div class="reader-hero-wrap">${proxyImg(haber.gorsel) ? `<img class="reader-hero" src="${proxyImg(haber.gorsel)}" alt="" onerror="this.className='reader-hero-placeholder'">` : '<div class="reader-hero-placeholder"></div>'}</div>
-      <div class="reader-content">
-        <div class="reader-meta"><span class="reader-src">${haber.kaynak||''}</span><span class="reader-cat">${CATEGORY_MAP[lang][haber.kategori]||haber.kategori||''}</span></div>
-        <div class="reader-title">${haber.baslik}</div>
-        <div class="reader-divider"></div>
-        <div class="reader-summary"><div class="reader-summary-loading"><div class="spin"></div> AI özet hazırlanıyor...</div></div>
-      </div>`;
-
-    try {
-      const response = await fetch('https://img.lensflow.news/ozet', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': 'placeholder',
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 300,
-          messages: [{
-            role: 'user',
-            content: `Bu haber başlığını ${lang === 'tr' ? 'Türkçe' : lang === 'fr' ? 'Fransızca' : lang === 'de' ? 'Almanca' : lang === 'es' ? 'İspanyolca' : lang === 'pt' ? 'Portekizce' : 'İngilizce'} olarak 3-4 cümleyle özetle. Sadece özeti yaz, başka bir şey ekleme.
-
-Haber başlığı: ${haber.baslik}
-Kaynak: ${haber.kaynak||''}`
-          }]
-        })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const ozet = data.ozet || '';
-
-        // Firebase'e kaydet
-        try {
-          const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-          const docRef = doc(db, 'haberler', haber.id);
-          await updateDoc(docRef, { [ozetField]: ozet });
-          haber[ozetField] = ozet;
-        } catch(e) {}
-
-        const summaryEl = body.querySelector('.reader-summary');
-        if (summaryEl) summaryEl.innerHTML = `<div class="reader-summary-text">${ozet}</div>`;
-      }
-    } catch(e) {
-      const summaryEl = body.querySelector('.reader-summary');
-      if (summaryEl) summaryEl.innerHTML = `<div class="reader-summary-text" style="color:var(--text3)">Özet yüklenemedi.</div>`;
-    }
-
-  } else if (tab === 'okuma') {
-    body.innerHTML = `
-      <div class="reader-hero-wrap">${proxyImg(haber.gorsel) ? `<img class="reader-hero" src="${proxyImg(haber.gorsel)}" alt="" onerror="this.className='reader-hero-placeholder'">` : '<div class="reader-hero-placeholder"></div>'}</div>
-      <div class="reader-content">
-        <div class="reader-meta"><span class="reader-src">${haber.kaynak||''}</span><span class="reader-cat">${CATEGORY_MAP[lang][haber.kategori]||haber.kategori||''}</span></div>
-        <div class="reader-title">${haber.baslik}</div>
-        <div class="reader-divider"></div>
-        <div class="reader-loading" id="readerArticle"><div class="spin"></div> İçerik yükleniyor...</div>
-      </div>`;
-
-    if (haber.link && haber.link !== '#') {
-      try {
-        const proxyUrl = 'https://img.lensflow.news/?url=' + encodeURIComponent(haber.link);
-        const res = await fetch(proxyUrl);
-        if (res.ok) {
-          const html = await res.text();
-          const article = icerikCikar(html);
-          const el = document.getElementById('readerArticle');
-          if (el) {
-            el.className = 'reader-article';
-            el.innerHTML = article || '<p style="color:var(--text3)">İçerik bu siteden yüklenemiyor.</p>';
-          }
-        }
-      } catch(e) {
-        const el = document.getElementById('readerArticle');
-        if(el) { el.className = 'reader-article'; el.innerHTML = '<p style="color:var(--text3)">İçerik yüklenemedi.</p>'; }
-      }
-    }
-
-  } else if (tab === 'kaynak') {
-    if (haber.link && haber.link !== '#') {
-      window.open(haber.link, '_blank');
-      // Özet tabına geri dön
-      switchTab('ozet');
-    }
-  }
-}
-
-window.openReaderData = async function openReaderData(haber) {
-  if (!haber) return;
-  const overlay = document.getElementById('readerOverlay');
-  const panel = document.getElementById('readerPanel');
-  const body = document.getElementById('readerBody');
-  const link = document.getElementById('readerLink');
-  const cfg = LANG_CONFIG[lang];
-  const catMap = CATEGORY_MAP[lang];
-
-  // Paneli aç
-  overlay.classList.add('open');
-  panel.classList.add('open');
-  document.body.style.overflow = 'hidden';
-
-  // Link
-  if(link) { link.href = haber.link || '#'; }
-
-  // Görsel ve temel bilgiler
-  const proxied = proxyImg(haber.gorsel);
-  const timeAgo = haber.tarih ? Math.round((Date.now() - (haber.tarih.toDate ? haber.tarih.toDate().getTime() : new Date(haber.tarih).getTime())) / 3600000) : '';
-  const catLabel = catMap[haber.kategori] || haber.kategori || '';
-
-  body.innerHTML = `
-    ${proxied ? `<img class="reader-hero" src="${proxied}" alt="" onerror="this.className='reader-hero-placeholder'">` : '<div class="reader-hero-placeholder"></div>'}
-    <div class="reader-content">
-      <div class="reader-meta">
-        <span class="reader-src">${haber.kaynak || ''}</span>
-        <span class="reader-time">${timeAgo} ${cfg.ago}</span>
-        <span class="reader-cat">${catLabel}</span>
-      </div>
-      <div class="reader-title">${haber.baslik}</div>
-      <div class="reader-divider"></div>
-      <div class="reader-loading" id="readerArticle"><div class="spin"></div> İçerik yükleniyor...</div>
-    </div>`;
-
-  // İçeriği çek
-  if (haber.link && haber.link !== '#') {
-    try {
-      const proxyUrl = 'https://img.lensflow.news/?url=' + encodeURIComponent(haber.link);
-      const res = await fetch(proxyUrl);
-      if (res.ok) {
-        const html = await res.text();
-        const article = icerikCikar(html);
-        const el = document.getElementById('readerArticle');
-        if (el) {
-          if (article) {
-            el.className = 'reader-article';
-            el.innerHTML = article;
-          } else {
-            el.className = 'reader-article';
-            el.innerHTML = '<p style="color:var(--text3)">İçerik bu siteden yüklenemiyor. Kaynakta okumak için aşağıdaki butonu kullanın.</p>';
-          }
-        }
-      }
-    } catch(e) {
-      const el = document.getElementById('readerArticle');
-      if(el) { el.className = 'reader-article'; el.innerHTML = '<p style="color:var(--text3)">İçerik yüklenemedi. Kaynakta okumak için aşağıdaki butonu kullanın.</p>'; }
-    }
-  }
-}
-
-function icerikCikar(html) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-
-  // Gereksiz elementleri kaldır
-  ['script','style','nav','header','footer','aside','iframe','form',
-   '.ad','#ad','.advertisement','.social','[class*="share"]',
-   '[class*="related"]','[class*="comment"]','[class*="newsletter"]'].forEach(sel => {
-    try { doc.querySelectorAll(sel).forEach(el => el.remove()); } catch(e) {}
-  });
-
-  // Makale içeriğini bul
-  const selectors = ['article','[role="main"]','main','.article-body',
-    '.post-content','.entry-content','.story-body','.article-content',
-    '.content-body','#article-body','.article__body'];
-
-  for (const sel of selectors) {
-    const el = doc.querySelector(sel);
-    if (el && el.textContent.trim().length > 200) {
-      return el.innerHTML
-        .replace(/<img[^>]*>/gi, '')
-        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-        .replace(/(<\/p>|<\/h[1-6]>|<\/li>)/gi, '$1<br>');
-    }
-  }
-
-  // Paragrafları topla
-  const paragraphs = doc.querySelectorAll('p');
-  const texts = Array.from(paragraphs)
-    .map(p => p.textContent.trim())
-    .filter(t => t.length > 80);
-  if (texts.length > 2) {
-    return texts.map(t => `<p>${t}</p>`).join('');
-  }
-  return '';
-}
-
-window.closeReader = function closeReader() {
-  document.getElementById('readerOverlay').classList.remove('open');
-  document.getElementById('readerPanel').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-// ESC ile kapat
-document.addEventListener('keydown', e => { if(e.key === 'Escape') window.closeReader(); });
-
-// ── INIT ─────────────────────────────────────────────────────────
-setDate();
+document.getElementById('navDate').textContent = new Date().toLocaleDateString(LOCALES[lang],{day:'numeric',month:'short',year:'numeric'});
 loadAndRender();
-
-// ── GLOBAL BRIDGE ────────────────────────────────────────────────
-window._bridge = {
-  openByIndex: (i) => openReaderData(window.filteredNews[i]),
-  openByHero: (i) => openReaderData(window.heroSlides[i]),
-  switchTab: (tab) => {
-    window.currentTab = tab;
-    document.querySelectorAll('.reader-tab').forEach(t => t.classList.remove('active'));
-    const tabEl = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
-    if (tabEl) tabEl.classList.add('active');
-    if (window.currentHaber) renderTab(tab, window.currentHaber);
-  },
-  close: () => {
-    document.getElementById('readerOverlay').classList.remove('open');
-    document.getElementById('readerPanel').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-};
-</script>
-
-<script>
-// ── READER PANELİ JS (module dışında) ────────────────────────────
-var _readerReady = false;
-
-function _waitBridge(cb) {
-  if (window._bridge) { cb(); }
-  else { setTimeout(function(){ _waitBridge(cb); }, 50); }
-}
-
-function openReaderByIndex(i) {
-  _waitBridge(function(){ window._bridge.openByIndex(i); });
-}
-
-function openReaderByHero(i) {
-  _waitBridge(function(){ window._bridge.openByHero(i); });
-}
-
-function switchTab(tab) {
-  _waitBridge(function(){ window._bridge.switchTab(tab); });
-}
-
-function closeReader() {
-  _waitBridge(function(){ window._bridge.close(); });
-}
 </script>
 </body>
 </html>
