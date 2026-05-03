@@ -295,12 +295,42 @@ const CATEGORY_MAP = {
   tr:{'Tümü':'Tümü','Son Dakika':'Son Dakika','Siyaset':'Siyaset','Ekonomi':'Ekonomi','Teknoloji':'Teknoloji','Kültür Sanat':'Kültür Sanat','Bilim':'Bilim','Spor':'Spor','Genel':'Genel','Haber Ajansı':'Haber Ajansı','Dünya':'Dünya','Sağlık':'Sağlık','Çevre':'Çevre','Eğitim':'Eğitim','TV & Radyo':'TV & Radyo','Güvenlik':'Güvenlik'}
 };
 const LANG_CONFIG = {
-  en:{flag:'🇬🇧',name:'EN',ticker:'LIVE',dl:'Daily Digest',dt:'AI Summary',dtl:'Theme of the Day',allKey:'Tümü',ago:'h ago',ph:'Search news...'},
-  fr:{flag:'🇫🇷',name:'FR',ticker:'LIVE',dl:'Résumé du jour',dt:'Résumé IA',dtl:'Thème du jour',allKey:'Tümü',ago:'h',ph:'Rechercher...'},
-  de:{flag:'🇩🇪',name:'DE',ticker:'LIVE',dl:'Tagesüberblick',dt:'KI-Zusammenfassung',dtl:'Thema des Tages',allKey:'Tümü',ago:'Std.',ph:'Suchen...'},
-  es:{flag:'🇪🇸',name:'ES',ticker:'EN VIVO',dl:'Resumen del día',dt:'Resumen IA',dtl:'Tema del día',allKey:'Tümü',ago:'h',ph:'Buscar...'},
-  pt:{flag:'🇧🇷',name:'PT',ticker:'AO VIVO',dl:'Resumo do dia',dt:'Resumo IA',dtl:'Tema do dia',allKey:'Tümü',ago:'h',ph:'Pesquisar...'},
-  tr:{flag:'🇹🇷',name:'TR',ticker:'CANLI',dl:'Günlük Özet',dt:'AI Özeti',dtl:'Günün Teması',allKey:'Tümü',ago:'sa önce',ph:'Haber ara...'}
+  en:{flag:'🇬🇧',name:'EN',ticker:'LIVE',dl:'Daily Digest',dt:'AI Summary',dtl:'Theme of the Day',allKey:'Tümü',ago:'h ago',ph:'Search news...',
+      rdrOzet:'✦ Summary',rdrOkuma:'◎ Reading Mode',rdrKaynak:'↗ Read Source',
+      ozetLoading:'AI summary being prepared...',okumaLoading:'Loading content...',
+      ozetErr:'Summary could not be loaded.',okumaErr:'Content could not be loaded from this site.',
+      readSrc:'Read at Source',
+      ozetPrompt:'You are a news summarizer. Summarize the following news article in English in 4-5 clear, informative sentences. Only write the summary, nothing else.'},
+  fr:{flag:'🇫🇷',name:'FR',ticker:'LIVE',dl:'Résumé du jour',dt:'Résumé IA',dtl:'Thème du jour',allKey:'Tümü',ago:'h',ph:'Rechercher...',
+      rdrOzet:'✦ Résumé',rdrOkuma:'◎ Mode lecture',rdrKaynak:'↗ Lire la source',
+      ozetLoading:'Résumé IA en cours...',okumaLoading:'Chargement du contenu...',
+      ozetErr:'Résumé non disponible.',okumaErr:'Contenu non disponible pour ce site.',
+      readSrc:'Lire sur la source',
+      ozetPrompt:'Tu es un résumeur de nouvelles. Résume cet article en français en 4-5 phrases claires et informatives. Écris uniquement le résumé, rien d\'autre.'},
+  de:{flag:'🇩🇪',name:'DE',ticker:'LIVE',dl:'Tagesüberblick',dt:'KI-Zusammenfassung',dtl:'Thema des Tages',allKey:'Tümü',ago:'Std.',ph:'Suchen...',
+      rdrOzet:'✦ Zusammenfassung',rdrOkuma:'◎ Lesemodus',rdrKaynak:'↗ Quelle lesen',
+      ozetLoading:'KI-Zusammenfassung wird erstellt...',okumaLoading:'Inhalt wird geladen...',
+      ozetErr:'Zusammenfassung konnte nicht geladen werden.',okumaErr:'Inhalt von dieser Seite nicht verfügbar.',
+      readSrc:'An der Quelle lesen',
+      ozetPrompt:'Du bist ein Nachrichtenzusammenfasser. Fasse den folgenden Artikel auf Deutsch in 4-5 klaren, informativen Sätzen zusammen. Schreibe nur die Zusammenfassung, nichts anderes.'},
+  es:{flag:'🇪🇸',name:'ES',ticker:'EN VIVO',dl:'Resumen del día',dt:'Resumen IA',dtl:'Tema del día',allKey:'Tümü',ago:'h',ph:'Buscar...',
+      rdrOzet:'✦ Resumen',rdrOkuma:'◎ Modo lectura',rdrKaynak:'↗ Leer fuente',
+      ozetLoading:'Preparando resumen IA...',okumaLoading:'Cargando contenido...',
+      ozetErr:'No se pudo cargar el resumen.',okumaErr:'Contenido no disponible en este sitio.',
+      readSrc:'Leer en la fuente',
+      ozetPrompt:'Eres un resumidor de noticias. Resume el siguiente artículo en español en 4-5 oraciones claras e informativas. Escribe solo el resumen, nada más.'},
+  pt:{flag:'🇧🇷',name:'PT',ticker:'AO VIVO',dl:'Resumo do dia',dt:'Resumo IA',dtl:'Tema do dia',allKey:'Tümü',ago:'h',ph:'Pesquisar...',
+      rdrOzet:'✦ Resumo',rdrOkuma:'◎ Modo leitura',rdrKaynak:'↗ Ler fonte',
+      ozetLoading:'Preparando resumo IA...',okumaLoading:'Carregando conteúdo...',
+      ozetErr:'Não foi possível carregar o resumo.',okumaErr:'Conteúdo não disponível neste site.',
+      readSrc:'Ler na fonte',
+      ozetPrompt:'Você é um resumidor de notícias. Resuma o seguinte artigo em português em 4-5 frases claras e informativas. Escreva apenas o resumo, nada mais.'},
+  tr:{flag:'🇹🇷',name:'TR',ticker:'CANLI',dl:'Günlük Özet',dt:'AI Özeti',dtl:'Günün Teması',allKey:'Tümü',ago:'sa önce',ph:'Haber ara...',
+      rdrOzet:'✦ Özet',rdrOkuma:'◎ Okuma Modu',rdrKaynak:'↗ Kaynağından Oku',
+      ozetLoading:'AI özet hazırlanıyor...',okumaLoading:'İçerik yükleniyor...',
+      ozetErr:'Özet yüklenemedi.',okumaErr:'İçerik bu siteden yüklenemiyor.',
+      readSrc:'Kaynağında Oku',
+      ozetPrompt:'Sen bir haber özetleyicisisin. Aşağıdaki haberi Türkçe olarak 4-5 net ve bilgilendirici cümleyle özetle. Yalnızca özeti yaz, başka bir şey yazma.'}
 };
 const LOCALES = {en:'en-US',fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-BR',tr:'tr-TR'};
 const LANG_KEYS = ['en','fr','de','es','pt','tr'];
@@ -602,16 +632,45 @@ async function readerRenderTab(tab, haber) {
 
   if (tab === 'ozet') {
     const ozetField = 'ozet_'+lang;
+    // Cache'den varsa direkt göster
     if (haber[ozetField]) {
       body.innerHTML = heroHtml + metaHtml + `<div class="reader-summary-text">${haber[ozetField]}</div></div>`;
       return;
     }
-    body.innerHTML = heroHtml + metaHtml + `<div class="reader-loading-msg"><div class="spin"></div> AI özet hazırlanıyor...</div></div>`;
+    body.innerHTML = heroHtml + metaHtml + `<div class="reader-loading-msg"><div class="spin"></div> ${cfg.ozetLoading}</div></div>`;
     try {
+      // Önce haberin içeriğini çek
+      let icerik = '';
+      if (haber.link && haber.link !== '#') {
+        try {
+          const pageRes = await fetch('https://img.lensflow.news/?url='+encodeURIComponent(haber.link));
+          if (pageRes.ok) {
+            const pageHtml = await pageRes.text();
+            const parsed = icerikCikar(pageHtml);
+            // Düz metin al (HTML etiketlerini temizle)
+            const div = document.createElement('div');
+            div.innerHTML = parsed;
+            icerik = div.textContent.trim().slice(0,3000);
+          }
+        } catch(e) {}
+      }
+      // AI'ya gönder - içerik varsa içerikle, yoksa başlıkla
+      const gonderi = icerik
+        ? `${cfg.ozetPrompt}
+
+Headline: ${haber.baslik}
+Source: ${haber.kaynak||''}
+
+Article:
+${icerik}`
+        : `${cfg.ozetPrompt}
+
+Headline: ${haber.baslik}
+Source: ${haber.kaynak||''}`;
       const res = await fetch('https://img.lensflow.news/ozet', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({baslik:haber.baslik, kaynak:haber.kaynak||'', lang})
+        body: JSON.stringify({prompt: gonderi, lang})
       });
       if (res.ok) {
         const data = await res.json();
@@ -620,13 +679,16 @@ async function readerRenderTab(tab, haber) {
         try { await updateDoc(doc(db,'haberler',haber.id),{[ozetField]:ozet}); } catch(e) {}
         const el = body.querySelector('.reader-loading-msg');
         if (el) { el.outerHTML = `<div class="reader-summary-text">${ozet}</div>`; }
+      } else {
+        const el = body.querySelector('.reader-loading-msg');
+        if(el) el.outerHTML = `<div class="reader-summary-text" style="color:var(--text3)">${cfg.ozetErr}</div>`;
       }
     } catch(e) {
       const el = body.querySelector('.reader-loading-msg');
-      if(el) el.outerHTML = `<div class="reader-summary-text" style="color:var(--text3)">Özet yüklenemedi.</div>`;
+      if(el) el.outerHTML = `<div class="reader-summary-text" style="color:var(--text3)">${cfg.ozetErr}</div>`;
     }
   } else if (tab === 'okuma') {
-    body.innerHTML = heroHtml + metaHtml + `<div class="reader-loading-msg" id="articleContent"><div class="spin"></div> İçerik yükleniyor...</div></div>`;
+    body.innerHTML = heroHtml + metaHtml + `<div class="reader-loading-msg" id="articleContent"><div class="spin"></div> ${cfg.okumaLoading}</div></div>`;
     if (haber.link && haber.link !== '#') {
       try {
         const res = await fetch('https://img.lensflow.news/?url='+encodeURIComponent(haber.link));
@@ -634,11 +696,11 @@ async function readerRenderTab(tab, haber) {
           const html = await res.text();
           const article = icerikCikar(html);
           const el = document.getElementById('articleContent');
-          if (el) { el.className='reader-article'; el.innerHTML=article||'<p style="color:var(--text3)">İçerik bu siteden yüklenemiyor.</p>'; }
+          if (el) { el.className='reader-article'; el.innerHTML=article||`<p style="color:var(--text3)">${cfg.okumaErr}</p>`; }
         }
       } catch(e) {
         const el = document.getElementById('articleContent');
-        if(el) { el.className='reader-article'; el.innerHTML='<p style="color:var(--text3)">İçerik yüklenemedi.</p>'; }
+        if(el) { el.className='reader-article'; el.innerHTML=`<p style="color:var(--text3)">${cfg.okumaErr}</p>`; }
       }
     }
   }
@@ -654,6 +716,10 @@ window.LF = {
     if (!haber) return;
     this.currentHaber = haber;
     this.currentTab = 'ozet';
+    const cfg = LANG_CONFIG[lang];
+    document.getElementById('tabOzet').textContent = cfg.rdrOzet;
+    document.getElementById('tabOkuma').textContent = cfg.rdrOkuma;
+    document.getElementById('tabKaynak').textContent = cfg.rdrKaynak;
     document.getElementById('readerOverlay').classList.add('open');
     document.getElementById('readerPanel').classList.add('open');
     document.body.style.overflow = 'hidden';
