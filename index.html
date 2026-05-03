@@ -178,6 +178,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .reader-logo{font-family:'DM Serif Display',serif;font-size:16px;color:var(--tk)}
 .reader-close{width:32px;height:32px;border-radius:50%;border:0.5px solid var(--border);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text2);transition:all .15s}
 .reader-close:hover{border-color:var(--tk);color:var(--tk)}
+.reader-tabs{display:flex;border-bottom:0.5px solid var(--border);flex-shrink:0}
+.reader-tab{flex:1;padding:12px 8px;border:none;background:transparent;color:var(--text3);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.reader-tab:hover{color:var(--text);background:var(--bg3)}
+.reader-tab.active{color:var(--tk);border-bottom-color:var(--tk);background:transparent}
+.reader-summary{padding:1.5rem;font-size:15px;color:var(--text2);line-height:1.8}
+.reader-summary-loading{display:flex;align-items:center;gap:10px;color:var(--text3);font-size:13px;padding:1rem 0}
+.reader-summary-text{white-space:pre-wrap}
+.reader-kaynak-frame{width:100%;height:calc(100vh - 200px);border:none;background:var(--bg3)}
 .reader-body{overflow-y:auto;flex:1;scroll-behavior:smooth}
 .reader-hero{width:100%;height:280px;object-fit:cover;display:block;background:var(--bg3)}
 .reader-hero-placeholder{width:100%;height:280px;background:var(--bg3)}
@@ -312,11 +320,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
     <button class="reader-close" onclick="closeReader()">✕</button>
   </div>
+  <div class="reader-tabs">
+    <button class="reader-tab active" id="tabOzet" onclick="switchTab('ozet')">✦ Özet</button>
+    <button class="reader-tab" id="tabOkuma" onclick="switchTab('okuma')">◎ Okuma Modu</button>
+    <button class="reader-tab" id="tabKaynak" onclick="switchTab('kaynak')">↗ Kaynağından Oku</button>
+  </div>
   <div class="reader-body" id="readerBody">
     <div class="reader-loading"><div class="spin"></div> Yükleniyor...</div>
-  </div>
-  <div class="reader-footer">
-    <a class="reader-btn" id="readerLink" href="#" target="_blank">Kaynakta Oku →</a>
   </div>
 </div>
 
@@ -432,12 +442,9 @@ let tOfs = 0, tW = 0, tRAF = null, tPaused = false;
 
 // ── FIREBASE DATA ───────────────────────────────────────────────
 async function loadNews(langKey) {
-  const since = new Date();
-  since.setHours(since.getHours() - 48);
   const q = query(
     collection(db, 'haberler'),
     where('dil', '==', langKey),
-    where('tarih', '>=', Timestamp.fromDate(since)),
     orderBy('tarih', 'desc'),
     limit(500)
   );
@@ -809,6 +816,125 @@ window.openReaderByHero = (i) => openReaderData(heroSlides[i]);
 
 async function openReader(haber) { return openReaderData(haber); }
 
+let currentHaber = null;
+let currentTab = 'ozet';
+
+window.switchTab = async function(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.reader-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  if (currentHaber) await renderTab(tab, currentHaber);
+};
+
+async function renderTab(tab, haber) {
+  const body = document.getElementById('readerBody');
+  const cfg = LANG_CONFIG[lang];
+
+  if (tab === 'ozet') {
+    // Firebase'den ozet var mi kontrol et
+    const ozetField = 'ozet_' + lang;
+    if (haber[ozetField]) {
+      body.innerHTML = `
+        <div class="reader-hero-wrap">${proxyImg(haber.gorsel) ? `<img class="reader-hero" src="${proxyImg(haber.gorsel)}" alt="" onerror="this.className='reader-hero-placeholder'">` : '<div class="reader-hero-placeholder"></div>'}</div>
+        <div class="reader-content">
+          <div class="reader-meta"><span class="reader-src">${haber.kaynak||''}</span><span class="reader-cat">${CATEGORY_MAP[lang][haber.kategori]||haber.kategori||''}</span></div>
+          <div class="reader-title">${haber.baslik}</div>
+          <div class="reader-divider"></div>
+          <div class="reader-summary"><div class="reader-summary-text">${haber[ozetField]}</div></div>
+        </div>`;
+      return;
+    }
+
+    // Ozet yok, API'den çek
+    body.innerHTML = `
+      <div class="reader-hero-wrap">${proxyImg(haber.gorsel) ? `<img class="reader-hero" src="${proxyImg(haber.gorsel)}" alt="" onerror="this.className='reader-hero-placeholder'">` : '<div class="reader-hero-placeholder"></div>'}</div>
+      <div class="reader-content">
+        <div class="reader-meta"><span class="reader-src">${haber.kaynak||''}</span><span class="reader-cat">${CATEGORY_MAP[lang][haber.kategori]||haber.kategori||''}</span></div>
+        <div class="reader-title">${haber.baslik}</div>
+        <div class="reader-divider"></div>
+        <div class="reader-summary"><div class="reader-summary-loading"><div class="spin"></div> AI özet hazırlanıyor...</div></div>
+      </div>`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': 'placeholder',
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 300,
+          messages: [{
+            role: 'user',
+            content: `Bu haber başlığını ${lang === 'tr' ? 'Türkçe' : lang === 'fr' ? 'Fransızca' : lang === 'de' ? 'Almanca' : lang === 'es' ? 'İspanyolca' : lang === 'pt' ? 'Portekizce' : 'İngilizce'} olarak 3-4 cümleyle özetle. Sadece özeti yaz, başka bir şey ekleme.
+
+Haber başlığı: ${haber.baslik}
+Kaynak: ${haber.kaynak||''}`
+          }]
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const ozet = data.content[0].text.trim();
+
+        // Firebase'e kaydet
+        try {
+          const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          const docRef = doc(db, 'haberler', haber.id);
+          await updateDoc(docRef, { [ozetField]: ozet });
+          haber[ozetField] = ozet;
+        } catch(e) {}
+
+        const summaryEl = body.querySelector('.reader-summary');
+        if (summaryEl) summaryEl.innerHTML = `<div class="reader-summary-text">${ozet}</div>`;
+      }
+    } catch(e) {
+      const summaryEl = body.querySelector('.reader-summary');
+      if (summaryEl) summaryEl.innerHTML = `<div class="reader-summary-text" style="color:var(--text3)">Özet yüklenemedi.</div>`;
+    }
+
+  } else if (tab === 'okuma') {
+    body.innerHTML = `
+      <div class="reader-hero-wrap">${proxyImg(haber.gorsel) ? `<img class="reader-hero" src="${proxyImg(haber.gorsel)}" alt="" onerror="this.className='reader-hero-placeholder'">` : '<div class="reader-hero-placeholder"></div>'}</div>
+      <div class="reader-content">
+        <div class="reader-meta"><span class="reader-src">${haber.kaynak||''}</span><span class="reader-cat">${CATEGORY_MAP[lang][haber.kategori]||haber.kategori||''}</span></div>
+        <div class="reader-title">${haber.baslik}</div>
+        <div class="reader-divider"></div>
+        <div class="reader-loading" id="readerArticle"><div class="spin"></div> İçerik yükleniyor...</div>
+      </div>`;
+
+    if (haber.link && haber.link !== '#') {
+      try {
+        const proxyUrl = 'https://img.lensflow.news/?url=' + encodeURIComponent(haber.link);
+        const res = await fetch(proxyUrl);
+        if (res.ok) {
+          const html = await res.text();
+          const article = icerikCikar(html);
+          const el = document.getElementById('readerArticle');
+          if (el) {
+            el.className = 'reader-article';
+            el.innerHTML = article || '<p style="color:var(--text3)">İçerik bu siteden yüklenemiyor.</p>';
+          }
+        }
+      } catch(e) {
+        const el = document.getElementById('readerArticle');
+        if(el) { el.className = 'reader-article'; el.innerHTML = '<p style="color:var(--text3)">İçerik yüklenemedi.</p>'; }
+      }
+    }
+
+  } else if (tab === 'kaynak') {
+    if (haber.link && haber.link !== '#') {
+      window.open(haber.link, '_blank');
+      // Özet tabına geri dön
+      switchTab('ozet');
+    }
+  }
+}
+
 async function openReaderData(haber) {
   if (!haber) return;
   const overlay = document.getElementById('readerOverlay');
@@ -851,7 +977,7 @@ async function openReaderData(haber) {
       const res = await fetch(proxyUrl);
       if (res.ok) {
         const html = await res.text();
-        const article = icerikCıkar(html);
+        const article = icerikCikar(html);
         const el = document.getElementById('readerArticle');
         if (el) {
           if (article) {
@@ -870,7 +996,7 @@ async function openReaderData(haber) {
   }
 }
 
-function icerikCıkar(html) {
+function icerikCikar(html) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
 
