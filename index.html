@@ -312,18 +312,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 
 <!-- OKUMA PANELİ -->
-<div class="reader-overlay" id="readerOverlay" onclick="closeReader()"></div>
+<div class="reader-overlay" id="readerOverlay" onclick="window._bridge.close()"></div>
 <div class="reader-panel" id="readerPanel">
   <div class="reader-header">
     <div class="reader-header-left">
       <span class="reader-logo">LensFlow</span>
     </div>
-    <button class="reader-close" onclick="closeReader()">✕</button>
+    <button class="reader-close" onclick="window._bridge.close()">✕</button>
   </div>
   <div class="reader-tabs">
-    <button class="reader-tab active" id="tabOzet" onclick="window.switchTab('ozet')">✦ Özet</button>
-    <button class="reader-tab" id="tabOkuma" onclick="window.switchTab('okuma')">◎ Okuma Modu</button>
-    <button class="reader-tab" id="tabKaynak" onclick="window.switchTab('kaynak')">↗ Kaynağından Oku</button>
+    <button class="reader-tab active" id="tabOzet" onclick="window._bridge.switchTab('ozet')">✦ Özet</button>
+    <button class="reader-tab" id="tabOkuma" onclick="window._bridge.switchTab('okuma')">◎ Okuma Modu</button>
+    <button class="reader-tab" id="tabKaynak" onclick="window._bridge.switchTab('kaynak')">↗ Kaynağından Oku</button>
   </div>
   <div class="reader-body" id="readerBody">
     <div class="reader-loading"><div class="spin"></div> Yükleniyor...</div>
@@ -634,7 +634,7 @@ function renderCards() {
     const timeAgo = n.tarih ? Math.round((Date.now() - n.tarih.toDate()) / 3600000) : '';
     const catLabel = catMap[n.kategori] || n.kategori || '';
     const proxied = proxyImg(n.gorsel);
-    html += `<div class="ncard" onclick="openReaderByIndex(${i})">
+    html += `<div class="ncard" onclick="window._bridge.openByIndex(${i})">
       <div class="nimg">${proxied ? `<img src="${proxied}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">` : ''}</div>
       <div class="ncard-body">
         <div class="ncat">${catLabel}</div>
@@ -1046,6 +1046,24 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape') window.closeR
 // ── INIT ─────────────────────────────────────────────────────────
 setDate();
 loadAndRender();
+
+// ── GLOBAL BRIDGE ────────────────────────────────────────────────
+window._bridge = {
+  openByIndex: (i) => openReaderData(window.filteredNews[i]),
+  openByHero: (i) => openReaderData(window.heroSlides[i]),
+  switchTab: (tab) => {
+    window.currentTab = tab;
+    document.querySelectorAll('.reader-tab').forEach(t => t.classList.remove('active'));
+    const tabEl = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+    if (tabEl) tabEl.classList.add('active');
+    if (window.currentHaber) renderTab(tab, window.currentHaber);
+  },
+  close: () => {
+    document.getElementById('readerOverlay').classList.remove('open');
+    document.getElementById('readerPanel').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+};
 </script>
 </body>
 </html>
