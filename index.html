@@ -856,7 +856,7 @@ async function renderTab(tab, haber) {
       </div>`;
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('https://img.lensflow.news/ozet', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -879,7 +879,7 @@ Kaynak: ${haber.kaynak||''}`
 
       if (response.ok) {
         const data = await response.json();
-        const ozet = data.content[0].text.trim();
+        const ozet = data.ozet || '';
 
         // Firebase'e kaydet
         try {
