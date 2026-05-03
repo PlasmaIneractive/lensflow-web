@@ -816,14 +816,14 @@ window.openReaderByHero = (i) => openReaderData(heroSlides[i]);
 
 async function openReader(haber) { return openReaderData(haber); }
 
-let currentHaber = null;
-let currentTab = 'ozet';
+window.currentHaber = null;
+window.window.currentTab = 'ozet';
 
 window.switchTab = async function(tab) {
-  currentTab = tab;
+  window.currentTab = tab;
   document.querySelectorAll('.reader-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
-  if (currentHaber) await renderTab(tab, currentHaber);
+  if (window.currentHaber) await renderTab(tab, currentHaber);
 };
 
 async function renderTab(tab, haber) {
