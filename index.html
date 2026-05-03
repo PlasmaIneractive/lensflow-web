@@ -128,9 +128,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .spin{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--tk);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* READER */
-.reader-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+.reader-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
 .reader-overlay.open{opacity:1;pointer-events:all}
-.reader-panel{position:fixed;top:0;right:0;width:min(680px,100vw);height:100vh;background:var(--bg2);z-index:501;transform:translateX(100%);transition:transform .35s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;border-left:0.5px solid var(--border)}
+.reader-panel{position:fixed;top:0;right:0;width:min(680px,100vw);height:100vh;background:var(--bg2);z-index:9999;transform:translateX(100%);transition:transform .35s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;border-left:0.5px solid var(--border)}
 .reader-panel.open{transform:translateX(0)}
 .reader-header{padding:1rem 1.5rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .reader-logo{font-family:'DM Serif Display',serif;font-size:16px;color:var(--tk)}
