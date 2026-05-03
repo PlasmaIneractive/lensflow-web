@@ -587,8 +587,8 @@ document.getElementById('heroWrap').addEventListener('touchend', e => { if (drag
 
 // ── NEWS GRID ────────────────────────────────────────────────────
 const PAGE_SIZE = 20;
-let visibleCount = PAGE_SIZE;
-let filteredNews = [];
+window.window.visibleCount = PAGE_SIZE;
+window.filteredNews = [];
 
 function gridPuanla(news) {
   const simdi = Date.now();
@@ -615,8 +615,8 @@ function renderGrid() {
   const cfg = LANG_CONFIG[lang];
   if (activeFilter && activeFilter !== cfg.allKey) base = base.filter(n => n.kategori === activeFilter);
   if (searchQ) base = base.filter(n => n.baslik?.toLowerCase().includes(searchQ));
-  filteredNews = gridPuanla(base);
-  visibleCount = PAGE_SIZE;
+  window.filteredNews = gridPuanla(base);
+  window.visibleCount = PAGE_SIZE;
   renderCards();
 }
 
@@ -624,8 +624,8 @@ function renderCards() {
   const cfg = LANG_CONFIG[lang];
   const catMap = CATEGORY_MAP[lang];
   const grid = document.getElementById('grid');
-  if (!filteredNews.length) { grid.innerHTML = `<div class="no-results">Sonuç bulunamadı.</div>`; return; }
-  const visible = filteredNews.slice(0, visibleCount);
+  if (!window.filteredNews.length) { grid.innerHTML = `<div class="no-results">Sonuç bulunamadı.</div>`; return; }
+  const visible = window.filteredNews.slice(0, window.visibleCount);
   let html = '';
   visible.forEach((n, i) => {
     if (i > 0 && i % 18 === 0) {
@@ -643,7 +643,7 @@ function renderCards() {
       </div>
     </div>`;
   });
-  if (visibleCount < filteredNews.length) {
+  if (window.visibleCount < window.filteredNews.length) {
     html += `<div class="load-more-wrap"><div id="infiniteAnchor" style="height:10px"></div></div>`;
   }
   grid.innerHTML = html;
@@ -654,7 +654,7 @@ function renderCards() {
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
         observer.disconnect();
-        visibleCount += PAGE_SIZE;
+        window.visibleCount += PAGE_SIZE;
         renderCards();
       }
     }, { rootMargin: '200px' });
@@ -662,7 +662,7 @@ function renderCards() {
   }
 }
 
-window.loadMore = () => { visibleCount += PAGE_SIZE; renderCards(); };
+window.loadMore = () => { window.visibleCount += PAGE_SIZE; renderCards(); };
 
 // ── DIGEST ───────────────────────────────────────────────────────
 function renderDigest() {
@@ -811,7 +811,7 @@ async function loadAndRender() {
 }
 
 // ── OKUMA PANELİ ─────────────────────────────────────────────────
-window.openReaderByIndex = (i) => openReaderData(filteredNews[i]);
+window.openReaderByIndex = (i) => openReaderData(window.filteredNews[i]);
 window.openReaderByHero = (i) => openReaderData(heroSlides[i]);
 
 async function openReader(haber) { return openReaderData(haber); }
