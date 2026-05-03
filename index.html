@@ -935,7 +935,7 @@ Kaynak: ${haber.kaynak||''}`
   }
 }
 
-async function openReaderData(haber) {
+window.openReaderData = async function openReaderData(haber) {
   if (!haber) return;
   const overlay = document.getElementById('readerOverlay');
   const panel = document.getElementById('readerPanel');
