@@ -610,95 +610,104 @@ function icerikCikar(html) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html,'text/html');
 
-  // Gereksiz elementleri temizle
-  const removeSelectors = [
-    'script','style','nav','header','footer','aside','iframe','form',
-    'figure','picture','.ad','[class*="ad-"]','[class*="banner"]',
-    '[class*="promo"]','[class*="related"]','[class*="recommend"]',
-    '[class*="social"]','[class*="share"]','[class*="newsletter"]',
-    '[class*="subscribe"]','[class*="signup"]','[class*="popup"]',
-    '[class*="cookie"]','[class*="gdpr"]','[class*="paywall"]',
-    '[class*="sidebar"]','[class*="widget"]','[class*="comment"]',
-    '[id*="comment"]','[id*="sidebar"]','[class*="author-bio"]',
-    '[class*="tag"]','[class*="topic"]','time','[class*="breadcrumb"]',
-    '[class*="nav"]','[class*="menu"]','[class*="logo"]','[class*="header"]',
-    '.wp-caption','figcaption','[role="complementary"]','[role="navigation"]',
-    '[role="banner"]','[role="contentinfo"]'
+  // Agresif temizlik — gereksiz her şeyi sil
+  const sil = [
+    'script','style','nav','header','footer','aside','iframe','form','noscript','template',
+    'figure','picture','svg','video','audio','canvas',
+    '[class*="ad-"]','[class*="-ad"]','[id*="ad-"]','[class*="banner"]','[class*="promo"]','[class*="sponsor"]',
+    '[class*="social"]','[class*="share"]','[class*="follow"]',
+    '[class*="facebook"]','[class*="twitter"]','[class*="instagram"]','[class*="linkedin"]','[class*="whatsapp"]',
+    '[class*="newsletter"]','[class*="subscribe"]','[class*="signup"]','[class*="register"]','[class*="paywall"]',
+    '[class*="breadcrumb"]','[class*="pagination"]','[class*="nav-"]','[class*="-nav"]','[class*="menu"]','[class*="sidebar"]',
+    '[class*="author"]','[class*="byline"]','[class*="bio"]','[class*="reporter"]',
+    '[class*="related"]','[class*="recommend"]','[class*="more-"]','[class*="also-read"]','[class*="trending"]',
+    '[class*="comment"]','[id*="comment"]','[class*="disqus"]',
+    '[class*="cookie"]','[class*="gdpr"]','[class*="popup"]','[class*="modal"]','[class*="overlay"]',
+    '[class*="widget"]','[class*="logo"]','[class*="brand"]','[class*="tag"]','[class*="label"]','[class*="badge"]',
+    '[class*="toolbar"]','[class*="topbar"]','[class*="header"]','[class*="footer"]',
+    '[role="complementary"]','[role="navigation"]','[role="banner"]','[role="contentinfo"]','[role="search"]',
+    'time','figcaption','.wp-caption','.wp-block-image',
+    '.advertisement','.ad-container','.social-buttons','.sharing','.share-bar',
+    '.related-articles','.recommended','.author-section','.author-box',
+    '.comments-section','.newsletter-signup','.subscription-box',
+    '.tags-section','.topics','.article-footer','.story-footer'
   ];
-  removeSelectors.forEach(sel => {
-    try { doc.querySelectorAll(sel).forEach(el=>el.remove()); } catch(e) {}
-  });
+  sil.forEach(sel => { try { doc.querySelectorAll(sel).forEach(el=>el.remove()); } catch(e) {} });
 
-  // Tüm linkleri düz metne çevir
+  // Görselleri kaldır
+  doc.querySelectorAll('img,svg,video,audio,canvas,picture,source').forEach(el=>el.remove());
+
+  // Linkleri düz metne çevir
   doc.querySelectorAll('a').forEach(a => {
     const span = doc.createElement('span');
     span.textContent = a.textContent;
     a.replaceWith(span);
   });
 
-  // Tüm görselleri kaldır
-  doc.querySelectorAll('img,svg,video,audio,canvas,picture,source').forEach(el=>el.remove());
-
-  // İnline stilleri temizle
-  doc.querySelectorAll('[style]').forEach(el=>el.removeAttribute('style'));
-  doc.querySelectorAll('[class]').forEach(el=>el.removeAttribute('class'));
-  doc.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
-
-  // Makale içeriğini bul
+  // Makale alanını bul (class silinmeden önce arayalım — önce class/id ile)
   const articleSels = [
-    'article','[role="main"]','main',
-    '.article-body','.post-content','.entry-content',
-    '.story-body','.article-content','.content-body',
-    '.article__body','.story__body','.post__content',
-    '.news-body','.news-content','.text-content',
-    '.body-content','.main-content','.page-content'
+    '.article-body','.post-content','.entry-content','.story-body',
+    '.article-content','.content-body','.article__body','.story__body',
+    '.post__content','.news-body','.news-content','.text-content',
+    '.body-content','.main-content','.page-content','.article-text',
+    '.article__content','.story__content','.post-body',
+    'article','[role="main"]','main'
   ];
+
+  let articleEl = null;
   for (const sel of articleSels) {
     const el = doc.querySelector(sel);
-    if (el && el.textContent.trim().length > 300) {
-      return temizle(el);
-    }
+    if (el && el.textContent.trim().length > 300) { articleEl = el; break; }
+  }
+
+  if (articleEl) {
+    // İlk h1'i kaldır (zaten reader başlığında var)
+    const ilkH1 = articleEl.querySelector('h1');
+    if (ilkH1) ilkH1.remove();
+    // Yazar satırlarını kaldır
+    articleEl.querySelectorAll('p,span,div').forEach(el => {
+      const t = el.textContent.trim();
+      if (t.length < 80 && /^(by |written by |author:|from |photo:|image:)/i.test(t)) el.remove();
+    });
+    return temizle(articleEl);
   }
 
   // Fallback: uzun paragrafları topla
   const ps = doc.querySelectorAll('p');
   const metinler = Array.from(ps)
     .map(p => p.textContent.trim())
-    .filter(t => t.length > 80 && !t.match(/^(cookie|subscribe|newsletter|follow us|©|all rights)/i));
-  if (metinler.length > 2) return metinler.map(t=>`<p>${t}</p>`).join('');
+    .filter(t => {
+      if (t.length < 80) return false;
+      if (/^(cookie|subscribe|newsletter|follow us|sign up|log in|©|all rights|already a member|by )/i.test(t)) return false;
+      return true;
+    });
+  if (metinler.length > 1) return metinler.map(t=>`<p>${t}</p>`).join('');
   return '';
 }
 
 function temizle(el) {
-  // Sadece anlamlı etiketleri tut, rest düz metne çevir
-  const izinli = new Set(['p','h1','h2','h3','h4','blockquote','ul','ol','li','strong','em','b','i']);
-  
+  const izinli = new Set(['p','h2','h3','h4','blockquote','ul','ol','li','strong','em','b','i']);
+
   function temizNode(node) {
-    if (node.nodeType === 3) return node.textContent; // metin
+    if (node.nodeType === 3) return node.textContent;
     if (node.nodeType !== 1) return '';
     const tag = node.tagName.toLowerCase();
+    if (tag === 'h1') return ''; // Başlık zaten üstte
     const children = Array.from(node.childNodes).map(temizNode).join('');
-    
-    // Boş elementleri atla
     if (!children.trim()) return '';
-    
-    // Çok kısa paragraflara izin verme (menü kalıntıları)
-    if (tag === 'p' && children.trim().length < 30) return '';
-    
-    if (izinli.has(tag)) {
-      return `<${tag}>${children}</${tag}>`;
-    }
-    // Blok elementler → paragraf
-    if (['div','section','article'].includes(tag)) {
+    if ((tag === 'p' || tag === 'div') && children.trim().length < 40) return '';
+    if (izinli.has(tag)) return `<${tag}>${children}</${tag}>`;
+    if (['div','section','article','main'].includes(tag)) {
       const txt = children.trim();
-      if (txt.length > 80) return `<p>${txt}</p>`;
-      return txt;
+      return txt.length > 60 ? txt : '';
     }
     return children;
   }
-  
-  return Array.from(el.childNodes).map(temizNode).join('').replace(/<p>\s*<\/p>/g,'').replace(/
-{3,}/g,'\n\n');
+
+  return Array.from(el.childNodes).map(temizNode).join('')
+    .replace(/<(p|h[2-4]|li)>\s*<\/\1>/g,'')
+    .replace(/  +/g,' ')
+    .trim();
 }
 
 async function readerRenderTab(tab, haber) {
@@ -810,6 +819,8 @@ window.LF = {
     document.getElementById('readerOverlay').classList.add('open');
     document.getElementById('readerPanel').classList.add('open');
     document.body.style.overflow = 'hidden';
+    document.querySelector('.navbar').style.zIndex = '1';
+    document.querySelector('.ticker') && (document.querySelector('.ticker').style.zIndex = '1');
     document.querySelectorAll('.reader-tab').forEach(t=>t.classList.remove('active'));
     document.getElementById('tabOzet').classList.add('active');
     readerRenderTab('ozet', haber);
@@ -831,6 +842,8 @@ window.LF = {
     document.getElementById('readerOverlay').classList.remove('open');
     document.getElementById('readerPanel').classList.remove('open');
     document.body.style.overflow = '';
+    document.querySelector('.navbar').style.zIndex = '';
+    document.querySelector('.ticker') && (document.querySelector('.ticker').style.zIndex = '');
   },
 
   setFilter(f) {
