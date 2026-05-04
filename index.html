@@ -425,9 +425,16 @@ function renderAuthArea(user) {
 }
 
 function updateAds() {
-  // Premium kullanıcılar için reklamları gizle
-  document.querySelectorAll('.ad-slot').forEach(ad => {
-    ad.style.display = userPlan === 'premium' ? 'none' : '';
+  const isPremium = userPlan === 'premium';
+  // Tüm reklam alanlarını gizle/göster
+  document.querySelectorAll('.ad-slot, .ad-band, .hero-ad-slot, .ncard-ad, .ad-slot-txt').forEach(ad => {
+    ad.style.display = isPremium ? 'none' : '';
+  });
+  // Reklam bandı wrapper'larını da gizle
+  document.querySelectorAll('[class*="ad-"]').forEach(ad => {
+    if (ad.className.includes('ad-slot') || ad.className.includes('ad-band') || ad.className.includes('ncard-ad') || ad.className.includes('hero-ad')) {
+      ad.style.display = isPremium ? 'none' : '';
+    }
   });
 }
 
