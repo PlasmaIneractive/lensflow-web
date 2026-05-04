@@ -304,7 +304,8 @@ const CATEGORY_MAP = {
   de:{'Tümü':'Alle','Son Dakika':'Eilmeldung','Siyaset':'Politik','Ekonomi':'Wirtschaft','Teknoloji':'Technologie','Kültür Sanat':'Kultur & Kunst','Bilim':'Wissenschaft','Spor':'Sport','Genel':'Allgemein','Haber Ajansı':'Agentur','Dünya':'Welt','Sağlık':'Gesundheit','Çevre':'Umwelt','Eğitim':'Bildung','TV & Radyo':'TV & Radio','Güvenlik':'Sicherheit'},
   es:{'Tümü':'Todo','Son Dakika':'Última hora','Siyaset':'Política','Ekonomi':'Economía','Teknoloji':'Tecnología','Kültür Sanat':'Cultura y Arte','Bilim':'Ciencia','Spor':'Deporte','Genel':'General','Haber Ajansı':'Agencia','Dünya':'Mundo','Sağlık':'Salud','Çevre':'Medioambiente','Eğitim':'Educación','TV & Radyo':'TV & Radio','Güvenlik':'Seguridad'},
   pt:{'Tümü':'Tudo','Son Dakika':'Urgente','Siyaset':'Política','Ekonomi':'Economia','Teknoloji':'Tecnologia','Kültür Sanat':'Cultura e Arte','Bilim':'Ciência','Spor':'Esporte','Genel':'Geral','Haber Ajansı':'Agência','Dünya':'Mundo','Sağlık':'Saúde','Çevre':'Meio Ambiente','Eğitim':'Educação','TV & Radyo':'TV & Rádio','Güvenlik':'Segurança'},
-  tr:{'Tümü':'Tümü','Son Dakika':'Son Dakika','Siyaset':'Siyaset','Ekonomi':'Ekonomi','Teknoloji':'Teknoloji','Kültür Sanat':'Kültür Sanat','Bilim':'Bilim','Spor':'Spor','Genel':'Genel','Haber Ajansı':'Haber Ajansı','Dünya':'Dünya','Sağlık':'Sağlık','Çevre':'Çevre','Eğitim':'Eğitim','TV & Radyo':'TV & Radyo','Güvenlik':'Güvenlik'}
+  tr:{'Tümü':'Tümü','Son Dakika':'Son Dakika','Siyaset':'Siyaset','Ekonomi':'Ekonomi','Teknoloji':'Teknoloji','Kültür Sanat':'Kültür Sanat','Bilim':'Bilim','Spor':'Spor','Genel':'Genel','Haber Ajansı':'Haber Ajansı','Dünya':'Dünya','Sağlık':'Sağlık','Çevre':'Çevre','Eğitim':'Eğitim','TV & Radyo':'TV & Radyo','Güvenlik':'Güvenlik'},
+  global:{'Tümü':'All','Son Dakika':'Breaking','Siyaset':'Politics','Ekonomi':'Economy','Teknoloji':'Technology','Kültür Sanat':'Culture & Arts','Bilim':'Science','Spor':'Sports','Genel':'General','Haber Ajansı':'News Agency','Dünya':'World','Sağlık':'Health','Çevre':'Environment','Eğitim':'Education','TV & Radyo':'TV & Radio','Güvenlik':'Security'}
 };
 const LANG_CONFIG = {
   global:{flag:'🌍',name:'Global',ticker:'LIVE',dl:'Daily Digest',dt:'AI Summary',dtl:'Theme of the Day',allKey:'All',ago:'h ago',ph:'Search news...',
@@ -350,7 +351,7 @@ const LANG_CONFIG = {
       readSrc:'Kaynağında Oku',
       ozetPrompt:'Sen deneyimli bir haber editörüsün. Haberi Türkçe olarak akıcı ve doğal bir dille özetle. Gazetecilik üslubu kullan: en önemli bilgiyle başla, ardından bağlam ve detay ekle. Kaliteli bir gazetede yayımlanabilecek nitelikte, 3-4 iyi kurulmuş cümle yaz. Yalnızca özet metnini yaz, başlık veya ek açıklama ekleme.'}
 };
-const LOCALES = {en:'en-US',fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-BR',tr:'tr-TR'};
+const LOCALES = {global:'en-US',en:'en-US',fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-BR',tr:'tr-TR'};
 const LANG_KEYS = ['global','en','fr','de','es','pt','tr'];
 const FILTER_ORDER = ['Tümü','Son Dakika','Siyaset','Ekonomi','Teknoloji','Kültür Sanat','Bilim','Spor'];
 
@@ -365,16 +366,32 @@ const PAGE_SIZE = 20;
 let visibleCount = PAGE_SIZE;
 let filteredNews = [];
 
+// Global kaynakların listesi — Firebase'de global:true olan kaynaklar
+let globalKaynaklar = null;
+async function loadGlobalKaynaklar() {
+  if (globalKaynaklar) return globalKaynaklar;
+  try {
+    const snap = await getDocs(query(collection(db,'kaynaklar'),where('global','==',true),where('aktif','==',true)));
+    globalKaynaklar = new Set(snap.docs.map(d => d.data().isim).filter(Boolean));
+  } catch(e) { globalKaynaklar = new Set(); }
+  return globalKaynaklar;
+}
+
 async function loadNews(langKey) {
   let q;
   if (langKey === 'global') {
-    // Global: tüm dillerdeki haberler
     q = query(collection(db,'haberler'),orderBy('tarih','desc'),limit(500));
+    const snap = await getDocs(q);
+    const globalSrc = await loadGlobalKaynaklar();
+    // Sadece global kaynaklardan gelen haberleri filtrele
+    return snap.docs
+      .map(d => ({id:d.id,...d.data()}))
+      .filter(h => globalSrc.has(h.kaynak));
   } else {
     q = query(collection(db,'haberler'),where('dil','==',langKey),orderBy('tarih','desc'),limit(500));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({id:d.id,...d.data()}));
   }
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({id:d.id,...d.data()}));
 }
 async function loadDigest(langKey) {
   const today = new Date().toISOString().split('T')[0];
