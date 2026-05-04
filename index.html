@@ -386,7 +386,7 @@ async function loadNews(langKey) {
     // Sadece global kaynaklardan gelen haberleri filtrele + Türkçe haberleri çıkar
     return snap.docs
       .map(d => ({id:d.id,...d.data()}))
-      .filter(h => globalSrc.has(h.kaynak) && h.dil !== 'tr');
+      .filter(h => globalSrc.has(h.kaynak) && h.dil === 'en');
   } else {
     q = query(collection(db,'haberler'),where('dil','==',langKey),orderBy('tarih','desc'),limit(500));
     const snap = await getDocs(q);
