@@ -644,7 +644,9 @@ function buildHero(news) {
   clearInterval(heroTimer);
   news.forEach((n, i) => {
     heroSlides.push({type:'news',...n,rank:i+1});
-    if ((i+1)===5||(i+1)===10) heroSlides.push({type:'ad',adNum:Math.floor((i+1)/5)});
+    if (userPlan !== 'premium') {
+      if ((i+1)===5||(i+1)===10) heroSlides.push({type:'ad',adNum:Math.floor((i+1)/5)});
+    }
   });
   heroSlides.forEach((s, i) => {
     const slide = document.createElement('div');
