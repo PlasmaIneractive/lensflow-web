@@ -383,10 +383,10 @@ async function loadNews(langKey) {
     q = query(collection(db,'haberler'),orderBy('tarih','desc'),limit(500));
     const snap = await getDocs(q);
     const globalSrc = await loadGlobalKaynaklar();
-    // Sadece global kaynaklardan gelen haberleri filtrele
+    // Sadece global kaynaklardan gelen haberleri filtrele + Türkçe haberleri çıkar
     return snap.docs
       .map(d => ({id:d.id,...d.data()}))
-      .filter(h => globalSrc.has(h.kaynak));
+      .filter(h => globalSrc.has(h.kaynak) && h.dil !== 'tr');
   } else {
     q = query(collection(db,'haberler'),where('dil','==',langKey),orderBy('tarih','desc'),limit(500));
     const snap = await getDocs(q);
