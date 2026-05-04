@@ -202,10 +202,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <span class="nav-date" id="navDate"></span>
     <div class="lang-dd" id="ldd">
       <button class="lang-btn" id="ltrig" onclick="toggleMenu()">
-        <span id="tFlag">🇬🇧</span><span id="tName">EN</span><span class="lang-arr"></span>
+        <span id="tFlag">🌍</span><span id="tName">Global</span><span class="lang-arr"></span>
       </button>
       <div class="lang-menu" id="lmenu">
-        <div class="loption active" onclick="setLang('en')"><span class="loflag">🇬🇧</span><span class="loname">English</span><span class="lochk"></span></div>
+        <div class="loption active" onclick="setLang('global')"><span class="loflag">🌍</span><span class="loname">Global</span><span class="lochk"></span></div>
+        <div class="loption" onclick="setLang('en')"><span class="loflag">🇬🇧</span><span class="loname">English</span><span class="lochk"></span></div>
         <div class="loption" onclick="setLang('fr')"><span class="loflag">🇫🇷</span><span class="loname">Français</span><span class="lochk"></span></div>
         <div class="loption" onclick="setLang('de')"><span class="loflag">🇩🇪</span><span class="loname">Deutsch</span><span class="lochk"></span></div>
         <div class="loption" onclick="setLang('es')"><span class="loflag">🇪🇸</span><span class="loname">Español</span><span class="lochk"></span></div>
@@ -306,6 +307,12 @@ const CATEGORY_MAP = {
   tr:{'Tümü':'Tümü','Son Dakika':'Son Dakika','Siyaset':'Siyaset','Ekonomi':'Ekonomi','Teknoloji':'Teknoloji','Kültür Sanat':'Kültür Sanat','Bilim':'Bilim','Spor':'Spor','Genel':'Genel','Haber Ajansı':'Haber Ajansı','Dünya':'Dünya','Sağlık':'Sağlık','Çevre':'Çevre','Eğitim':'Eğitim','TV & Radyo':'TV & Radyo','Güvenlik':'Güvenlik'}
 };
 const LANG_CONFIG = {
+  global:{flag:'🌍',name:'Global',ticker:'LIVE',dl:'Daily Digest',dt:'AI Summary',dtl:'Theme of the Day',allKey:'All',ago:'h ago',ph:'Search news...',
+      rdrOzet:'✦ Summary',rdrOkuma:'◎ Reading Mode',rdrKaynak:'↗ Read Source',
+      ozetLoading:'AI summary being prepared...',okumaLoading:'Loading content...',
+      ozetErr:'Summary could not be loaded.',okumaErr:'Content could not be loaded from this site.',
+      readSrc:'Read at Source',
+      ozetPrompt:'You are an expert news editor. Write a concise, natural-sounding news summary in English. Use journalistic style: start with the most important fact, then add context. Write 3-4 flowing sentences as if for a quality newspaper. Be direct and informative. Output only the summary text, no headlines, no labels, no extra commentary.'},
   en:{flag:'🇬🇧',name:'EN',ticker:'LIVE',dl:'Daily Digest',dt:'AI Summary',dtl:'Theme of the Day',allKey:'Tümü',ago:'h ago',ph:'Search news...',
       rdrOzet:'✦ Summary',rdrOkuma:'◎ Reading Mode',rdrKaynak:'↗ Read Source',
       ozetLoading:'AI summary being prepared...',okumaLoading:'Loading content...',
@@ -344,10 +351,10 @@ const LANG_CONFIG = {
       ozetPrompt:'Sen deneyimli bir haber editörüsün. Haberi Türkçe olarak akıcı ve doğal bir dille özetle. Gazetecilik üslubu kullan: en önemli bilgiyle başla, ardından bağlam ve detay ekle. Kaliteli bir gazetede yayımlanabilecek nitelikte, 3-4 iyi kurulmuş cümle yaz. Yalnızca özet metnini yaz, başlık veya ek açıklama ekleme.'}
 };
 const LOCALES = {en:'en-US',fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-BR',tr:'tr-TR'};
-const LANG_KEYS = ['en','fr','de','es','pt','tr'];
+const LANG_KEYS = ['global','en','fr','de','es','pt','tr'];
 const FILTER_ORDER = ['Tümü','Son Dakika','Siyaset','Ekonomi','Teknoloji','Kültür Sanat','Bilim','Spor'];
 
-let lang = 'en';
+let lang = 'global';
 let allNews = [];
 let digestData = null;
 let searchQ = '';
@@ -359,7 +366,13 @@ let visibleCount = PAGE_SIZE;
 let filteredNews = [];
 
 async function loadNews(langKey) {
-  const q = query(collection(db,'haberler'),where('dil','==',langKey),orderBy('tarih','desc'),limit(500));
+  let q;
+  if (langKey === 'global') {
+    // Global: tüm dillerdeki haberler
+    q = query(collection(db,'haberler'),orderBy('tarih','desc'),limit(500));
+  } else {
+    q = query(collection(db,'haberler'),where('dil','==',langKey),orderBy('tarih','desc'),limit(500));
+  }
   const snap = await getDocs(q);
   return snap.docs.map(d => ({id:d.id,...d.data()}));
 }
@@ -588,7 +601,7 @@ window.setLang = async l => {
   document.getElementById('ltrig').classList.remove('open');
   const cfg=LANG_CONFIG[l];
   document.getElementById('tFlag').textContent=cfg.flag;
-  document.getElementById('tName').textContent=cfg.name;
+  document.getElementById('tName').textContent=l==='global'?'Global':cfg.name;
   document.getElementById('srch').placeholder=cfg.ph;
   document.getElementById('srch').value='';
   searchQ=''; activeFilter=null;
