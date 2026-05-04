@@ -330,9 +330,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="reader-tab" id="tabOkuma">◎ Okuma Modu</button>
     <button class="reader-tab" id="tabKaynak">↗ Kaynağından Oku</button>
   </div>
+  <div id="readerAdTop" class="ad-slot" style="margin:8px 16px;display:none"><span class="ad-slot-txt">728 × 90</span></div>
   <div class="reader-body" id="readerBody">
     <div class="loading"><div class="spin"></div></div>
   </div>
+  <div id="readerAdBottom" class="ad-slot" style="margin:8px 16px;display:none"><span class="ad-slot-txt">728 × 90</span></div>
 </div>
 <div class="content">
   <div>
@@ -431,6 +433,13 @@ function updateAds() {
   });
   const mainAdBand = document.getElementById('mainAdBand');
   if (mainAdBand) mainAdBand.style.display = isPremium ? 'none' : '';
+  // Reader reklamları - panel açıkken göster
+  const readerPanel = document.getElementById('readerPanel');
+  const isReaderOpen = readerPanel && readerPanel.classList.contains('open');
+  const readerAdTop = document.getElementById('readerAdTop');
+  const readerAdBottom = document.getElementById('readerAdBottom');
+  if (readerAdTop) readerAdTop.style.display = (!isPremium && isReaderOpen) ? '' : 'none';
+  if (readerAdBottom) readerAdBottom.style.display = (!isPremium && isReaderOpen) ? '' : 'none';
 }
 
 window.toggleUserMenu = () => {
@@ -1057,6 +1066,7 @@ window.LF = {
     }
     document.getElementById('readerOverlay').classList.add('open');
     document.getElementById('readerPanel').classList.add('open');
+    updateAds();
     document.body.style.overflow = 'hidden';
     document.querySelector('.navbar').style.zIndex = '1';
     document.querySelector('.ticker') && (document.querySelector('.ticker').style.zIndex = '1');
