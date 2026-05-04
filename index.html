@@ -386,7 +386,13 @@ async function loadNews(langKey) {
     // Sadece global kaynaklardan gelen haberleri filtrele + Türkçe haberleri çıkar
     return snap.docs
       .map(d => ({id:d.id,...d.data()}))
-      .filter(h => globalSrc.has(h.kaynak) && h.dil === 'en');
+      .filter(h => {
+        if (!globalSrc.has(h.kaynak)) return false;
+        if (h.dil !== 'en') return false;
+        // Latin alfabesi dışı başlıkları filtrele (Japonca, Arapça vb.)
+        const latinOran = (h.baslik||'').replace(/[^a-zA-ZÀ-ÿ]/g,'').length / Math.max((h.baslik||'').length, 1);
+        return latinOran > 0.5;
+      });
   } else {
     q = query(collection(db,'haberler'),where('dil','==',langKey),orderBy('tarih','desc'),limit(500));
     const snap = await getDocs(q);
