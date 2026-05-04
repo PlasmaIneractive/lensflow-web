@@ -382,13 +382,24 @@ onAuthStateChanged(auth, async (user) => {
         lastSeen: Timestamp.now(),
       }, { merge: true });
       // Plan bilgisini çek
-      const userDoc = await getDocs(query(collection(db,'users')));
-      // Basit: users/uid'den plan oku
       const { getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
       const uSnap = await getDoc(doc(db,'users',user.uid));
       userPlan = uSnap.exists() ? (uSnap.data().plan || 'free') : 'free';
     } catch(e) { userPlan = 'free'; }
     renderAuthArea(user);
+    // Stripe'tan döndükten 4 sn sonra planı tekrar kontrol et (webhook gecikmesi için)
+    setTimeout(async () => {
+      try {
+        const { getDoc: getDoc2 } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        const uSnap2 = await getDoc2(doc(db,'users',user.uid));
+        const freshPlan = uSnap2.exists() ? (uSnap2.data().plan || 'free') : 'free';
+        if (freshPlan !== userPlan) {
+          userPlan = freshPlan;
+          renderAuthArea(user);
+          updateAds();
+        }
+      } catch(e) {}
+    }, 4000);
   } else {
     userPlan = 'free';
     renderAuthArea(null);
