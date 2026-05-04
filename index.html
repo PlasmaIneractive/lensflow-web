@@ -247,6 +247,38 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div id="authArea"></div>
   </div>
 </nav>
+<!-- Abonelik Modal -->
+<div id="subOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;backdrop-filter:blur(8px)" onclick="window.LF.closeSubscribe()"></div>
+<div id="subModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg2);border:0.5px solid var(--border);border-radius:16px;padding:2rem;z-index:1001;width:90%;max-width:480px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+    <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text)">⭐ Go Premium</div>
+    <button onclick="window.LF.closeSubscribe()" style="background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer">✕</button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:1.5rem">
+    <div style="background:var(--bg3);border-radius:10px;padding:1rem;font-size:13px;color:var(--text2)">
+      ✅ Ad-free experience<br>
+      ✅ AI summaries in your language<br>
+      ✅ Reading mode on all articles<br>
+      ✅ All 6 languages supported
+    </div>
+    <div id="planMonthly" class="plan-card active-plan" onclick="selectPlan('monthly')" style="border:1.5px solid var(--tk);border-radius:10px;padding:1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center">
+      <div><div style="font-weight:600;color:var(--text)">Monthly</div><div style="font-size:12px;color:var(--text3)">Cancel anytime</div></div>
+      <div style="font-size:18px;font-weight:700;color:var(--tk)">$2.99<span style="font-size:12px;font-weight:400">/mo</span></div>
+    </div>
+    <div id="planYearly" class="plan-card" onclick="selectPlan('yearly')" style="border:0.5px solid var(--border);border-radius:10px;padding:1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;position:relative">
+      <div style="position:absolute;top:-10px;right:12px;background:var(--tk);color:#000;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px">SAVE 44%</div>
+      <div><div style="font-weight:600;color:var(--text)">Yearly</div><div style="font-size:12px;color:var(--text3)">2 months free</div></div>
+      <div style="font-size:18px;font-weight:700;color:var(--text)">$19.99<span style="font-size:12px;font-weight:400">/yr</span></div>
+    </div>
+    <div id="planLifetime" class="plan-card" onclick="selectPlan('lifetime')" style="border:0.5px solid var(--border);border-radius:10px;padding:1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center">
+      <div><div style="font-weight:600;color:var(--text)">Lifetime</div><div style="font-size:12px;color:var(--text3)">Pay once, use forever</div></div>
+      <div style="font-size:18px;font-weight:700;color:var(--text)">$79.99</div>
+    </div>
+  </div>
+  <button id="subBtn" onclick="window.LF.startCheckout()" style="width:100%;background:var(--tk);color:#000;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer">Continue with Monthly — $2.99</button>
+  <div style="text-align:center;font-size:11px;color:var(--text3);margin-top:12px">Secure payment by Stripe · Cancel anytime</div>
+</div>
+
 <div class="mobile-search">
   <div class="search-wrap" style="flex:1;max-width:none">
     <div class="search-icon"></div>
@@ -333,6 +365,13 @@ let userPlan = 'free'; // 'free' | 'premium'
 // Auth state değişikliklerini dinle
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
+  // Başarılı ödeme sonrası plan güncelle
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('success') === '1') {
+    window.history.replaceState({}, '', '/');
+    setTimeout(() => location.reload(), 2000);
+  }
+
   if (user) {
     // Kullanıcı bilgisini Firebase'e kaydet/güncelle
     try {
@@ -467,6 +506,14 @@ const LANG_CONFIG = {
 const LOCALES = {global:'en-US',en:'en-US',fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-BR',tr:'tr-TR'};
 const LANG_KEYS = ['global','en','fr','de','es','pt','tr'];
 const FILTER_ORDER = ['Tümü','Son Dakika','Siyaset','Ekonomi','Teknoloji','Kültür Sanat','Bilim','Spor'];
+
+// Stripe fiyat ID'leri
+const STRIPE_PRICES = {
+  monthly:  { id: 'price_1TTPNjD4fLqIE7lXkzIrroAV', amount: '$2.99/mo',  label: 'Monthly',  isLifetime: false },
+  yearly:   { id: 'price_1TTPOnD4fLqIE7lXhPfoq6G3', amount: '$19.99/yr', label: 'Yearly',   isLifetime: false },
+  lifetime: { id: 'price_1TTPPyD4fLqIE7lXigQCKOFu', amount: '$79.99',    label: 'Lifetime', isLifetime: true  },
+};
+const STRIPE_PK = 'pk_test_51TTPHGD4fLqIE7lX7vBvx1udb1gmFoSqqQF5n5evOpGwXPgBzt4OrCfYcddyYKd5tPwm4MMYZFeRi48SsOYGejDa00KqlVjLXR';
 
 let lang = 'global';
 let allNews = [];
@@ -731,6 +778,18 @@ function renderDigest() {
     `<div class="dstory"><span class="drank">#${s.rank}</span><span class="dstitle">${s.headline}</span></div>`
   ).join('');
 }
+
+window.selectPlan = (plan) => {
+  window._selectedPlan = plan;
+  ['monthly','yearly','lifetime'].forEach(p => {
+    const el = document.getElementById('plan' + p.charAt(0).toUpperCase() + p.slice(1));
+    if (el) el.style.border = p === plan ? '1.5px solid var(--tk)' : '0.5px solid var(--border)';
+  });
+  const price = STRIPE_PRICES[plan];
+  const btn = document.getElementById('subBtn');
+  if (btn) btn.textContent = `Continue with ${price.label} — ${price.amount}`;
+};
+window._selectedPlan = 'monthly';
 
 window.toggleMenu = () => { const o=document.getElementById('lmenu').classList.toggle('open'); document.getElementById('ltrig').classList.toggle('open',o); };
 document.addEventListener('click', e => { if (!document.getElementById('ldd').contains(e.target)) { document.getElementById('lmenu').classList.remove('open'); document.getElementById('ltrig').classList.remove('open'); } });
@@ -1022,6 +1081,48 @@ window.LF = {
   async signIn() {
     try { await signInWithPopup(auth, googleProvider); }
     catch(e) { console.error('Giriş hatası:', e); }
+  },
+
+  goSubscribe() {
+    if (!currentUser) { this.signIn(); return; }
+    document.getElementById('subOverlay').style.display = 'block';
+    document.getElementById('subModal').style.display = 'block';
+  },
+
+  closeSubscribe() {
+    document.getElementById('subOverlay').style.display = 'none';
+    document.getElementById('subModal').style.display = 'none';
+  },
+
+  async startCheckout() {
+    if (!currentUser) { this.signIn(); return; }
+    const btn = document.getElementById('subBtn');
+    btn.textContent = 'Loading...';
+    btn.disabled = true;
+    try {
+      const plan = window._selectedPlan || 'monthly';
+      const price = STRIPE_PRICES[plan];
+      const res = await fetch('https://img.lensflow.news/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId: price.id,
+          userId: currentUser.uid,
+          userEmail: currentUser.email,
+          isLifetime: price.isLifetime,
+        })
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        btn.textContent = 'Error. Try again.';
+        btn.disabled = false;
+      }
+    } catch(e) {
+      btn.textContent = 'Error. Try again.';
+      btn.disabled = false;
+    }
   },
   async signOut() {
     try { await signOut(auth); } catch(e) {}
