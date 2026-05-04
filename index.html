@@ -540,7 +540,7 @@ function gridPuanla(news) {
 function renderGrid() {
   let base = allNews;
   const cfg = LANG_CONFIG[lang];
-  if (activeFilter && activeFilter!==cfg.allKey) base=base.filter(n=>n.kategori===activeFilter);
+  if (activeFilter && activeFilter!=='Tümü') base=base.filter(n=>n.kategori===activeFilter);
   if (searchQ) base=base.filter(n=>n.baslik?.toLowerCase().includes(searchQ));
   filteredNews = gridPuanla(base);
   visibleCount = PAGE_SIZE;
@@ -586,9 +586,12 @@ function renderFilters() {
   const cfg = LANG_CONFIG[lang];
   const catMap = CATEGORY_MAP[lang];
   const mevcut = new Set(allNews.map(n=>n.kategori).filter(Boolean));
-  const siralı = FILTER_ORDER.filter(k=>k==='Tümü'||mevcut.has(k));
+  const allKey = 'Tümü'; // Firebase'de her zaman Türkçe saklı
+  const siralı = FILTER_ORDER.filter(k=>k===allKey||mevcut.has(k));
   document.getElementById('filters').innerHTML = siralı.map((k,i)=>{
     const label = catMap[k]||k;
+    // setFilter'a her zaman Türkçe key gönder (Firebase'deki değerle eşleşsin)
+    const filterKey = k===allKey ? cfg.allKey : k;
     return `<button class="fbtn${i===0?' active':''}" onclick="window.LF.setFilter('${k}')">${label}</button>`;
   }).join('');
 }
@@ -898,7 +901,8 @@ window.LF = {
   },
 
   setFilter(f) {
-    activeFilter = f;
+    // 'Tümü' veya cfg.allKey gelirse null yap
+    activeFilter = (f==='Tümü'||f===LANG_CONFIG[lang].allKey) ? null : f;
     document.querySelectorAll('.fbtn').forEach(b => {
       const key = b.getAttribute('onclick').match(/'([^']+)'/)?.[1];
       b.classList.toggle('active', key===f);
