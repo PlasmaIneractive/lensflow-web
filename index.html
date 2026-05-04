@@ -1127,10 +1127,7 @@ window.LF = {
   async signOut() {
     try { await signOut(auth); } catch(e) {}
   },
-  goSubscribe() {
-    // Stripe entegrasyonu gelince buraya yönlendirme eklenecek
-    alert('Abonelik sistemi yakında aktif olacak!');
-  },
+
   setFilter(f) {
     // 'Tümü' veya cfg.allKey gelirse null yap
     activeFilter = (f==='Tümü'||f===LANG_CONFIG[lang].allKey) ? null : f;
