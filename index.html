@@ -291,7 +291,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="ticker-track" id="ttrack"></div>
   </div>
 </div>
-<div class="ad-band">
+<div class="ad-band" id="mainAdBand">
   <div class="ad-label-row"><div class="ad-line"></div><span class="ad-label-txt">Reklam</span><div class="ad-line"></div></div>
   <div class="ad-slot"><span class="ad-slot-txt">728 × 90</span></div>
 </div>
@@ -426,16 +426,11 @@ function renderAuthArea(user) {
 
 function updateAds() {
   const isPremium = userPlan === 'premium';
-  // Tüm reklam alanlarını gizle/göster
-  document.querySelectorAll('.ad-slot, .ad-band, .hero-ad-slot, .ncard-ad, .ad-slot-txt').forEach(ad => {
+  document.querySelectorAll('.ad-slot, .ad-band, .hero-ad-slot, .ncard-ad').forEach(ad => {
     ad.style.display = isPremium ? 'none' : '';
   });
-  // Reklam bandı wrapper'larını da gizle
-  document.querySelectorAll('[class*="ad-"]').forEach(ad => {
-    if (ad.className.includes('ad-slot') || ad.className.includes('ad-band') || ad.className.includes('ncard-ad') || ad.className.includes('hero-ad')) {
-      ad.style.display = isPremium ? 'none' : '';
-    }
-  });
+  const mainAdBand = document.getElementById('mainAdBand');
+  if (mainAdBand) mainAdBand.style.display = isPremium ? 'none' : '';
 }
 
 window.toggleUserMenu = () => {
@@ -655,7 +650,11 @@ function buildHero(news) {
     const slide = document.createElement('div');
     if (s.type === 'ad') {
       slide.className = 'hero-slide ad-slide';
-      slide.innerHTML = `<div class="hero-ad-slot"><span class="hero-ad-tag">REKLAM</span><span class="hero-ad-txt">600×80</span></div>`;
+      if (userPlan !== 'premium') {
+        slide.innerHTML = `<div class="hero-ad-slot"><span class="hero-ad-tag">REKLAM</span><span class="hero-ad-txt">600×80</span></div>`;
+      } else {
+        slide.style.display = 'none';
+      }
     } else {
       const timeAgo = s.tarih ? Math.round((Date.now()-s.tarih.toDate().getTime())/3600000) : '';
       slide.className = 'hero-slide';
@@ -727,7 +726,7 @@ function renderCards() {
   const visible = filteredNews.slice(0, visibleCount);
   let html = '';
   visible.forEach((n, i) => {
-    if (i>0 && i%18===0) html+=`<div class="ncard-ad"><span class="ncard-ad-label">Reklam</span><span class="ncard-ad-slot">728×90</span></div>`;
+    if (i>0 && i%18===0 && userPlan !== 'premium') html+=`<div class="ncard-ad"><span class="ncard-ad-label">Reklam</span><span class="ncard-ad-slot">728×90</span></div>`;
     const timeAgo = n.tarih ? Math.round((Date.now()-n.tarih.toDate().getTime())/3600000) : '';
     const catLabel = catMap[n.kategori]||n.kategori||'';
     const proxied = proxyImg(n.gorsel);
