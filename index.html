@@ -830,6 +830,13 @@ window.LF = {
     document.getElementById('tabOzet').textContent = cfg.rdrOzet;
     document.getElementById('tabOkuma').textContent = cfg.rdrOkuma;
     document.getElementById('tabKaynak').textContent = cfg.rdrKaynak;
+    // icerikVar yoksa Okuma Modu sekmesini gizle
+    const tabOkuma = document.getElementById('tabOkuma');
+    if (haber.icerikVar === true) {
+      tabOkuma.style.display = '';
+    } else {
+      tabOkuma.style.display = 'none';
+    }
     document.getElementById('readerOverlay').classList.add('open');
     document.getElementById('readerPanel').classList.add('open');
     document.body.style.overflow = 'hidden';
