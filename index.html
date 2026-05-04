@@ -686,7 +686,7 @@ function updateHero() {
   document.querySelectorAll('.hdot').forEach((d,i) => d.classList.toggle('active', i===heroIdx));
   const total = heroSlides.filter(s => s.type==='news').length;
   const cur = heroSlides.slice(0,heroIdx+1).filter(s => s.type==='news').length;
-  document.getElementById('heroCounter').textContent = heroSlides[heroIdx]?.type==='ad' ? 'AD' : `${cur} / ${total}`;
+  document.getElementById('heroCounter').textContent = heroSlides[heroIdx]?.type==='ad' ? '' : `${cur} / ${total}`;
 }
 function heroGoTo(i) { heroIdx=i; updateHero(); clearInterval(heroTimer); heroTimer=setInterval(()=>{heroIdx=(heroIdx+1)%heroSlides.length;updateHero();},5000); }
 window.heroGo = dir => heroGoTo((heroIdx+dir+heroSlides.length)%heroSlides.length);
