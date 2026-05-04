@@ -31,8 +31,38 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .lang-dd{position:relative}
 .lang-btn{display:flex;align-items:center;gap:7px;background:var(--bg3);border:0.5px solid var(--border);border-radius:24px;padding:8px 16px;cursor:pointer;font-size:14px;color:var(--text);white-space:nowrap;transition:border-color .15s;font-family:'DM Sans',sans-serif}
 .lang-btn:hover{border-color:var(--tk)}
+.auth-btn{display:flex;align-items:center;gap:8px;background:var(--tk);color:#000;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.2s;white-space:nowrap}
+.auth-btn:hover{opacity:0.85}
+.auth-btn.signout{background:transparent;color:var(--text3);border:0.5px solid var(--border)}
+.auth-btn.signout:hover{color:var(--text);border-color:var(--text3)}
+.user-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover}
+.user-menu{position:relative}
+.user-menu-dd{position:absolute;right:0;top:calc(100% + 8px);background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;min-width:200px;display:none;z-index:200}
+.user-menu-dd.open{display:block}
+.user-menu-item{padding:12px 16px;font-size:13px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:0.5px solid var(--border)}
+.user-menu-item:last-child{border-bottom:none}
+.user-menu-item:hover{background:var(--bg3);color:var(--text)}
+.user-menu-item.danger{color:#ff4444}
+.user-plan{padding:12px 16px;border-bottom:0.5px solid var(--border)}
+.user-plan-name{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.user-plan-val{font-size:13px;color:var(--tk);font-weight:600;margin-top:2px}
 .lang-arr{width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-top:3px solid var(--text3);transition:transform .15s}
-.lang-btn.open .lang-arr{transform:rotate(180deg)}
+.lang-btn.open .auth-btn{display:flex;align-items:center;gap:8px;background:var(--tk);color:#000;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.2s;white-space:nowrap}
+.auth-btn:hover{opacity:0.85}
+.auth-btn.signout{background:transparent;color:var(--text3);border:0.5px solid var(--border)}
+.auth-btn.signout:hover{color:var(--text);border-color:var(--text3)}
+.user-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover}
+.user-menu{position:relative}
+.user-menu-dd{position:absolute;right:0;top:calc(100% + 8px);background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;min-width:200px;display:none;z-index:200}
+.user-menu-dd.open{display:block}
+.user-menu-item{padding:12px 16px;font-size:13px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:0.5px solid var(--border)}
+.user-menu-item:last-child{border-bottom:none}
+.user-menu-item:hover{background:var(--bg3);color:var(--text)}
+.user-menu-item.danger{color:#ff4444}
+.user-plan{padding:12px 16px;border-bottom:0.5px solid var(--border)}
+.user-plan-name{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.user-plan-val{font-size:13px;color:var(--tk);font-weight:600;margin-top:2px}
+.lang-arr{transform:rotate(180deg)}
 .lang-menu{position:absolute;right:0;top:calc(100% + 6px);background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;min-width:150px;display:none;z-index:200}
 .lang-menu.open{display:block}
 .loption{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:13px;color:var(--text2);border-bottom:0.5px solid var(--border2);transition:all .1s}
@@ -214,6 +244,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="loption" onclick="setLang('tr')"><span class="loflag">🇹🇷</span><span class="loname">Türkçe</span><span class="lochk"></span></div>
       </div>
     </div>
+    <div id="authArea"></div>
   </div>
 </nav>
 <div class="mobile-search">
@@ -279,7 +310,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, updateDoc, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, updateDoc, setDoc, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDIWhUUEmp1of0j8sjQxsDTa4xf8JQBEmo",
@@ -291,6 +323,87 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+
+// Kullanıcı durumu
+let currentUser = null;
+let userPlan = 'free'; // 'free' | 'premium'
+
+// Auth state değişikliklerini dinle
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+  if (user) {
+    // Kullanıcı bilgisini Firebase'e kaydet/güncelle
+    try {
+      await setDoc(doc(db, 'users', user.uid), {
+        email: user.email,
+        name: user.displayName,
+        photo: user.photoURL,
+        lastSeen: Timestamp.now(),
+      }, { merge: true });
+      // Plan bilgisini çek
+      const userDoc = await getDocs(query(collection(db,'users')));
+      // Basit: users/uid'den plan oku
+      const { getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      const uSnap = await getDoc(doc(db,'users',user.uid));
+      userPlan = uSnap.exists() ? (uSnap.data().plan || 'free') : 'free';
+    } catch(e) { userPlan = 'free'; }
+    renderAuthArea(user);
+  } else {
+    userPlan = 'free';
+    renderAuthArea(null);
+  }
+  // Reklamları plan'a göre göster/gizle
+  updateAds();
+});
+
+function renderAuthArea(user) {
+  const area = document.getElementById('authArea');
+  if (!area) return;
+  if (!user) {
+    area.innerHTML = `<button class="auth-btn" onclick="window.LF.signIn()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+      Sign In
+    </button>`;
+  } else {
+    const planLabel = userPlan === 'premium' ? '⭐ Premium' : 'Free';
+    area.innerHTML = `<div class="user-menu" id="userMenu">
+      <button style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:8px" onclick="toggleUserMenu()">
+        <img class="user-avatar" src="${user.photoURL||''}" onerror="this.style.display='none'" alt="">
+        <span style="font-size:13px;color:var(--text);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${user.displayName||user.email}</span>
+        <span style="font-size:10px;color:var(--tk)">${planLabel}</span>
+      </button>
+      <div class="user-menu-dd" id="userMenuDd">
+        <div class="user-plan">
+          <div class="user-plan-name">Plan</div>
+          <div class="user-plan-val">${planLabel}</div>
+        </div>
+        ${userPlan === 'free' ? `<div class="user-menu-item" onclick="window.LF.goSubscribe()">⭐ Upgrade to Premium</div>` : ''}
+        <div class="user-menu-item danger" onclick="window.LF.signOut()">Sign Out</div>
+      </div>
+    </div>`;
+  }
+}
+
+function updateAds() {
+  // Premium kullanıcılar için reklamları gizle
+  document.querySelectorAll('.ad-slot').forEach(ad => {
+    ad.style.display = userPlan === 'premium' ? 'none' : '';
+  });
+}
+
+window.toggleUserMenu = () => {
+  const dd = document.getElementById('userMenuDd');
+  if (dd) dd.classList.toggle('open');
+};
+document.addEventListener('click', e => {
+  const menu = document.getElementById('userMenu');
+  if (menu && !menu.contains(e.target)) {
+    const dd = document.getElementById('userMenuDd');
+    if (dd) dd.classList.remove('open');
+  }
+});
 
 const IMG_PROXY = 'https://img.lensflow.news/?url=';
 function proxyImg(url) {
@@ -906,6 +1019,17 @@ window.LF = {
     document.querySelector('.ticker') && (document.querySelector('.ticker').style.zIndex = '');
   },
 
+  async signIn() {
+    try { await signInWithPopup(auth, googleProvider); }
+    catch(e) { console.error('Giriş hatası:', e); }
+  },
+  async signOut() {
+    try { await signOut(auth); } catch(e) {}
+  },
+  goSubscribe() {
+    // Stripe entegrasyonu gelince buraya yönlendirme eklenecek
+    alert('Abonelik sistemi yakında aktif olacak!');
+  },
   setFilter(f) {
     // 'Tümü' veya cfg.allKey gelirse null yap
     activeFilter = (f==='Tümü'||f===LANG_CONFIG[lang].allKey) ? null : f;
