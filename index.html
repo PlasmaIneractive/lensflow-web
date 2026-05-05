@@ -559,7 +559,7 @@ async function loadGlobalKaynaklar() {
 async function loadNews(langKey) {
   let q;
   if (langKey === 'global') {
-    q = query(collection(db,'haberler'),orderBy('tarih','desc'),limit(500));
+    q = query(collection(db,'haberler'),orderBy('tarih','desc'),limit(1000));
     const snap = await getDocs(q);
     const globalSrc = await loadGlobalKaynaklar();
     // Sadece global kaynaklardan gelen haberleri filtrele + Türkçe haberleri çıkar
@@ -567,13 +567,13 @@ async function loadNews(langKey) {
       .map(d => ({id:d.id,...d.data()}))
       .filter(h => {
         if (!globalSrc.has(h.kaynak)) return false;
-        if (h.dil !== 'en') return false;
+        // dil filtresi kaldırıldı — global:true işareti yeterli
         // Latin alfabesi dışı başlıkları filtrele (Japonca, Arapça vb.)
         const latinOran = (h.baslik||'').replace(/[^a-zA-ZÀ-ÿ]/g,'').length / Math.max((h.baslik||'').length, 1);
         return latinOran > 0.5;
       });
   } else {
-    q = query(collection(db,'haberler'),where('dil','==',langKey),orderBy('tarih','desc'),limit(500));
+    q = query(collection(db,'haberler'),where('dil','==',langKey),orderBy('tarih','desc'),limit(1000));
     const snap = await getDocs(q);
     return snap.docs.map(d => ({id:d.id,...d.data()}));
   }
@@ -681,7 +681,7 @@ function buildHero(news) {
       const proxied = proxyImg(s.gorsel);
       const catLabel = CATEGORY_MAP[lang][s.kategori]||s.kategori||'';
       slide.innerHTML = `
-        ${proxied ? `<div class="hero-img"><img src="${proxied}" alt="" loading="lazy" onerror="this.parentElement.className='hero-img-placeholder'"></div>` : '<div class="hero-img-placeholder"></div>'}
+        ${proxied ? `<div class="hero-img"><img src="${proxied}" data-src="${n.gorsel||''}" alt="" loading="lazy" onerror="this.parentElement.className='hero-img-placeholder'"></div>` : '<div class="hero-img-placeholder"></div>'}
         <div class="hero-overlay"></div>
         <div class="hero-text">
           <div class="hero-accent"></div>
@@ -751,7 +751,7 @@ function renderCards() {
     const catLabel = catMap[n.kategori]||n.kategori||'';
     const proxied = proxyImg(n.gorsel);
     html+=`<div class="ncard" onclick="window.LF.openReader(window.LF.news[${i}])">
-      <div class="nimg">${proxied?`<img src="${proxied}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">`:''}</div>
+      <div class="nimg">${proxied?`<img src="${proxied}" alt="" loading="lazy" onerror="if(this.dataset.src&&this.src!==this.dataset.src){this.src=this.dataset.src}else{this.parentElement.style.display='none'}">`:''}</div>
       <div class="ncard-body">
         <div class="ncat">${catLabel}</div>
         <div class="ntitle">${n.baslik}</div>
@@ -766,10 +766,12 @@ function renderCards() {
   window.LF.news = filteredNews;
   const anchor = document.getElementById('infiniteAnchor');
   if (anchor) {
-    const obs = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) { obs.disconnect(); visibleCount+=PAGE_SIZE; renderCards(); }
-    }, {rootMargin:'600px'});
-    obs.observe(anchor);
+    setTimeout(() => {
+      const obs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) { obs.disconnect(); visibleCount+=PAGE_SIZE; renderCards(); }
+      }, {rootMargin:'800px', threshold: 0});
+      obs.observe(anchor);
+    }, 100);
   }
 }
 
