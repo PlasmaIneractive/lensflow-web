@@ -533,7 +533,63 @@ const SOURCE_LOGOS = {
 };
 
 function getSourceLogo(kaynak) {
-  return SOURCE_LOGOS[kaynak] || null;
+  // Domain haritası — Clearbit Logo API kullanır
+  const DOMAINS = {
+    'Washington Post':'washingtonpost.com','Financial Times':'ft.com',
+    'The Economist':'economist.com','New York Times':'nytimes.com',
+    'The New York Times':'nytimes.com','Wall Street Journal':'wsj.com',
+    'Reuters':'reuters.com','Bloomberg':'bloomberg.com',
+    'BBC News':'bbc.co.uk','BBC World Service':'bbc.co.uk',
+    'BBC Türkçe':'bbc.co.uk','BBC Arabic':'bbc.co.uk','BBC Hindi':'bbc.co.uk',
+    'BBC Chinese':'bbc.co.uk','BBC Russian':'bbc.co.uk','BBC Persian':'bbc.co.uk',
+    'BBC Ukraine':'bbc.co.uk','BBC Brasil':'bbc.co.uk','BBC Mundo':'bbc.co.uk',
+    'BBC Vietnamese':'bbc.co.uk','BBC Indonesia':'bbc.co.uk',
+    'The Guardian':'theguardian.com','The Guardian World':'theguardian.com',
+    'CNN':'cnn.com','Al Jazeera':'aljazeera.com','Al Jazeera English':'aljazeera.com',
+    'Al Jazeera Arabic':'aljazeera.net','NBC News':'nbcnews.com',
+    'ABC News':'abcnews.go.com','Fox News':'foxnews.com',
+    'NPR':'npr.org','NPR News':'npr.org','The Atlantic':'theatlantic.com',
+    'Foreign Policy':'foreignpolicy.com','AP News':'apnews.com',
+    'Associated Press':'apnews.com','Sky News':'skynews.com',
+    'France 24':'france24.com','France 24 English':'france24.com',
+    'France 24 Arabic':'france24.com','Deutsche Welle':'dw.com',
+    'DW English':'dw.com','DW Türkçe':'dw.com','DW Arabic':'dw.com',
+    'DW Russian':'dw.com','DW Hindi':'dw.com','DW Chinese':'dw.com',
+    'DW Brasil':'dw.com','DW Español':'dw.com','NHK World':'nhk.or.jp',
+    'Euronews':'euronews.com','Euronews English':'euronews.com',
+    'Euronews Arabic':'euronews.com','TRT World':'trtworld.com',
+    'Middle East Eye':'middleeasteye.net','Forbes':'forbes.com',
+    'TIME':'time.com','Wired':'wired.com','TechCrunch':'techcrunch.com',
+    'Politico':'politico.com','Vox':'vox.com','The Verge':'theverge.com',
+    'Slate':'slate.com','HuffPost':'huffpost.com','CNBC':'cnbc.com',
+    'MarketWatch':'marketwatch.com','South China Morning Post':'scmp.com',
+    'Japan Times':'japantimes.co.jp','Jerusalem Post':'jpost.com',
+    'Straits Times':'straitstimes.com','Channel News Asia':'channelnewsasia.com',
+    'Cumhuriyet':'cumhuriyet.com.tr','Sabah':'sabah.com.tr',
+    'Milliyet':'milliyet.com.tr','Anadolu Ajansı':'aa.com.tr',
+    'Habertürk':'haberturk.com','CNN Türk':'cnnturk.com',
+    'TRT Haber':'trthaber.com','Sözcü':'sozcu.com.tr',
+    'Bianet':'bianet.org','Gazete Duvar':'gazeteduvar.com.tr',
+    'Medyascope':'medyascope.tv','Le Monde':'lemonde.fr',
+    'Le Figaro':'lefigaro.fr','La Repubblica':'repubblica.it',
+    'ANSA':'ansa.it','El País':'elpais.com','Meduza':'meduza.io',
+    'Sky News Arabia':'skynewsarabia.com','Asharq Al-Awsat':'aawsat.com',
+    'Arab News':'arabnews.com','NOS':'nos.nl','De Volkskrant':'volkskrant.nl',
+    'SVT Nyheter':'svt.se','Aftonbladet':'aftonbladet.se','NRK':'nrk.no',
+    'DR Nyheder':'dr.dk','Proto Thema':'protothema.gr',
+    'Ukrainska Pravda':'pravda.com.ua','VnExpress':'vnexpress.net',
+    'Yonhap KR':'yna.co.kr','Tagesschau':'tagesschau.de',
+    'Spiegel Online':'spiegel.de','Zeit Online':'zeit.de','NZZ':'nzz.ch',
+    'Der Standard':'derstandard.at','Jeune Afrique':'jeuneafrique.com',
+    'Le Devoir':'ledevoir.com','Clarín':'clarin.com','G1 Brasil':'g1.globo.com',
+    'Radio Free Asia':'rfa.org','RFI Chinese':'rfi.fr',
+    'Il Fatto Quotidiano':'ilfattoquotidiano.it',
+    'Corriere della Sera':'corriere.it','Bangkok Post':'bangkokpost.com',
+    'The Diplomat':'thediplomat.com','Daily Sabah':'dailysabah.com',
+  };
+  const domain = DOMAINS[kaynak];
+  if (!domain) return null;
+  return `https://logo.clearbit.com/${domain}`;
 }
 function proxyImg(url) {
   if (!url) return '';
