@@ -567,7 +567,7 @@ async function loadNews(langKey) {
       .map(d => ({id:d.id,...d.data()}))
       .filter(h => {
         if (!globalSrc.has(h.kaynak)) return false;
-        // dil filtresi kaldırıldı — global:true işareti yeterli
+        if (h.dil !== 'en') return false; // global sekmesinde sadece İngilizce
         // Latin alfabesi dışı başlıkları filtrele (Japonca, Arapça vb.)
         const latinOran = (h.baslik||'').replace(/[^a-zA-ZÀ-ÿ]/g,'').length / Math.max((h.baslik||'').length, 1);
         return latinOran > 0.5;
@@ -760,18 +760,24 @@ function renderCards() {
     </div>`;
   });
   if (visibleCount < filteredNews.length) {
-    html+=`<div style="grid-column:1/-1;height:60px;display:flex;align-items:center;justify-content:center" id="infiniteAnchor"><div class="spin"></div></div>`;
+    html+=`<div style="grid-column:1/-1;height:40px;display:flex;align-items:center;justify-content:center;opacity:0.4" id="infiniteAnchor"><div class="spin"></div></div>`;
   }
   grid.innerHTML = html;
   window.LF.news = filteredNews;
-  const anchor = document.getElementById('infiniteAnchor');
-  if (anchor) {
-    setTimeout(() => {
-      const obs = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) { obs.disconnect(); visibleCount+=PAGE_SIZE; renderCards(); }
-      }, {rootMargin:'800px', threshold: 0});
-      obs.observe(anchor);
-    }, 100);
+  // Sonsuz scroll — window scroll event
+  if (visibleCount < filteredNews.length) {
+    window._lfScrollHandler && window.removeEventListener('scroll', window._lfScrollHandler);
+    window._lfScrollHandler = function() {
+      const scrolled = window.scrollY + window.innerHeight;
+      const total = document.documentElement.scrollHeight;
+      if (scrolled >= total - 600) {
+        window.removeEventListener('scroll', window._lfScrollHandler);
+        window._lfScrollHandler = null;
+        visibleCount += PAGE_SIZE;
+        renderCards();
+      }
+    };
+    window.addEventListener('scroll', window._lfScrollHandler, {passive: true});
   }
 }
 
