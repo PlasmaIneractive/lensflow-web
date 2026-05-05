@@ -347,8 +347,56 @@
           <span class="text-muted mono" style="font-size:11px" id="kaynakSayisi">—</span>
         </div>
         <div class="panel-body">
+          <!-- Filtre Araçları -->
+          <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+            <input type="text" id="kaynakAra" placeholder="🔍 Kaynak adı veya URL ara..."
+              style="flex:1;min-width:200px;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px"
+              oninput="kaynakFiltrele()">
+            <select id="kaynakDilFiltre" onchange="kaynakFiltrele()"
+              style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px">
+              <option value="">Tüm Diller</option>
+              <option value="tr">🇹🇷 Türkçe</option>
+              <option value="en">🇬🇧 İngilizce</option>
+              <option value="fr">🇫🇷 Fransızca</option>
+              <option value="de">🇩🇪 Almanca</option>
+              <option value="es">🇪🇸 İspanyolca</option>
+              <option value="pt">🇵🇹 Portekizce</option>
+              <option value="ar">🇸🇦 Arapça</option>
+              <option value="ja">🇯🇵 Japonca</option>
+              <option value="zh">🇨🇳 Çince</option>
+              <option value="ru">🇷🇺 Rusça</option>
+              <option value="it">🇮🇹 İtalyanca</option>
+              <option value="ko">🇰🇷 Korece</option>
+              <option value="hi">🇮🇳 Hintçe</option>
+              <option value="nl">🇳🇱 Hollandaca</option>
+              <option value="sv">🇸🇪 İsveççe</option>
+              <option value="no">🇳🇴 Norveççe</option>
+              <option value="da">🇩🇰 Danca</option>
+              <option value="fa">🇮🇷 Farsça</option>
+              <option value="uk">🇺🇦 Ukraynaca</option>
+              <option value="el">🇬🇷 Yunanca</option>
+              <option value="id">🇮🇩 Endonezce</option>
+              <option value="vi">🇻🇳 Vietnamca</option>
+            </select>
+            <select id="kaynakDurumFiltre" onchange="kaynakFiltrele()"
+              style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px">
+              <option value="">Tüm Durumlar</option>
+              <option value="aktif">✅ Aktif</option>
+              <option value="pasif">❌ Pasif</option>
+            </select>
+            <select id="kaynakGlobalFiltre" onchange="kaynakFiltrele()"
+              style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px">
+              <option value="">Tüm Tipler</option>
+              <option value="global">🌍 Global</option>
+              <option value="local">📍 Yerel</option>
+            </select>
+            <button onclick="kaynakFiltreSifirla()" style="padding:8px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;cursor:pointer">
+              ↺ Sıfırla
+            </button>
+            <span id="kaynakFiltreInfo" style="font-size:12px;color:var(--text-muted)"></span>
+          </div>
           <table>
-            <thead><tr><th>Ad</th><th>URL</th><th>Dil</th><th>Kategori</th><th>Aktif</th><th></th></tr></thead>
+            <thead><tr><th>Ad</th><th>URL</th><th>Dil</th><th>Tip</th><th>Aktif</th><th></th></tr></thead>
             <tbody id="kaynakTable"><tr><td colspan="6" class="text-muted">Yükleniyor...</td></tr></tbody>
           </table>
         </div>
@@ -538,28 +586,68 @@ async function loadDashboard() {
 }
 
 // KAYNAKLAR
+let _tumKaynaklar = []; // Tüm kaynakları sakla, filtre için
+
 async function loadKaynaklar() {
   const snap = await getDocs(collection(db, 'kaynaklar'));
+  _tumKaynaklar = snap.docs.map(d => ({id: d.id, ...d.data()}));
   document.getElementById('kaynakSayisi').textContent = snap.size + ' kaynak';
+  kaynakFiltrele();
+}
+
+function kaynakFiltrele() {
+  const ara = (document.getElementById('kaynakAra')?.value||'').toLowerCase();
+  const dil = document.getElementById('kaynakDilFiltre')?.value||'';
+  const durum = document.getElementById('kaynakDurumFiltre')?.value||'';
+  const global = document.getElementById('kaynakGlobalFiltre')?.value||'';
+
+  const filtrelendi = _tumKaynaklar.filter(k => {
+    if (ara && !( (k.isim||'').toLowerCase().includes(ara) || (k.url||'').toLowerCase().includes(ara) )) return false;
+    if (dil && k.dil !== dil) return false;
+    if (durum === 'aktif' && !k.aktif) return false;
+    if (durum === 'pasif' && k.aktif) return false;
+    if (global === 'global' && !k.global) return false;
+    if (global === 'local' && k.global) return false;
+    return true;
+  });
+
+  document.getElementById('kaynakFiltreInfo').textContent =
+    filtrelendi.length === _tumKaynaklar.length ? '' : `${filtrelendi.length} / ${_tumKaynaklar.length} kaynak`;
+
   const tbody = document.getElementById('kaynakTable');
+  kaynakTabloRender(filtrelendi, tbody);
+}
+
+function kaynakFiltreSifirla() {
+  document.getElementById('kaynakAra').value = '';
+  document.getElementById('kaynakDilFiltre').value = '';
+  document.getElementById('kaynakDurumFiltre').value = '';
+  document.getElementById('kaynakGlobalFiltre').value = '';
+  document.getElementById('kaynakFiltreInfo').textContent = '';
+  kaynakFiltrele();
+}
+
+function kaynakTabloRender(kaynaklar, tbody) {
   tbody.innerHTML = '';
-  snap.forEach(d => {
-    const k = d.data();
+  if (!kaynaklar.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-muted">Kaynak bulunamadı</td></tr>';
+    return;
+  }
+  kaynaklar.forEach(k => {
     tbody.innerHTML += `<tr>
-      <td><strong>${k.isim||'—'}</strong></td>
-      <td class="mono text-muted" style="font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${k.url||'—'}</td>
+      <td><strong>${k.isim||'—'}</strong>${k.global?` <span style="font-size:10px;color:#00bcd4">🌍</span>`:''}</td>
+      <td class="mono text-muted" style="font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${k.url||''}">${k.url||'—'}</td>
       <td><span class="badge ${k.dil==='tr'?'yellow':'green'}">${k.dil||'—'}</span></td>
-      <td class="text-muted">${k.kategori||'Otomatik'}</td>
+      <td class="text-muted" style="font-size:11px">${k.global?'🌍 Global':'📍 Yerel'}</td>
       <td>
         <label class="toggle">
-          <input type="checkbox" ${k.aktif?'checked':''} onchange="toggleKaynak('${d.id}', this.checked)">
+          <input type="checkbox" ${k.aktif?'checked':''} onchange="toggleKaynak('${k.id}', this.checked)">
           <span class="toggle-slider"></span>
         </label>
       </td>
-      <td><button class="btn btn-danger" style="padding:4px 10px;font-size:11px" onclick="kaynakSil('${d.id}')">Sil</button></td>
+      <td><button class="btn btn-danger" style="padding:4px 10px;font-size:11px" onclick="kaynakSil('${k.id}')">Sil</button></td>
     </tr>`;
   });
-  if (snap.empty) tbody.innerHTML = '<tr><td colspan="6" class="text-muted">Kaynak bulunamadı</td></tr>';
 }
 
 window.kaynakEkle = async () => {

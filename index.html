@@ -339,6 +339,34 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="reader-tab" id="tabOkuma">◎ Okuma Modu</button>
     <button class="reader-tab" id="tabKaynak">↗ Kaynağından Oku</button>
   </div>
+  <div id="translateBar" style="padding:8px 16px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <span style="font-size:12px;color:var(--text3)">🌐 Çevir:</span>
+    <select id="translateLang" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;cursor:pointer">
+      <option value="">Dil seçin...</option>
+      <option value="Turkish">🇹🇷 Türkçe</option>
+      <option value="English">🇬🇧 İngilizce</option>
+      <option value="Arabic">🇸🇦 Arapça</option>
+      <option value="French">🇫🇷 Fransızca</option>
+      <option value="German">🇩🇪 Almanca</option>
+      <option value="Spanish">🇪🇸 İspanyolca</option>
+      <option value="Italian">🇮🇹 İtalyanca</option>
+      <option value="Portuguese">🇵🇹 Portekizce</option>
+      <option value="Russian">🇷🇺 Rusça</option>
+      <option value="Chinese">🇨🇳 Çince</option>
+      <option value="Japanese">🇯🇵 Japonca</option>
+      <option value="Korean">🇰🇷 Korece</option>
+      <option value="Hindi">🇮🇳 Hintçe</option>
+      <option value="Persian">🇮🇷 Farsça</option>
+      <option value="Dutch">🇳🇱 Hollandaca</option>
+      <option value="Swedish">🇸🇪 İsveççe</option>
+      <option value="Polish">🇵🇱 Lehçe</option>
+      <option value="Greek">🇬🇷 Yunanca</option>
+      <option value="Ukrainian">🇺🇦 Ukraynaca</option>
+    </select>
+    <button id="translateBtn" onclick="window.LF.translateReader()" style="padding:4px 12px;background:var(--tk);border:none;border-radius:6px;color:#000;font-size:12px;font-weight:600;cursor:pointer">Çevir</button>
+    <button id="translateOrigBtn" onclick="window.LF.showOriginal()" style="display:none;padding:4px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;cursor:pointer">Orijinal</button>
+    <span id="translateStatus" style="font-size:11px;color:var(--text3)"></span>
+  </div>
   <div id="readerAdTop" class="ad-slot" style="margin:8px 16px;display:none"><span class="ad-slot-txt">728 × 90</span></div>
   <div class="reader-body" id="readerBody">
     <div class="loading"><div class="spin"></div></div>
@@ -1214,6 +1242,14 @@ window.LF = {
     document.getElementById('readerOverlay').classList.add('open');
     document.getElementById('readerPanel').classList.add('open');
     updateAds();
+    // Çeviri barı — sadece premium
+    const tBar = document.getElementById('translateBar');
+    if (tBar) {
+      tBar.style.display = userPlan === 'premium' ? 'flex' : 'none';
+      document.getElementById('translateLang').value = '';
+      document.getElementById('translateOrigBtn').style.display = 'none';
+      document.getElementById('translateStatus').textContent = '';
+    }
     document.body.style.overflow = 'hidden';
     document.querySelector('.navbar').style.zIndex = '1';
     document.querySelector('.ticker') && (document.querySelector('.ticker').style.zIndex = '1');
@@ -1232,6 +1268,82 @@ window.LF = {
     document.querySelectorAll('.reader-tab').forEach(t=>t.classList.remove('active'));
     document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
     readerRenderTab(tab, this.currentHaber);
+  },
+
+  async translateReader() {
+    if (userPlan !== 'premium') return;
+    const lang = document.getElementById('translateLang').value;
+    if (!lang) { document.getElementById('translateStatus').textContent = '⚠️ Dil seçin'; return; }
+
+    const haber = this.currentHaber;
+    if (!haber) return;
+
+    const btn = document.getElementById('translateBtn');
+    const status = document.getElementById('translateStatus');
+    btn.disabled = true;
+    btn.textContent = '...';
+    status.textContent = 'Çevriliyor...';
+
+    try {
+      const metin = [
+        haber.baslik || '',
+        haber.ozet || haber.icerik || ''
+      ].filter(Boolean).join('\n\n');
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1000,
+          messages: [{
+            role: 'user',
+            content: `Translate the following news content to ${lang}. Keep the same structure (title on first line, then content). Only output the translation, nothing else:\n\n${metin}`
+          }]
+        })
+      });
+
+      const data = await response.json();
+      const translated = data.content?.[0]?.text || '';
+      if (!translated) throw new Error('Çeviri alınamadı');
+
+      const lines = translated.split('\n').filter(l => l.trim());
+      const translatedTitle = lines[0] || haber.baslik;
+      const translatedContent = lines.slice(1).join('\n') || '';
+
+      // Orijinal içeriği sakla
+      this._originalHaber = { ...haber };
+
+      // Reader'ı çevrilmiş içerikle güncelle
+      this.currentHaber = {
+        ...haber,
+        baslik: translatedTitle,
+        ozet: translatedContent,
+        icerik: translatedContent,
+        _translated: true,
+        _translateLang: lang
+      };
+
+      readerRenderTab(this.currentTab, this.currentHaber);
+      document.getElementById('translateOrigBtn').style.display = '';
+      status.textContent = `✓ ${lang} diline çevrildi`;
+    } catch(e) {
+      status.textContent = '❌ Hata: ' + e.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Çevir';
+    }
+  },
+
+  showOriginal() {
+    if (this._originalHaber) {
+      this.currentHaber = this._originalHaber;
+      this._originalHaber = null;
+      readerRenderTab(this.currentTab, this.currentHaber);
+      document.getElementById('translateOrigBtn').style.display = 'none';
+      document.getElementById('translateStatus').textContent = '';
+      document.getElementById('translateLang').value = '';
+    }
   },
 
   closeReader() {
