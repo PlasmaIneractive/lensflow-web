@@ -532,8 +532,8 @@ const SOURCE_LOGOS = {
   'Meduza': 'https://meduza.io/favicon.ico',
 };
 
-function getSourceLogo(kaynak) {
-  // Domain haritası — Clearbit Logo API kullanır
+window.getSourceLogo = function getSourceLogo(kaynak) {
+  // Domain haritası — Google Favicon API kullanır (engellenmez)
   const DOMAINS = {
     'Washington Post':'washingtonpost.com','Financial Times':'ft.com',
     'The Economist':'economist.com','New York Times':'nytimes.com',
@@ -589,7 +589,7 @@ function getSourceLogo(kaynak) {
   };
   const domain = DOMAINS[kaynak];
   if (!domain) return null;
-  return `https://logo.clearbit.com/${domain}`;
+  return `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
 }
 function proxyImg(url) {
   if (!url) return '';
