@@ -1307,23 +1307,20 @@ window.LF = {
       if (!translated) throw new Error(data.error || 'Çeviri alınamadı');
 
       const lines = translated.split('\n').filter(l => l.trim());
-      const translatedTitle = lines[0] || haber.baslik;
-      const translatedContent = lines.slice(1).join('\n') || '';
+      const translatedTitle = lines[0] || '';
+      const translatedContent = lines.slice(1).join('\n\n') || translated;
 
-      // Orijinal içeriği sakla
+      // Orijinal DOM içeriğini sakla
+      this._originalTitle = document.querySelector('.reader-title')?.innerHTML;
+      this._originalSummary = document.querySelector('.reader-summary-text')?.innerHTML;
       this._originalHaber = { ...haber };
 
-      // Reader'ı çevrilmiş içerikle güncelle
-      this.currentHaber = {
-        ...haber,
-        baslik: translatedTitle,
-        ozet: translatedContent,
-        icerik: translatedContent,
-        _translated: true,
-        _translateLang: lang
-      };
+      // DOM'u direkt güncelle — hızlı ve kesin
+      const titleEl = document.querySelector('.reader-title');
+      const summaryEl = document.querySelector('.reader-summary-text') || document.querySelector('.reader-article');
+      if (titleEl && translatedTitle) titleEl.textContent = translatedTitle;
+      if (summaryEl && translatedContent) summaryEl.textContent = translatedContent;
 
-      readerRenderTab(this.currentTab, this.currentHaber);
       document.getElementById('translateOrigBtn').style.display = '';
       status.textContent = `✓ ${lang} diline çevrildi`;
     } catch(e) {
@@ -1335,14 +1332,16 @@ window.LF = {
   },
 
   showOriginal() {
-    if (this._originalHaber) {
-      this.currentHaber = this._originalHaber;
-      this._originalHaber = null;
-      readerRenderTab(this.currentTab, this.currentHaber);
-      document.getElementById('translateOrigBtn').style.display = 'none';
-      document.getElementById('translateStatus').textContent = '';
-      document.getElementById('translateLang').value = '';
-    }
+    const titleEl = document.querySelector('.reader-title');
+    const summaryEl = document.querySelector('.reader-summary-text') || document.querySelector('.reader-article');
+    if (titleEl && this._originalTitle) titleEl.innerHTML = this._originalTitle;
+    if (summaryEl && this._originalSummary) summaryEl.innerHTML = this._originalSummary;
+    this._originalHaber = null;
+    this._originalTitle = null;
+    this._originalSummary = null;
+    document.getElementById('translateOrigBtn').style.display = 'none';
+    document.getElementById('translateStatus').textContent = '';
+    document.getElementById('translateLang').value = '';
   },
 
   closeReader() {
