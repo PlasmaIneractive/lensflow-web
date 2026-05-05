@@ -541,7 +541,7 @@ let searchQ = '';
 let activeFilter = null;
 let heroIdx = 0, heroSlides = [], heroTimer = null, dragStart = null;
 let tOfs = 0, tW = 0, tRAF = null, tPaused = false;
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 40;
 let visibleCount = PAGE_SIZE;
 let filteredNews = [];
 
@@ -760,7 +760,7 @@ function renderCards() {
     </div>`;
   });
   if (visibleCount < filteredNews.length) {
-    html+=`<div style="grid-column:1/-1;height:10px" id="infiniteAnchor"></div>`;
+    html+=`<div style="grid-column:1/-1;height:60px;display:flex;align-items:center;justify-content:center" id="infiniteAnchor"><div class="spin"></div></div>`;
   }
   grid.innerHTML = html;
   window.LF.news = filteredNews;
@@ -768,7 +768,7 @@ function renderCards() {
   if (anchor) {
     const obs = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) { obs.disconnect(); visibleCount+=PAGE_SIZE; renderCards(); }
-    }, {rootMargin:'200px'});
+    }, {rootMargin:'600px'});
     obs.observe(anchor);
   }
 }
