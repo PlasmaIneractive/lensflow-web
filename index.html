@@ -681,7 +681,7 @@ function buildHero(news) {
       const proxied = proxyImg(s.gorsel);
       const catLabel = CATEGORY_MAP[lang][s.kategori]||s.kategori||'';
       slide.innerHTML = `
-        ${proxied ? `<div class="hero-img"><img src="${proxied}" data-src="${n.gorsel||''}" alt="" loading="lazy" onerror="this.parentElement.className='hero-img-placeholder'"></div>` : '<div class="hero-img-placeholder"></div>'}
+        ${proxied ? `<div class="hero-img"><img src="${proxied}" alt="" loading="lazy" onerror="this.parentElement.className='hero-img-placeholder'"></div>` : '<div class="hero-img-placeholder"></div>'}
         <div class="hero-overlay"></div>
         <div class="hero-text">
           <div class="hero-accent"></div>
