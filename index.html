@@ -156,7 +156,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .nsrc{font-size:11px;color:var(--tk);font-weight:500}
 .ntime{font-size:11px;color:var(--text3)}
 .nimg{background:var(--bg3);overflow:hidden;flex-shrink:0}
-.nimg img{width:100%;height:160px;object-fit:cover;display:block}
+.nimg img{width:100%;height:160px;object-fit:cover;display:block}.nimg img.logo-fallback{object-fit:contain;padding:24px;background:var(--bg2)}
 .no-results{font-size:13px;color:var(--text3);padding:2rem 0;text-align:center}
 .mobile-search{display:none;align-items:center;gap:8px;background:var(--bg2);border-bottom:0.5px solid var(--border);padding:8px 1rem}
 .mobile-search .search-wrap{display:flex;flex:1;max-width:none;border-bottom:1px solid var(--border)}
@@ -464,6 +464,77 @@ document.addEventListener('click', e => {
 });
 
 const IMG_PROXY = 'https://img.lensflow.news/?url=';
+
+// Kaynak logo haritası — görseli olmayan haberler için
+const SOURCE_LOGOS = {
+  'Washington Post': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/The_Logo_of_The_Washington_Post_Newspaper.svg/320px-The_Logo_of_The_Washington_Post_Newspaper.svg.png',
+  'Financial Times': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Financial_Times_corporate_logo_%28Background%29.svg/320px-Financial_Times_corporate_logo_%28Background%29.svg.png',
+  'The Economist': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/The_Economist_Logo.svg/320px-The_Economist_Logo.svg.png',
+  'New York Times': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/The_New_York_Times_logo.png/320px-The_New_York_Times_logo.png',
+  'The New York Times': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/The_New_York_Times_logo.png/320px-The_New_York_Times_logo.png',
+  'Wall Street Journal': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/WSJ_Logo.svg/320px-WSJ_Logo.svg.png',
+  'Reuters': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Reuters_Logo.svg/320px-Reuters_Logo.svg.png',
+  'Bloomberg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Bloomberg_logo.svg/320px-Bloomberg_logo.svg.png',
+  'BBC News': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/BBC_News_2022_%28Alt%29.svg/320px-BBC_News_2022_%28Alt%29.svg.png',
+  'BBC World Service': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/BBC_News_2022_%28Alt%29.svg/320px-BBC_News_2022_%28Alt%29.svg.png',
+  'BBC Türkçe': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/BBC_News_2022_%28Alt%29.svg/320px-BBC_News_2022_%28Alt%29.svg.png',
+  'The Guardian': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/The_Guardian.svg/320px-The_Guardian.svg.png',
+  'The Guardian World': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/The_Guardian.svg/320px-The_Guardian.svg.png',
+  'CNN': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/CNN.svg/320px-CNN.svg.png',
+  'Al Jazeera': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Al_Jazeera_logo.svg/320px-Al_Jazeera_logo.svg.png',
+  'Al Jazeera English': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Al_Jazeera_logo.svg/320px-Al_Jazeera_logo.svg.png',
+  'NBC News': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/NBC_logo.svg/240px-NBC_logo.svg.png',
+  'ABC News': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/ABC_News_logo_2023.svg/240px-ABC_News_logo_2023.svg.png',
+  'Fox News': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Fox_News_Channel_logo.svg/320px-Fox_News_Channel_logo.svg.png',
+  'NPR': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/National_Public_Radio_logo.svg/320px-National_Public_Radio_logo.svg.png',
+  'NPR News': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/National_Public_Radio_logo.svg/320px-National_Public_Radio_logo.svg.png',
+  'The Atlantic': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/The_Atlantic_Logo_11.2019.svg/320px-The_Atlantic_Logo_11.2019.svg.png',
+  'Foreign Policy': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Foreign_Policy_magazine_logo.png/320px-Foreign_Policy_magazine_logo.png',
+  'AP News': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/AP_logo_2012.svg/240px-AP_logo_2012.svg.png',
+  'Associated Press': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/AP_logo_2012.svg/240px-AP_logo_2012.svg.png',
+  'Sky News': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Sky_News_International_Logo_2016.svg/320px-Sky_News_International_Logo_2016.svg.png',
+  'France 24': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/France24_logo.svg/320px-France24_logo.svg.png',
+  'France 24 English': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/France24_logo.svg/320px-France24_logo.svg.png',
+  'France 24 Arabic': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/France24_logo.svg/320px-France24_logo.svg.png',
+  'Deutsche Welle': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/DW_logo_2012.svg/320px-DW_logo_2012.svg.png',
+  'DW English': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/DW_logo_2012.svg/320px-DW_logo_2012.svg.png',
+  'DW Türkçe': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/DW_logo_2012.svg/320px-DW_logo_2012.svg.png',
+  'NHK World': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/NHK_World_logo.svg/320px-NHK_World_logo.svg.png',
+  'Euronews': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Euronews_2022.svg/320px-Euronews_2022.svg.png',
+  'Euronews English': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Euronews_2022.svg/320px-Euronews_2022.svg.png',
+  'TRT World': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/TRT_World_logo.svg/320px-TRT_World_logo.svg.png',
+  'Middle East Eye': 'https://www.middleeasteye.net/sites/default/files/styles/article_page/public/logo/MEE-logo.png',
+  'Forbes': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenForbesLogo.svg/240px-GoldenForbesLogo.svg.png',
+  'TIME': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Time_Magazine_logo.svg/240px-Time_Magazine_logo.svg.png',
+  'Wired': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Wired_logo.svg/320px-Wired_logo.svg.png',
+  'TechCrunch': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/TechCrunch_logo.svg/320px-TechCrunch_logo.svg.png',
+  'Politico': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Politico_logo_2022.svg/320px-Politico_logo_2022.svg.png',
+  'Vox': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Vox_logo.svg/320px-Vox_logo.svg.png',
+  'The Verge': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/The-Verge-Logo.svg/320px-The-Verge-Logo.svg.png',
+  'Slate': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Slate_logo_2022.svg/320px-Slate_logo_2022.svg.png',
+  'HuffPost': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/HuffPost_logo.svg/320px-HuffPost_logo.svg.png',
+  'Hacker News': 'https://upload.wikimedia.org/wikipedia/en/thumb/b/b9/Y_Combinator_Logo.svg/240px-Y_Combinator_Logo.svg.png',
+  'CNBC': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/CNBC_logo.svg/320px-CNBC_logo.svg.png',
+  'MarketWatch': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/MarketWatch_Logo.png/320px-MarketWatch_Logo.png',
+  'South China Morning Post': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/SCMP-Logo.svg/320px-SCMP-Logo.svg.png',
+  'Japan Times': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/The_Japan_Times_Logo.svg/320px-The_Japan_Times_Logo.svg.png',
+  'Jerusalem Post': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/The_Jerusalem_Post_Logo.png/320px-The_Jerusalem_Post_Logo.png',
+  'Straits Times': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/The_Straits_Times_logo.svg/320px-The_Straits_Times_logo.svg.png',
+  'Cumhuriyet': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Cumhuriyet_logo.svg/320px-Cumhuriyet_logo.svg.png',
+  'Sabah': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Sabah_logo.svg/320px-Sabah_logo.svg.png',
+  'Milliyet': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Milliyet_logo.svg/320px-Milliyet_logo.svg.png',
+  'Anadolu Ajansı': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Anadolu_Agency_logo.svg/320px-Anadolu_Agency_logo.svg.png',
+  'Le Monde': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Le_Monde_Logo.svg/320px-Le_Monde_Logo.svg.png',
+  'Le Figaro': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Figaro-logo.svg/320px-Figaro-logo.svg.png',
+  'La Repubblica': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/La_Repubblica_logo.svg/320px-La_Repubblica_logo.svg.png',
+  'ANSA': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/ANSA_logo.svg/240px-ANSA_logo.svg.png',
+  'El País': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/El_Pa%C3%ADs_logo_%282007%29.svg/320px-El_Pa%C3%ADs_logo_%282007%29.svg.png',
+  'Meduza': 'https://meduza.io/favicon.ico',
+};
+
+function getSourceLogo(kaynak) {
+  return SOURCE_LOGOS[kaynak] || null;
+}
 function proxyImg(url) {
   if (!url) return '';
   try { new URL(url); return IMG_PROXY + encodeURIComponent(url); } catch(e) { return ''; }
@@ -751,7 +822,10 @@ function renderCards() {
     const catLabel = catMap[n.kategori]||n.kategori||'';
     const proxied = proxyImg(n.gorsel);
     html+=`<div class="ncard" onclick="window.LF.openReader(window.LF.news[${i}])">
-      <div class="nimg">${proxied?`<img src="${proxied}" alt="" loading="lazy" onerror="if(this.dataset.src&&this.src!==this.dataset.src){this.src=this.dataset.src}else{this.parentElement.style.display='none'}">`:''}</div>
+      <div class="nimg">${proxied
+        ? `<img src="${proxied}" alt="" loading="lazy" onerror="const logo=getSourceLogo('${n.kaynak||''}');if(logo){this.src=logo;this.style.objectFit='contain';this.style.padding='20px';this.style.background='var(--bg2)';this.onerror=function(){this.parentElement.style.display='none'}}else{this.parentElement.style.display='none'}">`
+        : (getSourceLogo(n.kaynak) ? `<img src="${getSourceLogo(n.kaynak)}" alt="${n.kaynak||''}" loading="lazy" style="object-fit:contain;padding:20px;background:var(--bg2);width:100%;height:160px">` : '')
+      }</div>
       <div class="ncard-body">
         <div class="ncat">${catLabel}</div>
         <div class="ntitle">${n.baslik}</div>
