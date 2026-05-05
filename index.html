@@ -906,10 +906,15 @@ function renderCards() {
     const catLabel = catMap[n.kategori]||n.kategori||'';
     const proxied = proxyImg(n.gorsel);
     html+=`<div class="ncard" onclick="window.LF.openReader(window.LF.news[${i}])">
-      <div class="nimg">${proxied
+      <div class="nimg" style="position:relative">${proxied
         ? `<img src="${proxied}" alt="" loading="lazy" onerror="const logo=getSourceLogo('${n.kaynak||''}');if(logo){this.src=logo;this.style.objectFit='contain';this.style.padding='20px';this.style.background='var(--bg2)';this.onerror=function(){this.parentElement.style.display='none'}}else{this.parentElement.style.display='none'}">`
         : (getSourceLogo(n.kaynak) ? `<img src="${getSourceLogo(n.kaynak)}" alt="${n.kaynak||''}" loading="lazy" style="object-fit:contain;padding:20px;background:var(--bg2);width:100%;height:160px">` : '')
-      }</div>
+      }
+      ${userPlan === 'premium'
+        ? `<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);border-radius:6px;padding:3px 7px;font-size:11px;color:var(--tk);cursor:pointer" onclick="event.stopPropagation();window.LF.openReaderTranslate(window.LF.news[${i}])" title="Çevir">🌐</div>`
+        : `<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);border-radius:6px;padding:3px 7px;font-size:11px;color:rgba(255,255,255,0.5);cursor:pointer" onclick="event.stopPropagation();window.LF.goSubscribe()" title="Premium ile çevir">🌐⭐</div>`
+      }
+      </div>
       <div class="ncard-body">
         <div class="ncat">${catLabel}</div>
         <div class="ntitle">${n.baslik}</div>
@@ -1355,6 +1360,20 @@ window.LF = {
   async signIn() {
     try { await signInWithPopup(auth, googleProvider); }
     catch(e) { console.error('Giriş hatası:', e); }
+  },
+
+  openReaderTranslate(haber) {
+    this.openReader(haber);
+    // Kısa gecikme sonra çeviri barını vurgula
+    setTimeout(() => {
+      const tBar = document.getElementById('translateBar');
+      if (tBar) {
+        tBar.style.background = 'var(--tk)20';
+        tBar.style.transition = 'background 0.5s';
+        setTimeout(() => { tBar.style.background = ''; }, 1500);
+      }
+      document.getElementById('translateLang')?.focus();
+    }, 400);
   },
 
   goSubscribe() {
