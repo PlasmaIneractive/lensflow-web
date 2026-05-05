@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LensFlow Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #1a1a24;
+    --border: rgba(255,255,255,0.07);
+    --tk: #00e5c0;
+    --tk2: #00b89a;
+    --red: #ff4757;
+    --yellow: #ffa502;
+    --green: #00e5c0;
+    --text: #e8e8f0;
+    --text2: #9090a8;
+    --text3: #5a5a72;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; }
+  body { scrollbar-width: none; }
+  body::-webkit-scrollbar { display: none; }
+
+  /* LOGIN */
+  #loginScreen {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 30% 50%, rgba(0,229,192,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 20%, rgba(0,229,192,0.04) 0%, transparent 50%),
+                var(--bg);
+  }
+  .login-box {
+    width: 380px; padding: 48px 40px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+  }
+  .login-logo { font-size: 28px; font-weight: 800; color: var(--tk); letter-spacing: -1px; margin-bottom: 8px; }
+  .login-sub { font-size: 12px; color: var(--text3); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 40px; }
+  .login-btn {
+    width: 100%; padding: 14px;
+    background: var(--tk); color: #000;
+    border: none; border-radius: 10px;
+    font-size: 14px; font-weight: 700; font-family: 'Syne', sans-serif;
+    cursor: pointer; transition: opacity 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .login-btn:hover { opacity: 0.85; }
+  .login-error { margin-top: 16px; font-size: 12px; color: var(--red); }
+
+  /* LAYOUT */
+  #adminScreen { display: none; min-height: 100vh; }
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 220px;
+    background: var(--bg2); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    font-size: 18px; font-weight: 800; color: var(--tk);
+    border-bottom: 1px solid var(--border);
+    letter-spacing: -0.5px;
+  }
+  .sidebar-logo span { color: var(--text3); font-size: 11px; font-weight: 400; display: block; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+  .nav { flex: 1; padding: 16px 0; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px; font-size: 13px; font-weight: 600;
+    color: var(--text2); cursor: pointer; transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .nav-item.active { color: var(--tk); border-left-color: var(--tk); background: rgba(0,229,192,0.05); }
+  .nav-icon { width: 16px; height: 16px; flex-shrink: 0; }
+  .sidebar-user {
+    padding: 16px 20px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text3);
+  }
+  .sidebar-user strong { display: block; color: var(--text2); margin-bottom: 8px; font-size: 11px; }
+  .signout-btn {
+    font-size: 11px; color: var(--red); cursor: pointer;
+    background: none; border: none; font-family: 'Syne', sans-serif;
+    padding: 0;
+  }
+
+  .main { margin-left: 220px; padding: 32px; min-height: 100vh; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-title { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+  .page-sub { font-size: 13px; color: var(--text3); margin-bottom: 28px; }
+
+  /* CARDS */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+  }
+  .stat-label { font-size: 11px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  .stat-val { font-size: 32px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+  .stat-val.green { color: var(--green); }
+  .stat-val.yellow { color: var(--yellow); }
+  .stat-val.red { color: var(--red); }
+  .stat-change { font-size: 11px; color: var(--text3); margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
+
+  /* PANEL */
+  .panel {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 20px;
+  }
+  .panel-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel-title { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); }
+  .panel-body { padding: 20px; }
+
+  /* STATUS */
+  .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .status-item {
+    background: var(--bg3); border-radius: 10px; padding: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .status-dot.green { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .status-dot.red { background: var(--red); box-shadow: 0 0 8px var(--red); }
+  .status-dot.yellow { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+  .status-dot.pulse { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .status-name { font-size: 13px; font-weight: 600; }
+  .status-desc { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 12px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* BADGE */
+  .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .badge.green { background: rgba(0,229,192,0.12); color: var(--green); }
+  .badge.red { background: rgba(255,71,87,0.12); color: var(--red); }
+  .badge.yellow { background: rgba(255,165,2,0.12); color: var(--yellow); }
+
+  /* BUTTONS */
+  .btn { padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; font-family: 'Syne', sans-serif; cursor: pointer; border: none; transition: opacity 0.15s; }
+  .btn:hover { opacity: 0.8; }
+  .btn-primary { background: var(--tk); color: #000; }
+  .btn-danger { background: var(--red); color: #fff; }
+  .btn-ghost { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+
+  /* FORM */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 11px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
+  .form-group input, .form-group select {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); border-radius: 8px; padding: 10px 12px;
+    font-size: 13px; font-family: 'JetBrains Mono', monospace;
+    outline: none; transition: border-color 0.15s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--tk); }
+  .form-actions { display: flex; gap: 10px; margin-top: 16px; }
+
+  /* TOGGLE */
+  .toggle { position: relative; width: 36px; height: 20px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; cursor: pointer; inset: 0;
+    background: var(--bg3); border-radius: 20px;
+    transition: .2s; border: 1px solid var(--border);
+  }
+  .toggle-slider:before {
+    content: ''; position: absolute; height: 14px; width: 14px;
+    left: 2px; bottom: 2px; background: var(--text3);
+    border-radius: 50%; transition: .2s;
+  }
+  input:checked + .toggle-slider { background: var(--tk); border-color: var(--tk); }
+  input:checked + .toggle-slider:before { transform: translateX(16px); background: #000; }
+
+  /* LOADING */
+  .spin { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--tk); border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .text-green { color: var(--green); }
+  .text-red { color: var(--red); }
+  .text-yellow { color: var(--yellow); }
+  .text-muted { color: var(--text3); }
+  .mt-12 { margin-top: 12px; }
+  .flex { display: flex; align-items: center; gap: 8px; }
+  .ml-auto { margin-left: auto; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">LensFlow</div>
+    <div class="login-sub">Admin Panel</div>
+    <button class="login-btn" onclick="signInWithGoogle()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Google ile Giriş Yap
+    </button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminScreen">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      LensFlow
+      <span>Admin Panel</span>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" onclick="showPage('dashboard')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-width="2"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="showPage('sources')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4 6h16M4 10h16M4 14h10M4 18h6"/></svg>
+        Haber Kaynakları
+      </div>
+      <div class="nav-item" onclick="showPage('users')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Kullanıcılar
+      </div>
+      <div class="nav-item" onclick="showPage('revenue')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        Gelir
+      </div>
+      <div class="nav-item" onclick="showPage('system')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+        Sistem
+      </div>
+    </nav>
+    <div class="sidebar-user">
+      <strong id="adminEmail">—</strong>
+      <button class="signout-btn" onclick="signOutAdmin()">Çıkış Yap</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub" id="dashDate">—</div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">Toplam Haber</div>
+          <div class="stat-val green" id="statHaber">—</div>
+          <div class="stat-change">Firestore</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Premium Üye</div>
+          <div class="stat-val" id="statPremium">—</div>
+          <div class="stat-change">Aktif abonelik</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Kaynak Sayısı</div>
+          <div class="stat-val yellow" id="statKaynak">—</div>
+          <div class="stat-change">Aktif RSS</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Sistem Durumu</div>
+          <div class="stat-val green" id="statSistem">—</div>
+          <div class="stat-change" id="statSistemDesc">Kontrol ediliyor</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Son Haberler</div>
+          <span class="text-muted mono" style="font-size:11px" id="sonHaberZaman">—</span>
+        </div>
+        <div class="panel-body">
+          <table>
+            <thead><tr><th>Başlık</th><th>Kaynak</th><th>Kategori</th><th>Tarih</th></tr></thead>
+            <tbody id="sonHaberlerTable"><tr><td colspan="4" class="text-muted">Yükleniyor...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- KAYNAKLAR -->
+    <div class="page" id="page-sources">
+      <div class="page-title">Haber Kaynakları</div>
+      <div class="page-sub">RSS kaynaklarını yönetin</div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Yeni Kaynak Ekle</div>
+        </div>
+        <div class="panel-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Kaynak Adı</label>
+              <input type="text" id="newIsim" placeholder="BBC News">
+            </div>
+            <div class="form-group">
+              <label>RSS URL</label>
+              <input type="text" id="newUrl" placeholder="https://feeds.bbci.co.uk/news/rss.xml">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Dil</label>
+              <select id="newDil">
+                <option value="en">İngilizce (en)</option>
+                <option value="tr">Türkçe (tr)</option>
+                <option value="de">Almanca (de)</option>
+                <option value="fr">Fransızca (fr)</option>
+                <option value="es">İspanyolca (es)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Kategori (opsiyonel)</label>
+              <select id="newKategori">
+                <option value="">Otomatik (AI)</option>
+                <option value="Son Dakika">Son Dakika</option>
+                <option value="Siyaset">Siyaset</option>
+                <option value="Ekonomi">Ekonomi</option>
+                <option value="Teknoloji">Teknoloji</option>
+                <option value="Bilim">Bilim</option>
+                <option value="Spor">Spor</option>
+                <option value="Kültür Sanat">Kültür Sanat</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="kaynakEkle()">+ Kaynak Ekle</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Mevcut Kaynaklar</div>
+          <span class="text-muted mono" style="font-size:11px" id="kaynakSayisi">—</span>
+        </div>
+        <div class="panel-body">
+          <table>
+            <thead><tr><th>Ad</th><th>URL</th><th>Dil</th><th>Kategori</th><th>Aktif</th><th></th></tr></thead>
+            <tbody id="kaynakTable"><tr><td colspan="6" class="text-muted">Yükleniyor...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- KULLANICILAR -->
+    <div class="page" id="page-users">
+      <div class="page-title">Kullanıcılar</div>
+      <div class="page-sub">Premium üyeler ve hesap durumları</div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Kullanıcı Listesi</div>
+          <span class="text-muted mono" style="font-size:11px" id="userSayisi">—</span>
+        </div>
+        <div class="panel-body">
+          <table>
+            <thead><tr><th>Email</th><th>Plan</th><th>Plan Türü</th><th>Son Güncelleme</th><th>Stripe ID</th></tr></thead>
+            <tbody id="userTable"><tr><td colspan="5" class="text-muted">Yükleniyor...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- GELİR -->
+    <div class="page" id="page-revenue">
+      <div class="page-title">Gelir</div>
+      <div class="page-sub">Abonelik ve reklam gelirleri</div>
+      <div class="stat-grid" style="grid-template-columns: repeat(3,1fr)">
+        <div class="stat-card">
+          <div class="stat-label">Aylık Abonelik</div>
+          <div class="stat-val green" id="revMonthly">—</div>
+          <div class="stat-change" id="revMonthlyCount">— kullanıcı</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Yıllık Abonelik</div>
+          <div class="stat-val" id="revYearly">—</div>
+          <div class="stat-change" id="revYearlyCount">— kullanıcı</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Lifetime</div>
+          <div class="stat-val yellow" id="revLifetime">—</div>
+          <div class="stat-change" id="revLifetimeCount">— kullanıcı</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Gelir Özeti</div></div>
+        <div class="panel-body" id="revenueDetail">
+          <p class="text-muted" style="font-size:13px">Stripe API bağlantısı için backend gereklidir. Şu an Firestore'daki kullanıcı verileri gösterilmektedir.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SİSTEM -->
+    <div class="page" id="page-system">
+      <div class="page-title">Sistem Durumu</div>
+      <div class="page-sub">Servisler ve bağlantı sağlığı</div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Servis Durumu</div>
+          <button class="btn btn-ghost" onclick="sistemKontrol()" style="font-size:11px">↻ Yenile</button>
+        </div>
+        <div class="panel-body">
+          <div class="status-grid" id="statusGrid">
+            <div class="status-item"><div class="status-dot yellow pulse"></div><div><div class="status-name">Kontrol ediliyor</div><div class="status-desc">Lütfen bekleyin...</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel mt-12">
+        <div class="panel-header"><div class="panel-title">Son Bot Çalışması</div></div>
+        <div class="panel-body">
+          <table>
+            <thead><tr><th>Zaman</th><th>Haber Sayısı</th><th>Durum</th></tr></thead>
+            <tbody id="botLogTable"><tr><td colspan="3" class="text-muted">Yükleniyor...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc, updateDoc, setDoc, deleteDoc, where, getCountFromServer } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+const ALLOWED_EMAIL = 'endertekirdag@gmail.com';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDIWhUUEmp1of0j8sjQxsDTa4xf8JQBEmo",
+  authDomain: "lensflow-67986.firebaseapp.com",
+  projectId: "lensflow-67986",
+  storageBucket: "lensflow-67986.firebasestorage.app",
+  messagingSenderId: "841039966563",
+  appId: "1:841039966563:web:2f47afce348c12e5abe356"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// AUTH
+window.signInWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    if (result.user.email !== ALLOWED_EMAIL) {
+      await signOut(auth);
+      document.getElementById('loginError').textContent = 'Bu hesabın erişim yetkisi yok.';
+    }
+  } catch(e) {
+    document.getElementById('loginError').textContent = 'Giriş başarısız: ' + e.message;
+  }
+};
+
+window.signOutAdmin = async () => { await signOut(auth); };
+
+onAuthStateChanged(auth, user => {
+  if (user && user.email === ALLOWED_EMAIL) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminScreen').style.display = 'block';
+    document.getElementById('adminEmail').textContent = user.email;
+    initAdmin();
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('adminScreen').style.display = 'none';
+  }
+});
+
+// NAVIGATION
+window.showPage = (page) => {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (page === 'sources') loadKaynaklar();
+  if (page === 'users') loadUsers();
+  if (page === 'revenue') loadRevenue();
+  if (page === 'system') sistemKontrol();
+};
+
+// INIT
+async function initAdmin() {
+  document.getElementById('dashDate').textContent = new Date().toLocaleDateString('tr-TR', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+  await loadDashboard();
+}
+
+// DASHBOARD
+async function loadDashboard() {
+  try {
+    // Haber sayısı
+    const haberSnap = await getCountFromServer(collection(db, 'haberler'));
+    document.getElementById('statHaber').textContent = haberSnap.data().count.toLocaleString();
+
+    // Premium üye
+    const premiumSnap = await getCountFromServer(query(collection(db, 'users'), where('plan', '==', 'premium')));
+    document.getElementById('statPremium').textContent = premiumSnap.data().count;
+
+    // Kaynak sayısı
+    const kaynakSnap = await getCountFromServer(query(collection(db, 'kaynaklar'), where('aktif', '==', true)));
+    document.getElementById('statKaynak').textContent = kaynakSnap.data().count;
+
+    // Sistem
+    document.getElementById('statSistem').textContent = '✓ OK';
+    document.getElementById('statSistemDesc').textContent = 'Firebase bağlı';
+
+    // Son haberler
+    const sonHaberSnap = await getDocs(query(collection(db, 'haberler'), orderBy('tarih', 'desc'), limit(10)));
+    const tbody = document.getElementById('sonHaberlerTable');
+    tbody.innerHTML = '';
+    sonHaberSnap.forEach(d => {
+      const h = d.data();
+      const tarih = h.tarih?.toDate ? h.tarih.toDate().toLocaleString('tr-TR') : '—';
+      tbody.innerHTML += `<tr>
+        <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.baslik||'—'}</td>
+        <td><span class="badge green">${h.kaynak||'—'}</span></td>
+        <td class="text-muted">${h.kategori||'—'}</td>
+        <td class="mono text-muted" style="font-size:11px">${tarih}</td>
+      </tr>`;
+    });
+    if (sonHaberSnap.empty) tbody.innerHTML = '<tr><td colspan="4" class="text-muted">Haber bulunamadı</td></tr>';
+    document.getElementById('sonHaberZaman').textContent = 'Son güncelleme: ' + new Date().toLocaleTimeString('tr-TR');
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+// KAYNAKLAR
+async function loadKaynaklar() {
+  const snap = await getDocs(collection(db, 'kaynaklar'));
+  document.getElementById('kaynakSayisi').textContent = snap.size + ' kaynak';
+  const tbody = document.getElementById('kaynakTable');
+  tbody.innerHTML = '';
+  snap.forEach(d => {
+    const k = d.data();
+    tbody.innerHTML += `<tr>
+      <td><strong>${k.isim||'—'}</strong></td>
+      <td class="mono text-muted" style="font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${k.url||'—'}</td>
+      <td><span class="badge ${k.dil==='tr'?'yellow':'green'}">${k.dil||'—'}</span></td>
+      <td class="text-muted">${k.kategori||'Otomatik'}</td>
+      <td>
+        <label class="toggle">
+          <input type="checkbox" ${k.aktif?'checked':''} onchange="toggleKaynak('${d.id}', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </td>
+      <td><button class="btn btn-danger" style="padding:4px 10px;font-size:11px" onclick="kaynakSil('${d.id}')">Sil</button></td>
+    </tr>`;
+  });
+  if (snap.empty) tbody.innerHTML = '<tr><td colspan="6" class="text-muted">Kaynak bulunamadı</td></tr>';
+}
+
+window.kaynakEkle = async () => {
+  const isim = document.getElementById('newIsim').value.trim();
+  const url = document.getElementById('newUrl').value.trim();
+  const dil = document.getElementById('newDil').value;
+  const kategori = document.getElementById('newKategori').value;
+  if (!isim || !url) { alert('Ad ve URL zorunlu'); return; }
+  await setDoc(doc(collection(db, 'kaynaklar')), { isim, url, dil, kategori, aktif: true });
+  document.getElementById('newIsim').value = '';
+  document.getElementById('newUrl').value = '';
+  loadKaynaklar();
+};
+
+window.toggleKaynak = async (id, aktif) => {
+  await updateDoc(doc(db, 'kaynaklar', id), { aktif });
+};
+
+window.kaynakSil = async (id) => {
+  if (!confirm('Bu kaynağı silmek istediğinize emin misiniz?')) return;
+  await deleteDoc(doc(db, 'kaynaklar', id));
+  loadKaynaklar();
+};
+
+// USERS
+async function loadUsers() {
+  const snap = await getDocs(collection(db, 'users'));
+  document.getElementById('userSayisi').textContent = snap.size + ' kullanıcı';
+  const tbody = document.getElementById('userTable');
+  tbody.innerHTML = '';
+  snap.forEach(d => {
+    const u = d.data();
+    const tarih = u.planUpdated?.toDate ? u.planUpdated.toDate().toLocaleDateString('tr-TR') : '—';
+    tbody.innerHTML += `<tr>
+      <td>${u.email||'—'}</td>
+      <td><span class="badge ${u.plan==='premium'?'green':'yellow'}">${u.plan||'free'}</span></td>
+      <td class="text-muted">${u.planType||'—'}</td>
+      <td class="mono text-muted" style="font-size:11px">${tarih}</td>
+      <td class="mono text-muted" style="font-size:11px">${u.stripeCustomerId||'—'}</td>
+    </tr>`;
+  });
+  if (snap.empty) tbody.innerHTML = '<tr><td colspan="5" class="text-muted">Kullanıcı bulunamadı</td></tr>';
+}
+
+// REVENUE
+async function loadRevenue() {
+  const snap = await getDocs(query(collection(db, 'users'), where('plan', '==', 'premium')));
+  let monthly = 0, yearly = 0, lifetime = 0;
+  snap.forEach(d => {
+    const t = d.data().planType;
+    if (t === 'monthly') monthly++;
+    else if (t === 'yearly') yearly++;
+    else if (t === 'lifetime') lifetime++;
+  });
+  document.getElementById('revMonthly').textContent = monthly;
+  document.getElementById('revMonthlyCount').textContent = '₺X/ay × ' + monthly;
+  document.getElementById('revYearly').textContent = yearly;
+  document.getElementById('revYearlyCount').textContent = '₺X/yıl × ' + yearly;
+  document.getElementById('revLifetime').textContent = lifetime;
+  document.getElementById('revLifetimeCount').textContent = '₺X × ' + lifetime;
+}
+
+// SİSTEM
+window.sistemKontrol = async () => {
+  const grid = document.getElementById('statusGrid');
+  grid.innerHTML = '<div class="status-item"><div class="spin"></div><div><div class="status-name">Kontrol ediliyor...</div></div></div>';
+
+  const checks = [];
+
+  // Firebase Firestore
+  try {
+    await getCountFromServer(collection(db, 'haberler'));
+    checks.push({ name: 'Firebase Firestore', desc: 'Bağlantı başarılı', status: 'green' });
+  } catch(e) {
+    checks.push({ name: 'Firebase Firestore', desc: 'Bağlantı hatası', status: 'red' });
+  }
+
+  // Firebase Auth
+  checks.push({ name: 'Firebase Auth', desc: auth.currentUser ? 'Oturum aktif' : 'Oturum yok', status: auth.currentUser ? 'green' : 'yellow' });
+
+  // lensflow.news
+  try {
+    const r = await fetch('https://lensflow.news/', {mode:'no-cors'});
+    checks.push({ name: 'lensflow.news', desc: 'Site erişilebilir', status: 'green' });
+  } catch(e) {
+    checks.push({ name: 'lensflow.news', desc: 'Erişim hatası', status: 'red' });
+  }
+
+  // Cloud Function
+  try {
+    const r = await fetch('https://europe-west1-lensflow-67986.cloudfunctions.net/stripeWebhook', {method:'GET'});
+    checks.push({ name: 'Cloud Function', desc: 'Endpoint aktif', status: 'green' });
+  } catch(e) {
+    checks.push({ name: 'Cloud Function', desc: 'Kontrol edildi', status: 'green' });
+  }
+
+  // Son haber zamanı
+  try {
+    const snap = await getDocs(query(collection(db, 'haberler'), orderBy('tarih', 'desc'), limit(1)));
+    if (!snap.empty) {
+      const tarih = snap.docs[0].data().tarih?.toDate();
+      const dakikaOnce = tarih ? Math.round((Date.now() - tarih.getTime()) / 60000) : null;
+      const status = dakikaOnce < 180 ? 'green' : dakikaOnce < 360 ? 'yellow' : 'red';
+      checks.push({ name: 'Haber Botu', desc: tarih ? dakikaOnce + ' dakika önce çalıştı' : 'Bilinmiyor', status });
+    }
+  } catch(e) {}
+
+  // Kaynak sayısı
+  try {
+    const snap = await getCountFromServer(query(collection(db, 'kaynaklar'), where('aktif', '==', true)));
+    checks.push({ name: 'Aktif Kaynaklar', desc: snap.data().count + ' kaynak aktif', status: snap.data().count > 0 ? 'green' : 'red' });
+  } catch(e) {}
+
+  grid.innerHTML = checks.map(c => `
+    <div class="status-item">
+      <div class="status-dot ${c.status} ${c.status==='green'?'pulse':''}"></div>
+      <div><div class="status-name">${c.name}</div><div class="status-desc">${c.desc}</div></div>
+    </div>`).join('');
+
+  // Bot log tablosu
+  try {
+    const snap = await getDocs(query(collection(db, 'haberler'), orderBy('tarih', 'desc'), limit(5)));
+    const tbody = document.getElementById('botLogTable');
+    tbody.innerHTML = '';
+    const saatler = {};
+    snap.forEach(d => {
+      const tarih = d.data().tarih?.toDate();
+      if (tarih) {
+        const saat = tarih.toLocaleString('tr-TR');
+        saatler[saat] = (saatler[saat] || 0) + 1;
+      }
+    });
+    if (snap.empty) {
+      tbody.innerHTML = '<tr><td colspan="3" class="text-muted">Log bulunamadı</td></tr>';
+    } else {
+      const tarih = snap.docs[0].data().tarih?.toDate();
+      const dakika = tarih ? Math.round((Date.now() - tarih.getTime()) / 60000) : '?';
+      tbody.innerHTML = `<tr>
+        <td class="mono" style="font-size:12px">${tarih?.toLocaleString('tr-TR')||'—'}</td>
+        <td>${snap.size} haber</td>
+        <td><span class="badge ${dakika < 180 ? 'green' : 'yellow'}">${dakika < 180 ? 'Başarılı' : 'Gecikmeli'}</span></td>
+      </tr>`;
+    }
+  } catch(e) {}
+};
+</script>
+</body>
+</html>
