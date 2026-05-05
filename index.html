@@ -1290,22 +1290,19 @@ window.LF = {
         haber.ozet || haber.icerik || ''
       ].filter(Boolean).join('\n\n');
 
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('https://europe-west1-lensflow-67986.cloudfunctions.net/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 1000,
-          messages: [{
-            role: 'user',
-            content: `Translate the following news content to ${lang}. Keep the same structure (title on first line, then content). Only output the translation, nothing else:\n\n${metin}`
-          }]
+          text: metin,
+          targetLang: lang,
+          userId: auth.currentUser?.uid || ''
         })
       });
 
       const data = await response.json();
-      const translated = data.content?.[0]?.text || '';
-      if (!translated) throw new Error('Çeviri alınamadı');
+      const translated = data.translated || '';
+      if (!translated) throw new Error(data.error || 'Çeviri alınamadı');
 
       const lines = translated.split('\n').filter(l => l.trim());
       const translatedTitle = lines[0] || haber.baslik;
