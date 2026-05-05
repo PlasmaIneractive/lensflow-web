@@ -169,7 +169,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 /* READER */
 .reader-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
 .reader-overlay.open{opacity:1;pointer-events:all}
-.reader-panel{position:fixed;top:0;right:0;width:min(680px,100vw);height:100vh;background:var(--bg2);z-index:9999;transform:translateX(100%);transition:transform .35s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;border-left:0.5px solid var(--border)}
+.reader-panel{position:fixed;top:0;right:0;width:min(66.67vw,100vw);height:100vh;background:var(--bg2);z-index:9999;transform:translateX(100%);transition:transform .35s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;border-left:0.5px solid var(--border)}
 .reader-panel.open{transform:translateX(0)}
 .reader-header{padding:1rem 1.5rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .reader-logo{font-family:'DM Serif Display',serif;font-size:16px;color:var(--tk)}
@@ -330,42 +330,46 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <!-- READER PANELİ -->
 <div class="reader-overlay" id="readerOverlay"></div>
 <div class="reader-panel" id="readerPanel">
-  <div class="reader-header">
-    <span class="reader-logo">LensFlow</span>
-    <button class="reader-close" id="readerCloseBtn">✕</button>
+  <div class="reader-header" style="padding:0.75rem 1.5rem">
+    <a class="logo" href="/" style="text-decoration:none">
+      <div class="logo-mark" style="width:28px;height:28px"><img src="logo.png" alt="LensFlow"></div>
+      <span class="logo-text" style="font-size:18px">Lens<span>Flow</span></span>
+    </a>
+    <div style="display:flex;align-items:center;gap:10px;margin-left:auto">
+      <div id="readerTranslateWrap" style="display:none;align-items:center;gap:6px">
+        <span style="font-size:13px">🌐</span>
+        <select id="translateLang" onchange="window.LF.translateReader()" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;cursor:pointer;max-width:140px">
+          <option value="">Dil seçin...</option>
+          <option value="Turkish">🇹🇷 Türkçe</option>
+          <option value="English">🇬🇧 İngilizce</option>
+          <option value="Arabic">🇸🇦 Arapça</option>
+          <option value="French">🇫🇷 Fransızca</option>
+          <option value="German">🇩🇪 Almanca</option>
+          <option value="Spanish">🇪🇸 İspanyolca</option>
+          <option value="Italian">🇮🇹 İtalyanca</option>
+          <option value="Portuguese">🇵🇹 Portekizce</option>
+          <option value="Russian">🇷🇺 Rusça</option>
+          <option value="Chinese">🇨🇳 Çince</option>
+          <option value="Japanese">🇯🇵 Japonca</option>
+          <option value="Korean">🇰🇷 Korece</option>
+          <option value="Hindi">🇮🇳 Hintçe</option>
+          <option value="Persian">🇮🇷 Farsça</option>
+          <option value="Dutch">🇳🇱 Hollandaca</option>
+          <option value="Swedish">🇸🇪 İsveççe</option>
+          <option value="Polish">🇵🇱 Lehçe</option>
+          <option value="Greek">🇬🇷 Yunanca</option>
+          <option value="Ukrainian">🇺🇦 Ukraynaca</option>
+        </select>
+        <span id="translateStatus" style="font-size:11px;color:var(--tk)"></span>
+        <button id="translateOrigBtn" onclick="window.LF.showOriginal()" style="display:none;padding:3px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);font-size:11px;cursor:pointer">↩</button>
+      </div>
+      <button class="reader-close" id="readerCloseBtn">✕</button>
+    </div>
   </div>
   <div class="reader-tabs">
     <button class="reader-tab active" id="tabOzet">✦ Özet</button>
     <button class="reader-tab" id="tabOkuma">◎ Okuma Modu</button>
     <button class="reader-tab" id="tabKaynak">↗ Kaynağından Oku</button>
-  </div>
-  <div id="translateBar" style="padding:8px 16px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-    <span style="font-size:12px;color:var(--text3)">🌐 Çevir:</span>
-    <select id="translateLang" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;cursor:pointer">
-      <option value="">Dil seçin...</option>
-      <option value="Turkish">🇹🇷 Türkçe</option>
-      <option value="English">🇬🇧 İngilizce</option>
-      <option value="Arabic">🇸🇦 Arapça</option>
-      <option value="French">🇫🇷 Fransızca</option>
-      <option value="German">🇩🇪 Almanca</option>
-      <option value="Spanish">🇪🇸 İspanyolca</option>
-      <option value="Italian">🇮🇹 İtalyanca</option>
-      <option value="Portuguese">🇵🇹 Portekizce</option>
-      <option value="Russian">🇷🇺 Rusça</option>
-      <option value="Chinese">🇨🇳 Çince</option>
-      <option value="Japanese">🇯🇵 Japonca</option>
-      <option value="Korean">🇰🇷 Korece</option>
-      <option value="Hindi">🇮🇳 Hintçe</option>
-      <option value="Persian">🇮🇷 Farsça</option>
-      <option value="Dutch">🇳🇱 Hollandaca</option>
-      <option value="Swedish">🇸🇪 İsveççe</option>
-      <option value="Polish">🇵🇱 Lehçe</option>
-      <option value="Greek">🇬🇷 Yunanca</option>
-      <option value="Ukrainian">🇺🇦 Ukraynaca</option>
-    </select>
-    <button id="translateBtn" onclick="window.LF.translateReader()" style="padding:4px 12px;background:var(--tk);border:none;border-radius:6px;color:#000;font-size:12px;font-weight:600;cursor:pointer">Çevir</button>
-    <button id="translateOrigBtn" onclick="window.LF.showOriginal()" style="display:none;padding:4px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;cursor:pointer">Orijinal</button>
-    <span id="translateStatus" style="font-size:11px;color:var(--text3)"></span>
   </div>
   <div id="readerAdTop" class="ad-slot" style="margin:8px 16px;display:none"><span class="ad-slot-txt">728 × 90</span></div>
   <div class="reader-body" id="readerBody">
@@ -1247,14 +1251,15 @@ window.LF = {
     document.getElementById('readerOverlay').classList.add('open');
     document.getElementById('readerPanel').classList.add('open');
     updateAds();
-    // Çeviri barı — sadece premium
-    const tBar = document.getElementById('translateBar');
-    if (tBar) {
-      tBar.style.display = userPlan === 'premium' ? 'flex' : 'none';
-      document.getElementById('translateLang').value = '';
-      document.getElementById('translateOrigBtn').style.display = 'none';
-      document.getElementById('translateStatus').textContent = '';
-    }
+    // Çeviri wrap — sadece premium
+    const twEl = document.getElementById('readerTranslateWrap');
+    if (twEl) twEl.style.display = userPlan === 'premium' ? 'flex' : 'none';
+    const tlEl = document.getElementById('translateLang');
+    if (tlEl) tlEl.value = '';
+    const tsEl = document.getElementById('translateStatus');
+    if (tsEl) tsEl.textContent = '';
+    const tobEl = document.getElementById('translateOrigBtn');
+    if (tobEl) tobEl.style.display = 'none';
     document.body.style.overflow = 'hidden';
     document.querySelector('.navbar').style.zIndex = '1';
     document.querySelector('.ticker') && (document.querySelector('.ticker').style.zIndex = '1');
@@ -1278,7 +1283,7 @@ window.LF = {
   async translateReader() {
     if (userPlan !== 'premium') return;
     const lang = document.getElementById('translateLang').value;
-    if (!lang) { document.getElementById('translateStatus').textContent = '⚠️ Dil seçin'; return; }
+    if (!lang) return; // Dil seçilmedi, çeviri yapma
 
     const haber = this.currentHaber;
     if (!haber) return;
@@ -1366,7 +1371,7 @@ window.LF = {
     this.openReader(haber);
     // Kısa gecikme sonra çeviri barını vurgula
     setTimeout(() => {
-      const tBar = document.getElementById('translateBar');
+      const tBar = document.getElementById('translateLang')?.closest('div');
       if (tBar) {
         tBar.style.background = 'var(--tk)20';
         tBar.style.transition = 'background 0.5s';
