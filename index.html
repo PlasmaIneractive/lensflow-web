@@ -1288,11 +1288,8 @@ window.LF = {
     const haber = this.currentHaber;
     if (!haber) return;
 
-    const btn = document.getElementById('translateBtn');
     const status = document.getElementById('translateStatus');
-    btn.disabled = true;
-    btn.textContent = '...';
-    status.textContent = 'Çevriliyor...';
+    if (status) status.textContent = '⏳';
 
     try {
       // DOM'daki mevcut içeriği al — render edilmiş özet veya makale
@@ -1336,8 +1333,7 @@ window.LF = {
     } catch(e) {
       status.textContent = '❌ Hata: ' + e.message;
     } finally {
-      btn.disabled = false;
-      btn.textContent = 'Çevir';
+      // btn kaldırıldı
     }
   },
 
