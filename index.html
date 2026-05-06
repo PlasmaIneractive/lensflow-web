@@ -726,7 +726,7 @@ async function loadNews(langKey) {
       .map(d => ({id:d.id,...d.data()}))
       .filter(h => {
         if (!globalSrc.has(h.kaynak)) return false;
-        if (h.dil !== 'en') return false; // global sekmesinde sadece İngilizce
+        if (h.dil !== 'en' && h.kategori !== 'Dünya') return false; // Dünya kategorisi hariç sadece İngilizce
         // Latin alfabesi dışı başlıkları filtrele (Japonca, Arapça vb.)
         const latinOran = (h.baslik||'').replace(/[^a-zA-ZÀ-ÿ]/g,'').length / Math.max((h.baslik||'').length, 1);
         return latinOran > 0.5;
