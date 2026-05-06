@@ -1160,16 +1160,21 @@ ${icerik}`
 
 Headline: ${haber.baslik}
 Source: ${haber.kaynak||''}`;
-      const res = await fetch('https://img.lensflow.news/ozet', {
+      const haberId = haber.id || haber.link?.split('/').pop()?.slice(0,80) || '';
+      const res = await fetch('https://europe-west1-lensflow-67986.cloudfunctions.net/ozet', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({prompt: gonderi, lang})
+        body: JSON.stringify({
+          haberId,
+          baslik: haber.baslik || '',
+          link: haber.link || '',
+          lang
+        })
       });
       if (res.ok) {
         const data = await res.json();
         const ozet = data.ozet||'';
         haber[ozetField] = ozet;
-        try { await updateDoc(doc(db,'haberler',haber.id),{[ozetField]:ozet}); } catch(e) {}
         const el = body.querySelector('.reader-loading-msg');
         if (el) { el.outerHTML = `<div class="reader-summary-text">${ozet}</div>`; }
       } else {
