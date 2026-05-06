@@ -505,6 +505,8 @@ function updateAds() {
   const readerAdBottom = document.getElementById('readerAdBottom');
   if (readerAdTop) readerAdTop.style.display = (!isPremium && isReaderOpen) ? '' : 'none';
   if (readerAdBottom) readerAdBottom.style.display = (!isPremium && isReaderOpen) ? '' : 'none';
+  const readerHeroAd = document.getElementById('readerHeroAd');
+  if (readerHeroAd) readerHeroAd.style.display = (!isPremium && isReaderOpen) ? '' : 'none';
 }
 
 window.toggleUserMenu = () => {
@@ -1170,6 +1172,8 @@ async function readerRenderTab(tab, haber) {
     <div class="reader-hero-right">${imgRight}</div>
   </div>`;
 
+  const adSlotHtml = `<div id="readerHeroAd" style="margin:0;padding:8px 16px;display:none"><div class="ad-slot" style="height:90px"><span class="ad-slot-txt">728 × 90</span></div></div>`;
+
   const metaHtml = `<div class="reader-content">
     <div class="reader-divider" style="margin-top:0;margin-bottom:1.25rem"></div>`;
 
@@ -1177,10 +1181,10 @@ async function readerRenderTab(tab, haber) {
     const ozetField = 'ozet_'+lang;
     // Firebase cache'den varsa direkt göster
     if (haber[ozetField]) {
-      body.innerHTML = heroHtml + metaHtml + `<div class="reader-summary-text">${haber[ozetField]}</div></div>`;
+      body.innerHTML = heroHtml + adSlotHtml + metaHtml + `<div class="reader-summary-text">${haber[ozetField]}</div></div>`;
       return;
     }
-    body.innerHTML = heroHtml + metaHtml + `<div class="reader-loading-msg"><div class="spin"></div> ${cfg.ozetLoading}</div></div>`;
+    body.innerHTML = heroHtml + adSlotHtml + metaHtml + `<div class="reader-loading-msg"><div class="spin"></div> ${cfg.ozetLoading}</div></div>`;
     try {
       // Firebase'deki icerik alanını kullan — proxy'ye gerek yok
       const icerik = (haber.icerik || '').slice(0, 3000);
@@ -1222,7 +1226,7 @@ Source: ${haber.kaynak||''}`;
       if(el) el.outerHTML = `<div class="reader-summary-text" style="color:var(--text3)">${cfg.ozetErr}</div>`;
     }
   } else if (tab === 'okuma') {
-    body.innerHTML = heroHtml + metaHtml + `<div class="reader-loading-msg" id="articleContent"><div class="spin"></div> ${cfg.okumaLoading}</div></div>`;
+    body.innerHTML = heroHtml + adSlotHtml + metaHtml + `<div class="reader-loading-msg" id="articleContent"><div class="spin"></div> ${cfg.okumaLoading}</div></div>`;
     const el = document.getElementById('articleContent');
 
     if (!haber.link || haber.link === '#') {
@@ -1266,6 +1270,8 @@ Source: ${haber.kaynak||''}`;
       }
     }
   }
+  // Render sonrasi reklam gorunurlugunu guncelle
+  setTimeout(updateAds, 50);
 }
 
 // LF global namespace
