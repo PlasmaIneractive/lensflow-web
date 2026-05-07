@@ -1613,13 +1613,13 @@ window.LF = {
     // Mevcut modalı temizle
     document.getElementById('langPrefModal')?.remove();
     const LANG_LIST = [
-      {k:'global', flag:'🌍', name:'Global'},
-      {k:'en',     flag:'🇬🇧', name:'English'},
-      {k:'fr',     flag:'🇫🇷', name:'Français'},
-      {k:'de',     flag:'🇩🇪', name:'Deutsch'},
-      {k:'es',     flag:'🇪🇸', name:'Español'},
-      {k:'pt',     flag:'🇵🇹', name:'Português'},
-      {k:'tr',     flag:'🇹🇷', name:'Türkçe'},
+      {k:'global', flag:'https://cdn.jsdelivr.net/gh/twitter/twemoji@14/assets/svg/1f30d.svg', name:'Global'},
+      {k:'en',     flag:'https://cdn.jsdelivr.net/gh/twitter/twemoji@14/assets/svg/1f1ec-1f1e7.svg', name:'English'},
+      {k:'fr',     flag:'https://cdn.jsdelivr.net/gh/twitter/twemoji@14/assets/svg/1f1eb-1f1f7.svg', name:'Français'},
+      {k:'de',     flag:'https://cdn.jsdelivr.net/gh/twitter/twemoji@14/assets/svg/1f1e9-1f1ea.svg', name:'Deutsch'},
+      {k:'es',     flag:'https://cdn.jsdelivr.net/gh/twitter/twemoji@14/assets/svg/1f1ea-1f1f8.svg', name:'Español'},
+      {k:'pt',     flag:'https://cdn.jsdelivr.net/gh/twitter/twemoji@14/assets/svg/1f1f5-1f1f9.svg', name:'Português'},
+      {k:'tr',     flag:'https://cdn.jsdelivr.net/gh/twitter/twemoji@14/assets/svg/1f1f9-1f1f7.svg', name:'Türkçe'},
     ];
     const modal = document.createElement('div');
     modal.id = 'langPrefModal';
@@ -1631,7 +1631,7 @@ window.LF = {
         <div style="display:flex;flex-direction:column;gap:6px">
           ${LANG_LIST.map(l=>`
             <button onclick="window.LF.saveLangPref('${l.k}')" style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:${l.k===lang?'rgba(48,213,200,0.1)':'var(--bg3)'};border:0.5px solid ${l.k===lang?'var(--tk)':'var(--border)'};border-radius:10px;cursor:pointer;color:${l.k===lang?'var(--tk)':'var(--text)'};font-size:14px;font-family:'DM Sans',sans-serif;text-align:left;width:100%;transition:all .15s">
-              <span style="font-size:20px">${l.flag}</span>
+              <img src="${l.flag}" style="width:20px;height:20px;object-fit:contain" alt="">
               <span>${l.name}</span>
               ${l.k===lang ? '<span style="margin-left:auto;font-size:12px">✓</span>' : ''}
             </button>
