@@ -1691,6 +1691,8 @@ window.LF = {
       if (wrap) wrap.innerHTML = `<div style="color:var(--text3)">${cfg.ozetErr}</div>`;
     }
   },
+
+  async saveLangPref(l) {
     document.getElementById('langPrefModal')?.remove();
     await window.setLang(l);
   }
