@@ -25,7 +25,14 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scrollbar-width:none}html::-webkit-scrollbar{display:none}body{scrollbar-width:none}body::-webkit-scrollbar{display:none}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
-.navbar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:1.5rem;height:90px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.top-bar{background:#080a0b;border-bottom:0.5px solid rgba(255,255,255,0.05);height:30px;display:flex;align-items:center;padding:0 2rem;gap:1rem;position:sticky;top:0;z-index:101}
+.top-bar-left{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);letter-spacing:0.5px}
+.top-bar-sep{width:1px;height:10px;background:rgba(255,255,255,0.08)}
+.top-bar-right{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:11px;color:var(--text3);letter-spacing:0.3px}
+.top-bar-right a{color:var(--text3);text-decoration:none;transition:color .15s}
+.top-bar-right a:hover{color:var(--tk)}
+.top-bar-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.15)}
+.navbar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:1.5rem;height:90px;position:sticky;top:30px;z-index:100;backdrop-filter:blur(12px)}
 .logo{display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none}
 .logo-mark{width:64px;height:64px;background:transparent;border-radius:8px;display:flex;align-items:center;justify-content:center}
 .logo-mark img{width:100%;height:100%;object-fit:contain}
@@ -228,7 +235,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 @media(max-width:768px){
   .hero-prev,.hero-next{display:none}.search-wrap{display:none}.mobile-search{display:flex}
   .navbar{padding:0 1rem;gap:8px;height:64px}.logo-text{font-size:20px}
-  .logo-mark{width:40px;height:40px}.nav-date{display:none}
+  .top-bar{display:none}
+  .navbar{top:0}
   .lang-bar{justify-content:flex-start;padding:0 0.5rem}.lbtn{padding:8px 10px;font-size:12px;gap:5px}
   .lbtn-flag{width:15px;height:15px}
   .ticker{height:38px}.ticker-tag::after{border-top:38px solid transparent}
@@ -245,6 +253,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </style>
 </head>
 <body>
+<div class="top-bar">
+  <div class="top-bar-left">
+    <span>© 2025 LensFlow</span>
+    <div class="top-bar-sep"></div>
+    <span>Global News Platform</span>
+  </div>
+  <div class="top-bar-right">
+    <a href="/privacy.html">Privacy Policy</a>
+    <div class="top-bar-dot"></div>
+    <a href="/terms.html">Terms of Service</a>
+    <div class="top-bar-dot"></div>
+    <a href="mailto:info@lensflow.news">info@lensflow.news</a>
+  </div>
+</div>
 <nav class="navbar">
   <a class="logo" href="/">
     <div class="logo-mark"><img src="logo.png" alt="LensFlow"></div>
@@ -1312,6 +1334,7 @@ window.LF = {
     if (tobEl) tobEl.style.display = 'none';
     document.body.style.overflow = 'hidden';
     document.querySelector('.navbar').style.zIndex = '1';
+    document.querySelector('.top-bar') && (document.querySelector('.top-bar').style.zIndex = '1');
     document.querySelector('.ticker') && (document.querySelector('.ticker').style.zIndex = '1');
     document.querySelectorAll('.reader-tab').forEach(t=>t.classList.remove('active'));
     document.getElementById('tabOzet').classList.add('active');
@@ -1405,6 +1428,7 @@ window.LF = {
     document.getElementById('readerPanel').classList.remove('open');
     document.body.style.overflow = '';
     document.querySelector('.navbar').style.zIndex = '';
+    document.querySelector('.top-bar') && (document.querySelector('.top-bar').style.zIndex = '');
     document.querySelector('.ticker') && (document.querySelector('.ticker').style.zIndex = '');
   },
 
