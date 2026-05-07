@@ -104,8 +104,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .hero-img{position:absolute;inset:0;width:100%;height:100%}
 .hero-img img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
 .hero-img-placeholder{position:absolute;inset:0;background:var(--bg3)}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.05) 100%);z-index:1}
-.hero-text{position:absolute;bottom:0;left:0;right:0;padding:2rem 3rem;z-index:2}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.05) 100%);z-index:1;display:none}
+.hero-text{position:absolute;bottom:0;left:0;right:0;padding:2rem 3rem;z-index:2;display:none;flex-direction:column;justify-content:flex-end}
 .hero-prev,.hero-next{position:absolute;top:0;width:52px;height:100%;border:none;background:var(--tk);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#000;transition:opacity .2s;z-index:10;opacity:0.85}
 .hero-prev{left:0}
 .hero-next{right:0}
@@ -233,7 +233,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   .lbtn-flag{width:15px;height:15px}
   .ticker{height:38px}.ticker-tag::after{border-top:38px solid transparent}
   .ad-band{padding:6px 1rem}.ad-slot{height:50px}
-  .hero-slide{height:260px}.hero-title{font-size:20px}.hero-text{padding:1.25rem 1.25rem}.hero-left{display:none}.hero-right{position:absolute;inset:0;width:100%}
+  .hero-slide{height:260px;display:block}.hero-left{display:none!important}.hero-right{position:absolute;inset:0;width:100%!important}.hero-img{position:absolute;inset:0;width:100%;height:100%}.hero-overlay{display:block!important}.hero-text{display:flex!important;padding:1.25rem 1.25rem}.hero-title{font-size:18px}
   .hero-controls{padding:6px 1rem}.filter-row{padding:.75rem 1rem}
   .content{padding:0 1rem 1.5rem}.news-grid{grid-template-columns:1fr}.ncard-ad{height:80px}
   .reader-panel{width:100vw}
@@ -859,6 +859,11 @@ function buildHero(news) {
         </div>
         <div class="hero-right">
           ${proxied ? `<div class="hero-img"><img src="${proxied}" alt="" loading="lazy" onerror="this.parentElement.className='hero-img-placeholder'"></div>` : '<div class="hero-img-placeholder"></div>'}
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-text">
+          <div class="hero-meta" style="margin-bottom:6px"><span class="hero-src">${s.kaynak||''}</span><span class="hero-time">${timeAgo} ${cfg.ago}</span></div>
+          <div class="hero-title">${s.baslik}</div>
         </div>`;
       const heroI = i;
       slide.onclick = () => window.LF.openReader(heroSlides[heroI]);
