@@ -1241,28 +1241,7 @@ async function readerRenderTab(tab, haber) {
       return;
     }
 
-    // Free kullanıcı → sempatik paywall
-    if (userPlan !== 'premium') {
-      body.innerHTML = heroHtml + adSlotHtml + metaHtml + `
-        <div style="text-align:center;padding:3rem 2rem">
-          <div style="font-size:48px;margin-bottom:1rem">${cfg.paywallEmoji||'☕'}</div>
-          <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:0.75rem">
-            ${cfg.paywallTitle||'Upgrade to Premium'}
-          </div>
-          <div style="font-size:14px;color:var(--text3);line-height:1.7;max-width:360px;margin:0 auto 1.75rem">
-            ${cfg.paywallDesc||'Get AI-powered summaries with Premium.'}
-          </div>
-          <button onclick="window.LF.goSubscribe()" style="background:var(--tk);color:#000;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:block;width:100%;max-width:280px;margin:0 auto 12px">
-            ${cfg.paywallBtn||'⭐ Upgrade to Premium'}
-          </button>
-          <div style="font-size:12px;color:var(--text3)">${cfg.paywallSub||'Cancel anytime'}</div>
-        </div>
-      </div>`;
-      setTimeout(updateAds, 50);
-      return;
-    }
-
-    // Premium kullanıcı → özeti yükle
+    // Özeti yükle
     body.innerHTML = heroHtml + adSlotHtml + metaHtml + `<div class="reader-loading-msg"><div class="spin"></div> ${cfg.ozetLoading}</div></div>`;
     setTimeout(updateAds, 50);
     try {
@@ -1427,7 +1406,6 @@ window.LF = {
   },
 
   async translateReader() {
-    if (userPlan !== 'premium') return;
     const lang = document.getElementById('translateLang').value;
     if (!lang) return; // Dil seçilmedi, çeviri yapma
 
