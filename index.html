@@ -1577,6 +1577,8 @@ window.LF = {
 
   goSubscribe() {
     if (!currentUser) { this.signIn(); return; }
+    // Reader paneli açıksa kapat
+    this.closeReader();
     document.getElementById('subOverlay').style.display = 'block';
     document.getElementById('subModal').style.display = 'block';
   },
