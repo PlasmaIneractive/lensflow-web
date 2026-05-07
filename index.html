@@ -733,7 +733,7 @@ const LANG_CONFIG = {
       ozetLoading:'AI özet hazırlanıyor...',okumaLoading:'İçerik yükleniyor...',
       ozetErr:'Özet yüklenemedi.',okumaErr:'İçerik bu siteden yüklenemiyor.',okumaFallback:'Bu site doğrudan erişimi engelliyor. Bunun yerine AI özeti gösteriliyor.',
       readSrc:'Kaynağında Oku',
-      paywallEmoji:'🧇',paywallTitle:'Haberi okuduk, özeti sana bıraktık.',paywallDesc:'Yapay zekamız makaleyi baştan sona okudu, sen sadece 4 cümleyi okuyacaksın. Çayını iç, biz halledelim.',paywallBtn:'⭐ Premium\'a Geç',paywallSub:'İstediğin zaman iptal · Gizli ücret yok',
+      paywallEmoji:'🧇',paywallTitle:'Haberi okuduk, özeti sana bıraktık.',paywallDesc:'Yapay zekamız makaleyi baştan sona okudu, sen sadece 4 cümleyi okuyacaksın. Çayını iç, biz halledelim.',paywallBtn:"⭐ Premium'a Geç",paywallSub:'İstediğin zaman iptal · Gizli ücret yok',
       ozetPrompt:'Sen deneyimli bir haber editörüsün. Haberi Türkçe olarak akıcı ve doğal bir dille özetle. Gazetecilik üslubu kullan: en önemli bilgiyle başla, ardından bağlam ve detay ekle. Kaliteli bir gazetede yayımlanabilecek nitelikte, 3-4 iyi kurulmuş cümle yaz. Yalnızca özet metnini yaz, başlık veya ek açıklama ekleme.'}
 };
 const LOCALES = {global:'en-US',en:'en-US',fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-BR',tr:'tr-TR'};
@@ -1325,8 +1325,16 @@ async function readerRenderTab(tab, haber) {
         if (article && article.trim().length > 100) {
           if(el) { el.className='reader-article'; el.innerHTML=article; }
         } else {
-          // Her iki yöntem de başarısız — hata mesajı
-          if(el) { el.className='reader-article'; el.innerHTML=`<p style="color:var(--text3)">${cfg.okumaErr}</p>`; }
+          // Her iki yöntem de başarısız — özete yönlendir
+          if(el) { el.className='reader-article'; el.innerHTML=`
+            <div style="text-align:center;padding:2rem">
+              <div style="font-size:32px;margin-bottom:1rem">🔒</div>
+              <div style="font-size:15px;color:var(--text3);line-height:1.7;margin-bottom:1.5rem">${cfg.okumaErr}</div>
+              <button onclick="window.LF.switchTab('ozet')" style="background:var(--tk);color:#000;border:none;border-radius:8px;padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">
+                ✦ ${cfg.rdrOzet}
+              </button>
+            </div>
+          `; }
         }
       }
     }
@@ -1383,13 +1391,8 @@ window.LF = {
     document.getElementById('tabOzet').textContent = cfg.rdrOzet;
     document.getElementById('tabOkuma').textContent = cfg.rdrOkuma;
     document.getElementById('tabKaynak').textContent = cfg.rdrKaynak;
-    // icerikVar yoksa Okuma Modu sekmesini gizle
-    const tabOkuma = document.getElementById('tabOkuma');
-    if (haber.icerikVar === true) {
-      tabOkuma.style.display = '';
-    } else {
-      tabOkuma.style.display = 'none';
-    }
+    // Okuma Modu sekmesini her zaman göster
+    document.getElementById('tabOkuma').style.display = '';
     document.getElementById('readerOverlay').classList.add('open');
     document.getElementById('readerPanel').classList.add('open');
     updateAds();
