@@ -182,7 +182,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .reader-tab{flex:1;padding:12px 8px;border:none;background:transparent;color:var(--text3);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
 .reader-tab:hover{color:var(--text);background:var(--bg3)}
 .reader-tab.active{color:var(--tk);border-bottom-color:var(--tk)}
-.reader-body{overflow-y:auto;flex:1}
+.reader-body{overflow-y:auto;flex:1;scrollbar-width:none}.reader-body::-webkit-scrollbar{display:none}
 .reader-hero-split{display:flex;height:300px;flex-shrink:0;overflow:hidden;border-bottom:0.5px solid var(--border)}
 .reader-hero-left{flex:1;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:2rem 2.5rem;z-index:2;overflow:hidden;min-width:0;background:var(--bg2)}
 .reader-hero-left::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent,transparent 38px,rgba(48,213,200,0.045) 38px,rgba(48,213,200,0.045) 39px),repeating-linear-gradient(45deg,transparent,transparent 38px,rgba(48,213,200,0.03) 38px,rgba(48,213,200,0.03) 39px);pointer-events:none}
@@ -354,10 +354,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <!-- READER PANELİ -->
 <div class="reader-overlay" id="readerOverlay"></div>
 <div class="reader-panel" id="readerPanel">
-  <div class="reader-header" style="padding:0.75rem 1.5rem">
+  <div class="reader-header">
     <a class="logo" href="/" style="text-decoration:none">
-      <div class="logo-mark" style="width:28px;height:28px"><img src="logo.png" alt="LensFlow"></div>
-      <span class="logo-text" style="font-size:18px">Lens<span>Flow</span></span>
+      <div class="logo-mark"><img src="logo.png" alt="LensFlow"></div>
+      <span class="logo-text">Lens<span>Flow</span></span>
     </a>
     <div style="display:flex;align-items:center;gap:10px;margin-left:auto">
       <div id="readerTranslateWrap" style="display:none;align-items:center;gap:6px">
@@ -395,11 +395,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="reader-tab" id="tabOkuma">◎ Okuma Modu</button>
     <button class="reader-tab" id="tabKaynak">↗ Kaynağından Oku</button>
   </div>
-  <div id="readerAdTop" class="ad-slot" style="margin:8px 16px;display:none"><span class="ad-slot-txt">728 × 90</span></div>
   <div class="reader-body" id="readerBody">
     <div class="loading"><div class="spin"></div></div>
   </div>
-  <div id="readerAdBottom" class="ad-slot" style="margin:8px 16px;display:none"><span class="ad-slot-txt">728 × 90</span></div>
 </div>
 <div class="content">
   <div>
@@ -501,10 +499,6 @@ function updateAds() {
   // Reader reklamları - panel açıkken göster
   const readerPanel = document.getElementById('readerPanel');
   const isReaderOpen = readerPanel && readerPanel.classList.contains('open');
-  const readerAdTop = document.getElementById('readerAdTop');
-  const readerAdBottom = document.getElementById('readerAdBottom');
-  if (readerAdTop) readerAdTop.style.display = (!isPremium && isReaderOpen) ? '' : 'none';
-  if (readerAdBottom) readerAdBottom.style.display = (!isPremium && isReaderOpen) ? '' : 'none';
   const readerHeroAd = document.getElementById('readerHeroAd');
   if (readerHeroAd) readerHeroAd.style.display = (!isPremium && isReaderOpen) ? '' : 'none';
 }
@@ -1172,7 +1166,7 @@ async function readerRenderTab(tab, haber) {
     <div class="reader-hero-right">${imgRight}</div>
   </div>`;
 
-  const adSlotHtml = `<div id="readerHeroAd" style="margin:0;padding:8px 16px;display:none"><div class="ad-slot" style="height:90px"><span class="ad-slot-txt">728 × 90</span></div></div>`;
+  const adSlotHtml = `<div id="readerHeroAd" style="display:none;width:100%;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border)"><div style="height:90px;background:var(--bg3);display:flex;align-items:center;justify-content:center;gap:8px"><span style="font-size:9px;color:var(--text3);border:0.5px solid var(--border);padding:2px 6px;border-radius:2px;text-transform:uppercase;letter-spacing:1px">Ad</span><span style="font-size:12px;color:var(--text3);font-family:monospace">728 × 90</span></div></div>`;
 
   const metaHtml = `<div class="reader-content">
     <div class="reader-divider" style="margin-top:0;margin-bottom:1.25rem"></div>`;
