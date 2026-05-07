@@ -14,7 +14,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LensFlow — Global News</title>
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
+<link rel="icon" type="image/png" sizes="192x192" href="logo192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+<link rel="apple-touch-icon" sizes="512x512" href="favicon-512.png">
 <link rel="apple-touch-icon" sizes="192x192" href="logo192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -23,11 +25,11 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scrollbar-width:none}html::-webkit-scrollbar{display:none}body{scrollbar-width:none}body::-webkit-scrollbar{display:none}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
-.navbar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:1.5rem;height:82px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.navbar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:1.5rem;height:90px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
 .logo{display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none}
-.logo-mark{width:52px;height:52px;background:transparent;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.logo-mark{width:64px;height:64px;background:transparent;border-radius:8px;display:flex;align-items:center;justify-content:center}
 .logo-mark img{width:100%;height:100%;object-fit:contain}
-.logo-text{font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);letter-spacing:-0.3px}
+.logo-text{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);letter-spacing:-0.3px}
 .logo-text span{color:var(--tk)}
 .search-wrap{display:flex;align-items:center;gap:10px;border-bottom:1.5px solid var(--border);padding:6px 0;flex:1;max-width:420px;transition:border-color .2s}
 .search-wrap:focus-within{border-color:var(--tk)}
@@ -174,7 +176,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .reader-overlay.open{opacity:1;pointer-events:all}
 .reader-panel{position:fixed;top:0;right:0;width:min(66.67vw,100vw);height:100vh;background:var(--bg2);z-index:9999;transform:translateX(100%);transition:transform .35s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;border-left:0.5px solid var(--border)}
 .reader-panel.open{transform:translateX(0)}
-.reader-header{padding:1rem 1.5rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.reader-header{padding:0 1.5rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;height:90px}
 .reader-logo{font-family:'DM Serif Display',serif;font-size:16px;color:var(--tk)}
 .reader-close{width:32px;height:32px;border-radius:50%;border:0.5px solid var(--border);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text2);transition:all .15s}
 .reader-close:hover{border-color:var(--tk);color:var(--tk)}
@@ -232,8 +234,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 }
 @media(max-width:768px){
   .hero-prev,.hero-next{display:none}.search-wrap{display:none}.mobile-search{display:flex}
-  .navbar{padding:0 1rem;gap:8px;height:60px}.logo-text{font-size:18px}
-  .logo-mark{width:28px;height:28px}.nav-date{display:none}.lang-btn{padding:5px 10px;font-size:12px}
+  .navbar{padding:0 1rem;gap:8px;height:64px}.logo-text{font-size:20px}
+  .logo-mark{width:40px;height:40px}.nav-date{display:none}.lang-btn{padding:5px 10px;font-size:12px}
   .ticker{height:38px}.ticker-tag::after{border-top:38px solid transparent}
   .ad-band{padding:6px 1rem}.ad-slot{height:50px}
   .hero-slide{height:260px}.hero-title{font-size:20px}.hero-text{padding:1.25rem 1.25rem}.hero-left{display:none}.hero-right{position:absolute;inset:0;width:100%}
