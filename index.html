@@ -490,19 +490,14 @@ function renderAuthArea(user) {
       Sign In
     </button>`;
   } else {
-    const planLabel = userPlan === 'premium' ? '⭐ Premium' : 'Free';
+    const planLabel = userPlan === 'premium' ? '⭐ Premium' : '';
     area.innerHTML = `<div class="user-menu" id="userMenu">
       <button style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:8px" onclick="toggleUserMenu()">
         <img class="user-avatar" src="${user.photoURL||''}" onerror="this.style.display='none'" alt="">
         <span style="font-size:13px;color:var(--text);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${user.displayName||user.email}</span>
-        <span style="font-size:10px;color:var(--tk)">${planLabel}</span>
+        ${planLabel ? `<span style="font-size:10px;color:var(--tk)">${planLabel}</span>` : ''}
       </button>
       <div class="user-menu-dd" id="userMenuDd">
-        <div class="user-plan">
-          <div class="user-plan-name">Plan</div>
-          <div class="user-plan-val">${planLabel}</div>
-        </div>
-        ${userPlan === 'free' ? `<div class="user-menu-item" onclick="window.LF.goSubscribe()">⭐ Upgrade to Premium</div>` : ''}
         <div class="user-menu-item" onclick="window.LF.openLangPref()">🌐 Varsayılan Dil</div>
         <div class="user-menu-item danger" onclick="window.LF.signOut()">Sign Out</div>
       </div>
@@ -993,7 +988,7 @@ function renderCards() {
       }
       ${userPlan === 'premium'
         ? `<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);border-radius:6px;padding:3px 7px;font-size:11px;color:var(--tk);cursor:pointer" onclick="event.stopPropagation();window.LF.openReaderTranslate(window.LF.news[${i}])" title="Çevir">🌐</div>`
-        : `<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);border-radius:6px;padding:3px 7px;font-size:11px;color:rgba(255,255,255,0.5);cursor:pointer" onclick="event.stopPropagation();window.LF.goSubscribe()" title="Premium ile çevir">🌐⭐</div>`
+        : ''
       }
       </div>
       <div class="ncard-body">
