@@ -921,8 +921,10 @@ function renderCards() {
   if (!filteredNews.length) { grid.innerHTML=`<div class="no-results">Sonuç bulunamadı.</div>`; return; }
   const visible = filteredNews.slice(0, visibleCount);
   let html = '';
+  const isMobile = window.innerWidth <= 768;
+  const adInterval = isMobile ? 5 : 18;
   visible.forEach((n, i) => {
-    if (i>0 && i%18===0 && userPlan !== 'premium') html+=`<div class="ncard-ad"><span class="ncard-ad-label">Reklam</span><span class="ncard-ad-slot">728×90</span></div>`;
+    if (i>0 && i%adInterval===0 && userPlan !== 'premium') html+=`<div class="ncard-ad"><span class="ncard-ad-label">Reklam</span><span class="ncard-ad-slot">728×90</span></div>`;
     const timeAgo = n.tarih ? Math.round((Date.now()-n.tarih.toDate().getTime())/3600000) : '';
     const catLabel = catMap[n.kategori]||n.kategori||'';
     const proxied = proxyImg(n.gorsel);
