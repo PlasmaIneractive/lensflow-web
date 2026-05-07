@@ -39,9 +39,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .search-input::placeholder{color:var(--text3)}
 .nav-right{margin-left:auto;display:flex;align-items:center;gap:12px;flex-shrink:0}
 .nav-date{font-size:13px;color:var(--text3);font-family:monospace;white-space:nowrap}
-.lang-dd{position:relative}
-.lang-btn{display:flex;align-items:center;gap:7px;background:var(--bg3);border:0.5px solid var(--border);border-radius:24px;padding:8px 16px;cursor:pointer;font-size:14px;color:var(--text);white-space:nowrap;transition:border-color .15s;font-family:'DM Sans',sans-serif}
-.lang-btn:hover{border-color:var(--tk)}
+.lang-bar{display:flex;align-items:center;gap:0;padding:0 2rem;scrollbar-width:none;background:var(--bg2);border-bottom:0.5px solid var(--border);overflow-x:auto}
+.lang-bar::-webkit-scrollbar{display:none}
+.lbtn{display:flex;align-items:center;gap:6px;padding:10px 16px;border:none;background:transparent;color:var(--text3);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s}
+.lbtn:hover{color:var(--text)}
+.lbtn.active{color:var(--tk);border-bottom-color:var(--tk)}
+.lbtn-flag{font-size:15px}
 .auth-btn{display:flex;align-items:center;gap:8px;background:var(--tk);color:#000;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.2s;white-space:nowrap}
 .auth-btn:hover{opacity:0.85}
 .auth-btn.signout{background:transparent;color:var(--text3);border:0.5px solid var(--border)}
@@ -57,7 +60,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .user-plan{padding:12px 16px;border-bottom:0.5px solid var(--border)}
 .user-plan-name{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
 .user-plan-val{font-size:13px;color:var(--tk);font-weight:600;margin-top:2px}
-.lang-arr{width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-top:3px solid var(--text3);transition:transform .15s}
+
 .lang-btn.open .auth-btn{display:flex;align-items:center;gap:8px;background:var(--tk);color:#000;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.2s;white-space:nowrap}
 .auth-btn:hover{opacity:0.85}
 .auth-btn.signout{background:transparent;color:var(--text3);border:0.5px solid var(--border)}
@@ -74,16 +77,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .user-plan-name{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
 .user-plan-val{font-size:13px;color:var(--tk);font-weight:600;margin-top:2px}
 .lang-arr{transform:rotate(180deg)}
-.lang-menu{position:absolute;right:0;top:calc(100% + 6px);background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;min-width:150px;display:none;z-index:200}
-.lang-menu.open{display:block}
-.loption{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:13px;color:var(--text2);border-bottom:0.5px solid var(--border2);transition:all .1s}
-.loption:last-child{border-bottom:none}
-.loption:hover{background:var(--bg3);color:var(--text)}
-.loption.active{color:var(--tk)}
-.loflag{font-size:14px;width:18px;text-align:center}
-.loname{flex:1}
-.lochk{width:6px;height:6px;border-radius:50%;background:var(--tk);display:none;flex-shrink:0}
-.loption.active .lochk{display:block}
 .ticker{background:var(--bg2);border-bottom:0.5px solid var(--border);overflow:hidden;height:48px;display:flex;align-items:center}
 .ticker-tag{background:var(--tk);color:#0a3a38;font-size:13px;font-weight:500;padding:0 10px 0 12px;height:100%;display:flex;align-items:center;flex-shrink:0;position:relative;letter-spacing:1px;text-transform:uppercase}
 .ticker-tag::after{content:'';position:absolute;right:-9px;top:0;width:0;height:0;border-top:48px solid transparent;border-left:9px solid var(--tk)}
@@ -235,7 +228,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 @media(max-width:768px){
   .hero-prev,.hero-next{display:none}.search-wrap{display:none}.mobile-search{display:flex}
   .navbar{padding:0 1rem;gap:8px;height:64px}.logo-text{font-size:20px}
-  .logo-mark{width:40px;height:40px}.nav-date{display:none}.lang-btn{padding:5px 10px;font-size:12px}
+  .logo-mark{width:40px;height:40px}.nav-date{display:none}
+  .lang-bar{padding:0 1rem}.lbtn{padding:8px 12px;font-size:12px}
   .ticker{height:38px}.ticker-tag::after{border-top:38px solid transparent}
   .ad-band{padding:6px 1rem}.ad-slot{height:50px}
   .hero-slide{height:260px}.hero-title{font-size:20px}.hero-text{padding:1.25rem 1.25rem}.hero-left{display:none}.hero-right{position:absolute;inset:0;width:100%}
@@ -261,20 +255,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
   <div class="nav-right">
     <span class="nav-date" id="navDate"></span>
-    <div class="lang-dd" id="ldd">
-      <button class="lang-btn" id="ltrig" onclick="toggleMenu()">
-        <span id="tFlag">🌍</span><span id="tName">Global</span><span class="lang-arr"></span>
-      </button>
-      <div class="lang-menu" id="lmenu">
-        <div class="loption active" onclick="setLang('global')"><span class="loflag">🌍</span><span class="loname">Global</span><span class="lochk"></span></div>
-        <div class="loption" onclick="setLang('en')"><span class="loflag">🇬🇧</span><span class="loname">English</span><span class="lochk"></span></div>
-        <div class="loption" onclick="setLang('fr')"><span class="loflag">🇫🇷</span><span class="loname">Français</span><span class="lochk"></span></div>
-        <div class="loption" onclick="setLang('de')"><span class="loflag">🇩🇪</span><span class="loname">Deutsch</span><span class="lochk"></span></div>
-        <div class="loption" onclick="setLang('es')"><span class="loflag">🇪🇸</span><span class="loname">Español</span><span class="lochk"></span></div>
-        <div class="loption" onclick="setLang('pt')"><span class="loflag">🇧🇷</span><span class="loname">Português</span><span class="lochk"></span></div>
-        <div class="loption" onclick="setLang('tr')"><span class="loflag">🇹🇷</span><span class="loname">Türkçe</span><span class="lochk"></span></div>
-      </div>
-    </div>
     <div id="authArea"></div>
   </div>
 </nav>
@@ -342,6 +322,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="hero-dots" id="heroDots"></div>
     <span class="hero-counter" id="heroCounter"></span>
   </div>
+</div>
+<div class="lang-bar" id="langBar">
+  <button class="lbtn active" onclick="window.setLang('global')"><span class="lbtn-flag">🌍</span> Global</button>
+  <button class="lbtn" onclick="window.setLang('en')"><span class="lbtn-flag">🇬🇧</span> English</button>
+  <button class="lbtn" onclick="window.setLang('tr')"><span class="lbtn-flag">🇹🇷</span> Türkçe</button>
+  <button class="lbtn" onclick="window.setLang('fr')"><span class="lbtn-flag">🇫🇷</span> Français</button>
+  <button class="lbtn" onclick="window.setLang('de')"><span class="lbtn-flag">🇩🇪</span> Deutsch</button>
+  <button class="lbtn" onclick="window.setLang('es')"><span class="lbtn-flag">🇪🇸</span> Español</button>
+  <button class="lbtn" onclick="window.setLang('pt')"><span class="lbtn-flag">🇧🇷</span> Português</button>
 </div>
 <div class="filter-row" id="filters"></div>
 <div class="digest-band" id="digestBand" style="display:none">
@@ -1013,19 +1002,17 @@ window.selectPlan = (plan) => {
 };
 window._selectedPlan = 'monthly';
 
-window.toggleMenu = () => { const o=document.getElementById('lmenu').classList.toggle('open'); document.getElementById('ltrig').classList.toggle('open',o); };
-document.addEventListener('click', e => { if (!document.getElementById('ldd').contains(e.target)) { document.getElementById('lmenu').classList.remove('open'); document.getElementById('ltrig').classList.remove('open'); } });
+window.toggleMenu = () => {};
 window.setLang = async l => {
   lang=l;
-  document.getElementById('lmenu').classList.remove('open');
-  document.getElementById('ltrig').classList.remove('open');
   const cfg=LANG_CONFIG[l];
-  document.getElementById('tFlag').textContent=cfg.flag;
-  document.getElementById('tName').textContent=l==='global'?'Global':cfg.name;
   document.getElementById('srch').placeholder=cfg.ph;
   document.getElementById('srch').value='';
   searchQ=''; activeFilter=null;
-  LANG_KEYS.forEach((k,i)=>document.querySelectorAll('.loption')[i].classList.toggle('active',k===l));
+  // Lang bar active state
+  document.querySelectorAll('.lbtn').forEach((btn,i)=>{
+    btn.classList.toggle('active', LANG_KEYS[i]===l);
+  });
   document.getElementById('navDate').textContent=new Date().toLocaleDateString(LOCALES[l],{day:'numeric',month:'short',year:'numeric'});
   renderFilters();
   await loadAndRender();
