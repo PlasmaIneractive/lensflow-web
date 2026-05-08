@@ -166,6 +166,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .mobile-search{display:none;align-items:center;gap:8px;background:var(--bg2);border-bottom:0.5px solid var(--border);padding:8px 1rem}
 .mobile-search .search-wrap{display:flex;flex:1;max-width:none;border-bottom:1px solid var(--border)}
 .ncard-actions{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-top:0.5px solid var(--border);background:var(--bg2)}
+.ncard-block-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:11px;font-family:'DM Sans',sans-serif;padding:0;opacity:0.6;transition:opacity .15s;text-align:left}
+.ncard-block-btn:hover{opacity:1;color:#e53e3e}
 .ncard-readtime{font-size:11px;color:var(--text3)}
 .ncard-btn{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px 6px;border-radius:6px;display:flex;align-items:center;transition:color .15s}
 .ncard-btn:hover{color:var(--tk)}
@@ -1007,11 +1009,11 @@ function renderCards() {
         <div class="nmeta" style="margin-top:auto;padding-top:8px">
           <span class="nsrc">${n.kaynak||''}</span>
           <span class="ntime">${timeAgo} ${cfg.ago}</span>
-          <button class="ncard-btn" onclick="event.stopPropagation();window.LF.confirmBlock('${(n.kaynak||'').replace(/'/g,"\\'")}');this.closest('.ncard').remove()" title="Kaynağı engelle" style="margin-left:4px;opacity:0.4;padding:2px 4px">🚫</button>
         </div>
       </div>
       <div class="ncard-actions" onclick="event.stopPropagation()">
-        <div style="display:flex;gap:4px;margin-left:auto">
+        <button class="ncard-block-btn" onclick="window.LF.confirmBlock('${(n.kaynak||'').replace(/'/g,"\\'")}')">Kaynağı Engelle</button>
+        <div style="display:flex;gap:4px">
           <button class="ncard-btn" onclick="window.LF.shareNews(${hIdx})" title="Paylaş">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
           </button>
