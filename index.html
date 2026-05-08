@@ -1005,8 +1005,9 @@ function renderCards() {
         <div class="ncat">${catLabel}</div>
         <div class="ntitle">${n.baslik}</div>
         <div class="nmeta" style="margin-top:auto;padding-top:8px">
-          <span class="nsrc" onclick="event.stopPropagation();window.LF.blockSource('${(n.kaynak||'').replace(/'/g,"\\'")}',${hIdx})" title="Kaynağı engelle" style="cursor:pointer">${n.kaynak||''}</span>
+          <span class="nsrc">${n.kaynak||''}</span>
           <span class="ntime">${timeAgo} ${cfg.ago}</span>
+          <button class="ncard-btn" onclick="event.stopPropagation();window.LF.confirmBlock('${(n.kaynak||'').replace(/'/g,"\\'")}');this.closest('.ncard').remove()" title="Kaynağı engelle" style="margin-left:4px;opacity:0.4;padding:2px 4px">🚫</button>
         </div>
       </div>
       <div class="ncard-actions" onclick="event.stopPropagation()">
@@ -1610,6 +1611,8 @@ window.LF = {
       const blocked = JSON.parse(localStorage.getItem('lf_blocked_src') || '[]');
       if (!blocked.includes(kaynak)) { blocked.push(kaynak); localStorage.setItem('lf_blocked_src', JSON.stringify(blocked)); }
     } catch {}
+    // O kaynaktan gelen tüm kartları DOM'dan kaldır
+    allNews = allNews.filter(n => n.kaynak !== kaynak);
     renderGrid();
   },
 
