@@ -165,7 +165,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .no-results{font-size:13px;color:var(--text3);padding:2rem 0;text-align:center}
 .mobile-search{display:none;align-items:center;gap:8px;background:var(--bg2);border-bottom:0.5px solid var(--border);padding:8px 1rem}
 .mobile-search .search-wrap{display:flex;flex:1;max-width:none;border-bottom:1px solid var(--border)}
-.ncard-ad{background:var(--bg2);border:0.5px dashed var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;height:120px;grid-column:1/-1;width:100%}
+.ncard-actions{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-top:0.5px solid var(--border);background:var(--bg2)}
+.ncard-readtime{font-size:11px;color:var(--text3)}
+.ncard-btn{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px 6px;border-radius:6px;display:flex;align-items:center;transition:color .15s}
+.ncard-btn:hover{color:var(--tk)}
+.ncard-btn.bookmarked{color:var(--tk)}
 .ncard-ad-label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase}
 .ncard-ad-slot{font-size:12px;color:var(--text3);font-family:monospace}
 .loading{display:flex;align-items:center;justify-content:center;padding:4rem;color:var(--text3);font-size:13px;gap:10px}
@@ -421,7 +425,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, updateDoc, setDoc, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, updateDoc, setDoc, Timestamp, startAfter } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
 const firebaseConfig = {
@@ -498,6 +502,7 @@ function renderAuthArea(user) {
         ${planLabel ? `<span style="font-size:10px;color:var(--tk)">${planLabel}</span>` : ''}
       </button>
       <div class="user-menu-dd" id="userMenuDd">
+        <div class="user-menu-item" onclick="window.LF.openBookmarks()">🔖 Kaydedilenler</div>
         <div class="user-menu-item" onclick="window.LF.openLangPref()">🌐 Varsayılan Dil</div>
         <div class="user-menu-item danger" onclick="window.LF.signOut()">Sign Out</div>
       </div>
@@ -981,6 +986,9 @@ function renderCards() {
     const timeAgo = n.tarih ? Math.round((Date.now()-n.tarih.toDate().getTime())/3600000) : '';
     const catLabel = catMap[n.kategori]||n.kategori||'';
     const proxied = proxyImg(n.gorsel);
+    const kelimeSayisi = (n.baslik||'').split(' ').length * 8; // tahmini
+    const okumaStr = kelimeSayisi < 150 ? '1 dk' : Math.ceil(kelimeSayisi/200) + ' dk';
+    const hIdx = i;
     html+=`<div class="ncard" onclick="window.LF.openReader(window.LF.news[${i}])">
       <div class="nimg" style="position:relative">${proxied
         ? `<img src="${proxied}" alt="" loading="lazy" onerror="const logo=getSourceLogo('${n.kaynak||''}');if(logo){this.src=logo;this.style.objectFit='contain';this.style.padding='20px';this.style.background='var(--bg2)';this.onerror=function(){this.parentElement.style.display='none'}}else{this.parentElement.style.display='none'}">`
@@ -995,6 +1003,17 @@ function renderCards() {
         <div class="ncat">${catLabel}</div>
         <div class="ntitle">${n.baslik}</div>
         <div class="nmeta" style="margin-top:auto;padding-top:8px"><span class="nsrc">${n.kaynak||''}</span><span class="ntime">${timeAgo} ${cfg.ago}</span></div>
+      </div>
+      <div class="ncard-actions" onclick="event.stopPropagation()">
+        <span class="ncard-readtime">⏱ ${okumaStr}</span>
+        <div style="display:flex;gap:4px">
+          <button class="ncard-btn" onclick="window.LF.shareNews(${hIdx})" title="Paylaş">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <button class="ncard-btn ${window.LF.isBookmarked(n.id)?'bookmarked':''}" id="bm-${n.id}" onclick="window.LF.toggleBookmark(${hIdx})" title="Kaydet">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="${window.LF.isBookmarked(n.id)?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </button>
+        </div>
       </div>
     </div>`;
   });
@@ -1549,6 +1568,78 @@ window.LF = {
       }
       document.getElementById('translateLang')?.focus();
     }, 400);
+  },
+
+  openBookmarks() {
+    document.getElementById('userMenuDd')?.classList.remove('open');
+    document.getElementById('bookmarksModal')?.remove();
+
+    let bm = [];
+    try { bm = JSON.parse(localStorage.getItem('lf_bookmarks') || '[]'); } catch {}
+
+    const kaydedilenler = this.news.filter(n => bm.includes(n.id));
+
+    const modal = document.createElement('div');
+    modal.id = 'bookmarksModal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px)';
+
+    const liste = kaydedilenler.length > 0
+      ? kaydedilenler.map(h => `
+          <div onclick="document.getElementById('bookmarksModal').remove();window.LF.openReader(window.LF.news.find(n=>n.id==='${h.id}'))"
+            style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:0.5px solid var(--border);cursor:pointer">
+            <div style="flex:1">
+              <div style="font-size:11px;color:var(--tk);margin-bottom:3px">${h.kaynak||''}</div>
+              <div style="font-size:14px;color:var(--text);line-height:1.4;font-family:'DM Sans',sans-serif">${h.baslik}</div>
+            </div>
+            <button onclick="event.stopPropagation();window.LF.toggleBookmark(window.LF.news.findIndex(n=>n.id==='${h.id}'));this.closest('[style*=border-bottom]').remove()"
+              style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;padding:2px 6px;flex-shrink:0">×</button>
+          </div>`).join('')
+      : `<div style="text-align:center;padding:2rem;color:var(--text3);font-size:14px">Henüz kaydedilmiş haber yok.<br>Haber kartlarındaki 🔖 butonunu kullanın.</div>`;
+
+    modal.innerHTML = `
+      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:16px;padding:1.5rem;width:480px;max-width:92vw;max-height:80vh;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)">🔖 Kaydedilenler</div>
+          <button onclick="document.getElementById('bookmarksModal').remove()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;padding:4px">×</button>
+        </div>
+        <div style="overflow-y:auto;flex:1">${liste}</div>
+      </div>`;
+
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
+  },
+    const h = this.news[idx];
+    if (!h) return;
+    if (navigator.share) {
+      navigator.share({ title: h.baslik, url: h.link });
+    } else {
+      navigator.clipboard?.writeText(h.link);
+      alert('Link kopyalandı!');
+    }
+  },
+
+  isBookmarked(id) {
+    try {
+      const bm = JSON.parse(localStorage.getItem('lf_bookmarks') || '[]');
+      return bm.includes(id);
+    } catch { return false; }
+  },
+
+  toggleBookmark(idx) {
+    const h = this.news[idx];
+    if (!h) return;
+    try {
+      let bm = JSON.parse(localStorage.getItem('lf_bookmarks') || '[]');
+      const btn = document.getElementById('bm-' + h.id);
+      if (bm.includes(h.id)) {
+        bm = bm.filter(x => x !== h.id);
+        if (btn) { btn.classList.remove('bookmarked'); btn.querySelector('svg path').setAttribute('fill','none'); }
+      } else {
+        bm.push(h.id);
+        if (btn) { btn.classList.add('bookmarked'); btn.querySelector('svg path').setAttribute('fill','currentColor'); }
+      }
+      localStorage.setItem('lf_bookmarks', JSON.stringify(bm));
+    } catch(e) {}
   },
 
   goSubscribe() {
