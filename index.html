@@ -968,10 +968,14 @@ function gridPuanla(news) {
 function renderGrid() {
   let base = allNews;
   const cfg = LANG_CONFIG[lang];
-  // Engellenen kaynakları filtrele
   const blocked = window.LF.getBlockedSources();
   if (blocked.size > 0) base = base.filter(n => !blocked.has(n.kaynak));
-  if (activeFilter && activeFilter!=='Tümü') base=base.filter(n=>n.kategori===activeFilter);
+  if (activeFilter === '__following__') {
+    const followed = window.LF.getFollowedSources();
+    base = base.filter(n => followed.has(n.kaynak));
+  } else if (activeFilter && activeFilter !== 'Tümü') {
+    base = base.filter(n => n.kategori === activeFilter);
+  }
   if (searchQ) base=base.filter(n=>n.baslik?.toLowerCase().includes(searchQ));
   filteredNews = gridPuanla(base);
   visibleCount = PAGE_SIZE;
@@ -1012,8 +1016,12 @@ function renderCards() {
         </div>
       </div>
       <div class="ncard-actions" onclick="event.stopPropagation()">
-        <button class="ncard-block-btn" onclick="window.LF.confirmBlock('${(n.kaynak||'').replace(/'/g,"\\'")}')">Kaynağı Engelle</button>
-        <div style="display:flex;gap:4px">
+        <div style="display:flex;gap:8px">
+          <button class="ncard-block-btn" onclick="window.LF.confirmBlock('${(n.kaynak||'').replace(/'/g,"\\'")}')">Kaynağı Engelle</button>
+          <button class="ncard-block-btn" onclick="window.LF.toggleFollow('${(n.kaynak||'').replace(/'/g,"\\'")}');this.textContent=window.LF.getFollowedSources().has('${(n.kaynak||'').replace(/'/g,"\\'")}') ? '★ Takiptesin' : '☆ Takip Et'" style="color:${window.LF.getFollowedSources().has(n.kaynak)?'var(--tk)':'var(--text3)'}">
+            ${window.LF.getFollowedSources().has(n.kaynak) ? '★ Takiptesin' : '☆ Takip Et'}
+          </button>
+        </div>
           <button class="ncard-btn" onclick="window.LF.shareNews(${hIdx})" title="Paylaş">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
           </button>
@@ -1050,13 +1058,15 @@ function renderFilters() {
   const cfg = LANG_CONFIG[lang];
   const catMap = CATEGORY_MAP[lang];
   const mevcut = new Set(allNews.map(n=>n.kategori).filter(Boolean));
-  const allKey = 'Tümü'; // Firebase'de her zaman Türkçe saklı
+  const allKey = 'Tümü';
   const siralı = FILTER_ORDER.filter(k=>k===allKey||mevcut.has(k));
-  document.getElementById('filters').innerHTML = siralı.map((k,i)=>{
+  const takipEdilenler = window.LF.getFollowedSources();
+  const takipBtn = takipEdilenler.size > 0
+    ? `<button class="fbtn${activeFilter==='__following__'?' active':''}" onclick="window.LF.setFilter('__following__')">⭐ Takip Ettiklerim</button>`
+    : '';
+  document.getElementById('filters').innerHTML = takipBtn + siralı.map((k,i)=>{
     const label = catMap[k]||k;
-    // setFilter'a her zaman Türkçe key gönder (Firebase'deki değerle eşleşsin)
-    const filterKey = k===allKey ? cfg.allKey : k;
-    return `<button class="fbtn${i===0?' active':''}" onclick="window.LF.setFilter('${k}')">${label}</button>`;
+    return `<button class="fbtn${activeFilter===null&&i===0?' active':activeFilter===k?' active':''}" onclick="window.LF.setFilter('${k}')">${label}</button>`;
   }).join('');
 }
 
@@ -1784,8 +1794,28 @@ window.LF = {
     activeFilter = (f==='Tümü'||f===LANG_CONFIG[lang].allKey) ? null : f;
     document.querySelectorAll('.fbtn').forEach(b => {
       const key = b.getAttribute('onclick').match(/'([^']+)'/)?.[1];
-      b.classList.toggle('active', key===f);
+      b.classList.toggle('active', key===f || (f==='Tümü' && key==='Tümü'));
     });
+    renderGrid();
+  },
+
+  getFollowedSources() {
+    try { return new Set(JSON.parse(localStorage.getItem('lf_followed_src') || '[]')); }
+    catch { return new Set(); }
+  },
+
+  toggleFollow(kaynak) {
+    if (!kaynak) return;
+    try {
+      let followed = JSON.parse(localStorage.getItem('lf_followed_src') || '[]');
+      if (followed.includes(kaynak)) {
+        followed = followed.filter(k => k !== kaynak);
+      } else {
+        followed.push(kaynak);
+      }
+      localStorage.setItem('lf_followed_src', JSON.stringify(followed));
+    } catch {}
+    renderFilters();
     renderGrid();
   },
 
