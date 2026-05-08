@@ -1608,6 +1608,8 @@ window.LF = {
     document.body.appendChild(modal);
     modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
   },
+
+  shareNews(idx) {
     const h = this.news[idx];
     if (!h) return;
     if (navigator.share) {
