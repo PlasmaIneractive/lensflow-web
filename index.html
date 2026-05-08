@@ -1016,19 +1016,18 @@ function renderCards() {
         </div>
       </div>
       <div class="ncard-actions" onclick="event.stopPropagation()">
-        <div style="display:flex;gap:8px">
-          <button class="ncard-block-btn" onclick="window.LF.confirmBlock('${(n.kaynak||'').replace(/'/g,"\\'")}')">Kaynağı Engelle</button>
-          <button class="ncard-block-btn" onclick="window.LF.toggleFollow('${(n.kaynak||'').replace(/'/g,"\\'")}');this.textContent=window.LF.getFollowedSources().has('${(n.kaynak||'').replace(/'/g,"\\'")}') ? '★ Takiptesin' : '☆ Takip Et'" style="color:${window.LF.getFollowedSources().has(n.kaynak)?'var(--tk)':'var(--text3)'}">
-            ${window.LF.getFollowedSources().has(n.kaynak) ? '★ Takiptesin' : '☆ Takip Et'}
-          </button>
-        </div>
+        <div style="display:flex;align-items:center;gap:6px">
           <button class="ncard-btn" onclick="window.LF.shareNews(${hIdx})" title="Paylaş">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
           </button>
           <button class="ncard-btn ${window.LF.isBookmarked(n.id)?'bookmarked':''}" id="bm-${n.id}" onclick="window.LF.toggleBookmark(${hIdx})" title="Kaydet">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="${window.LF.isBookmarked(n.id)?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
           </button>
+          <button class="ncard-btn" onclick="window.LF.toggleFollow('${(n.kaynak||'').replace(/'/g,"\\'")}');renderFilters();renderGrid()" title="Takip Et" style="color:${window.LF.getFollowedSources().has(n.kaynak)?'var(--tk)':''};fill:${window.LF.getFollowedSources().has(n.kaynak)?'currentColor':'none'}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="${window.LF.getFollowedSources().has(n.kaynak)?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
         </div>
+        <button class="ncard-block-btn" onclick="window.LF.confirmBlock('${(n.kaynak||'').replace(/'/g,"\\'")}')">Kaynağı Engelle</button>
       </div>
     </div>`;
   });
