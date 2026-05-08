@@ -792,12 +792,9 @@ async function loadGlobalKaynaklar() {
 async function loadNews(langKey) {
   let q;
   if (langKey === 'global') {
-    q = query(collection(db,'haberler'),orderBy('tarih','desc'),limit(400));
+    q = query(collection(db,'haberler'),where('global','==',true),orderBy('tarih','desc'),limit(400));
     const snap = await getDocs(q);
-    const globalSrc = await loadGlobalKaynaklar();
-    return snap.docs
-      .map(d => ({id:d.id,...d.data()}))
-      .filter(h => globalSrc.has(h.kaynak));
+    return snap.docs.map(d => ({id:d.id,...d.data()}));
   } else {
     q = query(collection(db,'haberler'),where('dil','==',langKey),orderBy('tarih','desc'),limit(400));
     const snap = await getDocs(q);
