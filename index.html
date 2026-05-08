@@ -986,8 +986,6 @@ function renderCards() {
     const timeAgo = n.tarih ? Math.round((Date.now()-n.tarih.toDate().getTime())/3600000) : '';
     const catLabel = catMap[n.kategori]||n.kategori||'';
     const proxied = proxyImg(n.gorsel);
-    const kelimeSayisi = (n.baslik||'').split(' ').length * 8; // tahmini
-    const okumaStr = kelimeSayisi < 150 ? '1 dk' : Math.ceil(kelimeSayisi/200) + ' dk';
     const hIdx = i;
     html+=`<div class="ncard" onclick="window.LF.openReader(window.LF.news[${i}])">
       <div class="nimg" style="position:relative">${proxied
@@ -1005,8 +1003,7 @@ function renderCards() {
         <div class="nmeta" style="margin-top:auto;padding-top:8px"><span class="nsrc">${n.kaynak||''}</span><span class="ntime">${timeAgo} ${cfg.ago}</span></div>
       </div>
       <div class="ncard-actions" onclick="event.stopPropagation()">
-        <span class="ncard-readtime">⏱ ${okumaStr}</span>
-        <div style="display:flex;gap:4px">
+        <div style="display:flex;gap:4px;margin-left:auto">
           <button class="ncard-btn" onclick="window.LF.shareNews(${hIdx})" title="Paylaş">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
           </button>
