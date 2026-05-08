@@ -797,13 +797,7 @@ async function loadNews(langKey) {
     const globalSrc = await loadGlobalKaynaklar();
     return snap.docs
       .map(d => ({id:d.id,...d.data()}))
-      .filter(h => {
-        if (!globalSrc.has(h.kaynak)) return false;
-        // Dünya kategorisi: tüm diller gösterilir
-        // Diğer kategoriler: sadece İngilizce
-        if (h.kategori === 'Dünya') return true;
-        return h.dil === 'en';
-      });
+      .filter(h => globalSrc.has(h.kaynak));
   } else {
     q = query(collection(db,'haberler'),where('dil','==',langKey),orderBy('tarih','desc'),limit(400));
     const snap = await getDocs(q);
