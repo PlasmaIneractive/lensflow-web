@@ -1613,8 +1613,8 @@ window.LF = {
       const blocked = JSON.parse(localStorage.getItem('lf_blocked_src') || '[]');
       if (!blocked.includes(kaynak)) { blocked.push(kaynak); localStorage.setItem('lf_blocked_src', JSON.stringify(blocked)); }
     } catch {}
-    // O kaynaktan gelen tüm kartları DOM'dan kaldır
     allNews = allNews.filter(n => n.kaynak !== kaynak);
+    buildHero(haberPuanla(allNews));
     renderGrid();
   },
 
@@ -1871,7 +1871,8 @@ async function loadAndRender() {
   document.getElementById('heroTrack').innerHTML=`<div class="hero-slide"><div class="loading"><div class="spin"></div></div></div>`;
   try {
     [allNews, digestData] = await Promise.all([loadNews(lang), loadDigest(lang)]);
-    const heroNews = haberPuanla(allNews);
+    const blocked = window.LF.getBlockedSources();
+    const heroNews = haberPuanla(allNews.filter(n => !blocked.has(n.kaynak)));
     buildTicker(allNews);
     buildHero(heroNews);
     renderFilters();
