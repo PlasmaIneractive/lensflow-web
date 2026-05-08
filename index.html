@@ -503,6 +503,7 @@ function renderAuthArea(user) {
       </button>
       <div class="user-menu-dd" id="userMenuDd">
         <div class="user-menu-item" onclick="window.LF.openBookmarks()">🔖 Kaydedilenler</div>
+        <div class="user-menu-item" onclick="window.LF.openBlockedSources()">🚫 Engellenen Kaynaklar</div>
         <div class="user-menu-item" onclick="window.LF.openLangPref()">🌐 Varsayılan Dil</div>
         <div class="user-menu-item danger" onclick="window.LF.signOut()">Sign Out</div>
       </div>
@@ -965,6 +966,9 @@ function gridPuanla(news) {
 function renderGrid() {
   let base = allNews;
   const cfg = LANG_CONFIG[lang];
+  // Engellenen kaynakları filtrele
+  const blocked = window.LF.getBlockedSources();
+  if (blocked.size > 0) base = base.filter(n => !blocked.has(n.kaynak));
   if (activeFilter && activeFilter!=='Tümü') base=base.filter(n=>n.kategori===activeFilter);
   if (searchQ) base=base.filter(n=>n.baslik?.toLowerCase().includes(searchQ));
   filteredNews = gridPuanla(base);
@@ -1000,7 +1004,10 @@ function renderCards() {
       <div class="ncard-body">
         <div class="ncat">${catLabel}</div>
         <div class="ntitle">${n.baslik}</div>
-        <div class="nmeta" style="margin-top:auto;padding-top:8px"><span class="nsrc">${n.kaynak||''}</span><span class="ntime">${timeAgo} ${cfg.ago}</span></div>
+        <div class="nmeta" style="margin-top:auto;padding-top:8px">
+          <span class="nsrc" onclick="event.stopPropagation();window.LF.blockSource('${(n.kaynak||'').replace(/'/g,"\\'")}',${hIdx})" title="Kaynağı engelle" style="cursor:pointer">${n.kaynak||''}</span>
+          <span class="ntime">${timeAgo} ${cfg.ago}</span>
+        </div>
       </div>
       <div class="ncard-actions" onclick="event.stopPropagation()">
         <div style="display:flex;gap:4px;margin-left:auto">
@@ -1567,7 +1574,85 @@ window.LF = {
     }, 400);
   },
 
-  openBookmarks() {
+  getBlockedSources() {
+    try { return new Set(JSON.parse(localStorage.getItem('lf_blocked_src') || '[]')); }
+    catch { return new Set(); }
+  },
+
+  blockSource(kaynak, idx) {
+    if (!kaynak) return;
+    // Onay mini popup
+    const card = document.querySelector(`[onclick*="openReader(window.LF.news[${idx}])"]`);
+    const existing = document.getElementById('blockPopup');
+    if (existing) existing.remove();
+
+    const popup = document.createElement('div');
+    popup.id = 'blockPopup';
+    popup.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px)';
+    popup.innerHTML = `
+      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:1.5rem;width:320px;max-width:90vw;text-align:center">
+        <div style="font-size:24px;margin-bottom:0.75rem">🚫</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);margin-bottom:0.5rem">"${kaynak}" engellensin mi?</div>
+        <div style="font-size:13px;color:var(--text3);margin-bottom:1.25rem">Bu kaynaktan haberler artık gösterilmeyecek.</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="document.getElementById('blockPopup').remove()" 
+            style="flex:1;padding:9px;background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;color:var(--text3);font-size:13px;cursor:pointer">İptal</button>
+          <button onclick="window.LF.confirmBlock('${kaynak.replace(/'/g,"\\'")}');document.getElementById('blockPopup').remove()"
+            style="flex:1;padding:9px;background:#e53e3e;border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer">Engelle</button>
+        </div>
+      </div>`;
+    document.body.appendChild(popup);
+    popup.addEventListener('click', e => { if(e.target===popup) popup.remove(); });
+  },
+
+  confirmBlock(kaynak) {
+    try {
+      const blocked = JSON.parse(localStorage.getItem('lf_blocked_src') || '[]');
+      if (!blocked.includes(kaynak)) { blocked.push(kaynak); localStorage.setItem('lf_blocked_src', JSON.stringify(blocked)); }
+    } catch {}
+    renderGrid();
+  },
+
+  openBlockedSources() {
+    document.getElementById('userMenuDd')?.classList.remove('open');
+    document.getElementById('blockedModal')?.remove();
+    let blocked = [];
+    try { blocked = JSON.parse(localStorage.getItem('lf_blocked_src') || '[]'); } catch {}
+
+    const modal = document.createElement('div');
+    modal.id = 'blockedModal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px)';
+
+    const liste = blocked.length > 0
+      ? blocked.map(k => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--border)">
+            <span style="font-size:14px;color:var(--text)">${k}</span>
+            <button onclick="window.LF.unblockSource('${k.replace(/'/g,"\\'")}',this)" 
+              style="background:none;border:0.5px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--tk);font-size:12px;cursor:pointer">Kaldır</button>
+          </div>`).join('')
+      : `<div style="text-align:center;padding:2rem;color:var(--text3);font-size:14px">Engellenmiş kaynak yok.</div>`;
+
+    modal.innerHTML = `
+      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:16px;padding:1.5rem;width:420px;max-width:92vw;max-height:80vh;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)">🚫 Engellenen Kaynaklar</div>
+          <button onclick="document.getElementById('blockedModal').remove()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px">×</button>
+        </div>
+        <div style="overflow-y:auto;flex:1">${liste}</div>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
+  },
+
+  unblockSource(kaynak, btn) {
+    try {
+      let blocked = JSON.parse(localStorage.getItem('lf_blocked_src') || '[]');
+      blocked = blocked.filter(k => k !== kaynak);
+      localStorage.setItem('lf_blocked_src', JSON.stringify(blocked));
+    } catch {}
+    btn.closest('[style*=border-bottom]').remove();
+    renderGrid();
+  },
     document.getElementById('userMenuDd')?.classList.remove('open');
     document.getElementById('bookmarksModal')?.remove();
 
