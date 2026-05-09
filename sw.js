@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lensflow-v1';
+const CACHE_NAME = 'lensflow-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
