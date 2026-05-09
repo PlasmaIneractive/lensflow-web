@@ -1,10 +1,9 @@
-const CACHE_NAME = 'lensflow-v3';
+const CACHE_NAME = 'lensflow-v4';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/favicon-512.png',
-  '/logo192.png',
   '/favicon.png',
+  '/logo.png',
 ];
 
 // Install — statik dosyaları cache'le
