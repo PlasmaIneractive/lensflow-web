@@ -1,0 +1,46 @@
+{
+  "name": "LensFlow",
+  "short_name": "LensFlow",
+  "description": "Global news platform in 7 languages",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#00d4b4",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["news"],
+  "shortcuts": [
+    {
+      "name": "Global News",
+      "url": "/?lang=global",
+      "icons": [{"src": "/favicon-512.png", "sizes": "512x512"}]
+    }
+  ]
+}

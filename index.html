@@ -13,6 +13,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LensFlow — Global News</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00d4b4">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LensFlow">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
 <link rel="icon" type="image/png" sizes="192x192" href="logo192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
@@ -1875,7 +1881,11 @@ window.LF = {
   }
 };
 
-// Reader event listeners
+// Service Worker — PWA
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+</script>
 document.getElementById('readerOverlay').addEventListener('click', () => window.LF.closeReader());
 document.getElementById('readerCloseBtn').addEventListener('click', () => window.LF.closeReader());
 document.getElementById('tabOzet').addEventListener('click', () => window.LF.switchTab('ozet'));
