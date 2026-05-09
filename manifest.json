@@ -12,14 +12,8 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "https://lensflow.news/favicon-512.png",
+      "src": "https://lensflow.news/logo.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://lensflow.news/logo192.png",
-      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
@@ -31,7 +25,7 @@
   ],
   "screenshots": [
     {
-      "src": "https://lensflow.news/favicon-512.png",
+      "src": "https://lensflow.news/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "narrow",
@@ -43,7 +37,7 @@
     {
       "name": "Global News",
       "url": "/",
-      "icons": [{"src": "https://lensflow.news/favicon-512.png", "sizes": "512x512", "type": "image/png"}]
+      "icons": [{"src": "https://lensflow.news/logo.png", "sizes": "512x512", "type": "image/png"}]
     }
   ]
 }
