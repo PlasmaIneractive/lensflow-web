@@ -29,15 +29,8 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // Firebase, Anthropic, Cloudflare API isteklerini cache'leme
-  if (
-    url.hostname.includes('firestore.googleapis.com') ||
-    url.hostname.includes('anthropic.com') ||
-    url.hostname.includes('cloudfunctions.net') ||
-    url.hostname.includes('img.lensflow.news')
-  ) {
-    return;
-  }
+  // Sadece same-origin ve HTML sayfaları için çalış
+  if (url.origin !== self.location.origin) return;
 
   // HTML sayfaları için network first
   if (event.request.mode === 'navigate') {
@@ -46,20 +39,5 @@ self.addEventListener('fetch', event => {
         caches.match('/index.html')
       )
     );
-    return;
   }
-
-  // Statik dosyalar için cache first
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        if (response && response.status === 200) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        }
-        return response;
-      });
-    })
-  );
 });
