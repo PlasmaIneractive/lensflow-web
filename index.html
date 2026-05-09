@@ -1885,7 +1885,7 @@ window.LF = {
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
-</script>
+
 document.getElementById('readerOverlay').addEventListener('click', () => window.LF.closeReader());
 document.getElementById('readerCloseBtn').addEventListener('click', () => window.LF.closeReader());
 document.getElementById('tabOzet').addEventListener('click', () => window.LF.switchTab('ozet'));
