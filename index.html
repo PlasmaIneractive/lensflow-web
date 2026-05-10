@@ -1723,25 +1723,6 @@ window.LF = {
     } catch(e) {}
   },
 
-        body: JSON.stringify({
-          priceId: price.id,
-          userId: currentUser.uid,
-          userEmail: currentUser.email,
-          isLifetime: price.isLifetime,
-        })
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        btn.textContent = 'Error. Try again.';
-        btn.disabled = false;
-      }
-    } catch(e) {
-      btn.textContent = 'Error. Try again.';
-      btn.disabled = false;
-    }
-  },
   async signOut() {
     try { await signOut(auth); } catch(e) {}
   },
