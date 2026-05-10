@@ -271,6 +271,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <span>© 2025 LensFlow</span>
     <div class="top-bar-sep"></div>
     <span>by <a href="https://plasmainteractive.digital" target="_blank" style="color:var(--text3);text-decoration:none;transition:color .15s" onmouseover="this.style.color='var(--tk)'" onmouseout="this.style.color='var(--text3)'">Plasma Interactive</a></span>
+    <div class="top-bar-sep"></div>
+    <a href="#" onclick="event.preventDefault();window.LF.openReleaseNotes()" style="color:var(--tk);text-decoration:none;font-size:11px;display:flex;align-items:center;gap:4px">🆕 v1.0</a>
   </div>
   <div class="top-bar-right">
     <a href="#" onclick="event.preventDefault();window.LF.openLegalPage('/privacy.html','Privacy Policy')">Privacy Policy</a>
@@ -1660,6 +1662,40 @@ window.LF = {
     } catch {}
     btn.closest('[style*=border-bottom]').remove();
     renderGrid();
+  },
+
+  openReleaseNotes() {
+    document.getElementById('releaseModal')?.remove();
+    const modal = document.createElement('div');
+    modal.id = 'releaseModal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px)';
+    modal.innerHTML = `
+      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:16px;padding:1.5rem;width:520px;max-width:92vw;max-height:80vh;display:flex;flex-direction:column;overflow-y:auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+          <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text)">🆕 Sürüm Notları</div>
+          <button onclick="document.getElementById('releaseModal').remove()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px">×</button>
+        </div>
+
+        <div style="margin-bottom:1.5rem">
+          <div style="font-size:13px;font-weight:600;color:var(--tk);margin-bottom:0.5rem">v1.0 — Mayıs 2026</div>
+          <ul style="font-size:13px;color:var(--text2);line-height:1.9;list-style:none;padding:0">
+            <li>🌍 7 dilde global haber akışı</li>
+            <li>✦ AI destekli haber özetleri</li>
+            <li>◎ Okuma modu — reklamsız, sade okuma deneyimi</li>
+            <li>🔖 Haberleri kaydet — bookmark</li>
+            <li>☆ Kaynakları takip et — favori kaynakların haberleri önce gelir</li>
+            <li>🚫 Kaynak engelle — istemediğin kaynaklardan haber gelmesin</li>
+            <li>🌐 19 dile çeviri desteği</li>
+            <li>📱 Mobil uygulama (Google Play yakında)</li>
+          </ul>
+        </div>
+
+        <div style="border-top:0.5px solid var(--border);padding-top:1rem">
+          <div style="font-size:11px;color:var(--text3)">Geri bildirim için: <a href="mailto:info@lensflow.news" style="color:var(--tk);text-decoration:none">info@lensflow.news</a></div>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
   },
 
   openBookmarks() {
