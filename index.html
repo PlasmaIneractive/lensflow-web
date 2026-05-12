@@ -317,12 +317,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="ad-label-row"><div class="ad-line"></div><span class="ad-label-txt">Reklam</span><div class="ad-line"></div></div>
   <div class="ad-slot" id="mainAdSlot">
     <div class="adsterra-desktop">
-      <script>atOptions={'key':'5d4593707dbefeb18a0f5b0b961ce673','format':'iframe','height':90,'width':728,'params':{}};</script>
-      <script src="https://www.highperformanceformat.com/5d4593707dbefeb18a0f5b0b961ce673/invoke.js"></script>
+      <iframe width="728" height="90" frameborder="0" scrolling="no" style="border:none;display:block" src="https://www.highperformanceformat.com/5d4593707dbefeb18a0f5b0b961ce673/aframe.html"></iframe>
     </div>
     <div class="adsterra-mobile" style="display:none">
-      <script>atOptions={'key':'1b4be8f54537a8f648d3bcb9b4efe41f','format':'iframe','height':50,'width':320,'params':{}};</script>
-      <script src="https://www.highperformanceformat.com/1b4be8f54537a8f648d3bcb9b4efe41f/invoke.js"></script>
+      <iframe width="320" height="50" frameborder="0" scrolling="no" style="border:none;display:block" src="https://www.highperformanceformat.com/1b4be8f54537a8f648d3bcb9b4efe41f/aframe.html"></iframe>
     </div>
   </div>
 </div>
@@ -935,12 +933,14 @@ function updateHero() {
     const slot = document.querySelector(`.hero-ad-slot[data-ad-idx="${heroIdx}"]`);
     if (slot && !slot.dataset.adLoaded) {
       slot.dataset.adLoaded = '1';
-      const s1 = document.createElement('script');
-      s1.text = "atOptions={'key':'e056319fe13ec5885050eac8fad3674d','format':'iframe','height':250,'width':300,'params':{}};";
-      slot.appendChild(s1);
-      const s2 = document.createElement('script');
-      s2.src = 'https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/invoke.js';
-      slot.appendChild(s2);
+      const iframe = document.createElement('iframe');
+      iframe.width = '300';
+      iframe.height = '250';
+      iframe.frameBorder = '0';
+      iframe.scrolling = 'no';
+      iframe.style.cssText = 'border:none;display:block;';
+      iframe.src = 'https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/aframe.html?r=' + Math.random();
+      slot.appendChild(iframe);
     }
   }
 }
@@ -977,7 +977,6 @@ function renderGrid() {
   }
   if (searchQ) base=base.filter(n=>n.baslik?.toLowerCase().includes(searchQ));
   filteredNews = gridPuanla(base);
-  window.LF.news = filteredNews;
   visibleCount = PAGE_SIZE;
   renderCards();
 }
@@ -1033,12 +1032,16 @@ function renderCards() {
   grid.innerHTML = html;
   // Adsterra Native Banner script'lerini inject et
   grid.querySelectorAll('.ncard-ad-native').forEach((container, idx) => {
-    const s1 = document.createElement('script');
-    s1.text = "atOptions={'key':'e056319fe13ec5885050eac8fad3674d','format':'iframe','height':250,'width':300,'params':{}};";
-    container.appendChild(s1);
-    const s2 = document.createElement('script');
-    s2.src = 'https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/invoke.js';
-    container.appendChild(s2);
+    if (container.dataset.adLoaded) return;
+    container.dataset.adLoaded = '1';
+    const iframe = document.createElement('iframe');
+    iframe.width = '300';
+    iframe.height = '250';
+    iframe.frameBorder = '0';
+    iframe.scrolling = 'no';
+    iframe.style.cssText = 'border:none;display:block;';
+    iframe.src = 'https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/aframe.html?r=' + Math.random();
+    container.appendChild(iframe);
   });
   // Sonsuz scroll — window scroll event
   if (visibleCount < filteredNews.length) {
@@ -1248,7 +1251,7 @@ async function readerRenderTab(tab, haber) {
     <div class="reader-hero-right">${imgRight}</div>
   </div>`;
 
-  const adSlotHtml = `<div id="readerHeroAd" style="width:100%;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0;background:var(--bg2)"><span style="font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">${cfg.adLabel||'Ad'}</span><script>atOptions={'key':'e056319fe13ec5885050eac8fad3674d','format':'iframe','height':250,'width':300,'params':{}};<\/script><script src="https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/invoke.js"><\/script></div>`;
+  const adSlotHtml = `<div id="readerHeroAd" style="width:100%;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0;background:var(--bg2)"><span style="font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">${cfg.adLabel||'Ad'}</span><iframe width="300" height="250" frameborder="0" scrolling="no" style="border:none;display:block" src="https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/aframe.html?r=${Math.random()}"></iframe></div>`;
 
   const metaHtml = `<div class="reader-content">
     <div class="reader-divider" style="margin-top:0;margin-bottom:1.25rem"></div>`;
