@@ -881,7 +881,17 @@ function buildHero(news) {
     const slide = document.createElement('div');
     if (s.type === 'ad') {
       slide.className = 'hero-slide ad-slide';
-      slide.innerHTML = `<div class="hero-ad-slot"><script async="async" data-cfasync="false" src="https://pl29430844.profitablecpmratenetwork.com/72b126c4f93363566e8c9570061deb89/invoke.js"><\/script><div id="container-hero-native"></div></div>`;
+      const adSlot = document.createElement('div');
+      adSlot.className = 'hero-ad-slot';
+      const adDiv = document.createElement('div');
+      adDiv.id = 'container-hero-native-' + i;
+      adSlot.appendChild(adDiv);
+      slide.appendChild(adSlot);
+      const adScript = document.createElement('script');
+      adScript.async = true;
+      adScript.setAttribute('data-cfasync', 'false');
+      adScript.src = 'https://pl29430844.profitablecpmratenetwork.com/72b126c4f93363566e8c9570061deb89/invoke.js';
+      adSlot.appendChild(adScript);
     } else {
       const timeAgo = s.tarih ? Math.round((Date.now()-s.tarih.toDate().getTime())/3600000) : '';
       slide.className = 'hero-slide';
@@ -968,7 +978,7 @@ function renderCards() {
   const isMobile = window.innerWidth <= 768;
   const adInterval = isMobile ? 5 : 18;
   visible.forEach((n, i) => {
-    if (i>0 && i%adInterval===0) html+=`<div class="ncard-ad"><span class="ncard-ad-label">Reklam</span><div class="ncard-ad-native"><script async="async" data-cfasync="false" src="https://pl29430844.profitablecpmratenetwork.com/72b126c4f93363566e8c9570061deb89/invoke.js"><\/script><div id="container-72b126c4f93363566e8c9570061deb89"></div></div></div>`;
+    if (i>0 && i%adInterval===0) html+=`<div class="ncard-ad" data-ad-slot="native-${i}"><span class="ncard-ad-label">Reklam</span><div class="ncard-ad-native" id="ncard-ad-${i}"></div></div>`;
     const timeAgo = n.tarih ? Math.round((Date.now()-n.tarih.toDate().getTime())/3600000) : '';
     const catLabel = catMap[n.kategori]||n.kategori||'';
     const proxied = proxyImg(n.gorsel);
@@ -1007,7 +1017,14 @@ function renderCards() {
     html+=`<div style="grid-column:1/-1;height:40px;display:flex;align-items:center;justify-content:center;opacity:0.4" id="infiniteAnchor"><div class="spin"></div></div>`;
   }
   grid.innerHTML = html;
-  window.LF.news = filteredNews;
+  // Adsterra Native Banner script'lerini inject et
+  grid.querySelectorAll('.ncard-ad-native').forEach((container, idx) => {
+    const s = document.createElement('script');
+    s.async = true;
+    s.setAttribute('data-cfasync', 'false');
+    s.src = 'https://pl29430844.profitablecpmratenetwork.com/72b126c4f93363566e8c9570061deb89/invoke.js';
+    container.appendChild(s);
+  });
   // Sonsuz scroll — window scroll event
   if (visibleCount < filteredNews.length) {
     window._lfScrollHandler && window.removeEventListener('scroll', window._lfScrollHandler);
