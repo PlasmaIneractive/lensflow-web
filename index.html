@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2346105873707896" crossorigin="anonymous"></script>
+<!-- Adsterra Social Bar -->
+<script src="https://pl29430845.profitablecpmratenetwork.com/2a/83/ce/2a83ce34f6e99ad11ea691358850f66c.js"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-HC05QSWZTH"></script>
 <script>
@@ -104,7 +106,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .ad-label-row{display:flex;align-items:center;gap:8px;width:100%;max-width:728px}
 .ad-line{flex:1;height:0.5px;background:var(--border)}
 .ad-label-txt{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;white-space:nowrap}
-.ad-slot{width:100%;max-width:728px;height:90px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center}
+.ad-slot{width:100%;max-width:728px;min-height:50px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .ad-slot-txt{font-size:12px;color:var(--text3);font-family:monospace}
 .hero{background:var(--bg2);border-bottom:0.5px solid var(--border);position:relative;overflow:hidden}
 .hero-track-wrap{overflow:visible;cursor:grab;user-select:none;position:relative;z-index:1}
@@ -312,7 +314,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 <div class="ad-band" id="mainAdBand">
   <div class="ad-label-row"><div class="ad-line"></div><span class="ad-label-txt">Reklam</span><div class="ad-line"></div></div>
-  <div class="ad-slot"><span class="ad-slot-txt">728 × 90</span></div>
+  <div class="ad-slot" id="mainAdSlot">
+    <div class="adsterra-desktop">
+      <script>atOptions={'key':'5d4593707dbefeb18a0f5b0b961ce673','format':'iframe','height':90,'width':728,'params':{}};</script>
+      <script src="https://www.highperformanceformat.com/5d4593707dbefeb18a0f5b0b961ce673/invoke.js"></script>
+    </div>
+    <div class="adsterra-mobile" style="display:none">
+      <script>atOptions={'key':'1b4be8f54537a8f648d3bcb9b4efe41f','format':'iframe','height':50,'width':320,'params':{}};</script>
+      <script src="https://www.highperformanceformat.com/1b4be8f54537a8f648d3bcb9b4efe41f/invoke.js"></script>
+    </div>
+  </div>
 </div>
 <div class="lang-bar" id="langBar">
   <button class="lbtn active" onclick="window.setLang('global')"><img class="lbtn-flag" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14/assets/svg/1f30d.svg" alt=""> Global</button>
@@ -497,12 +508,18 @@ function updateAds() {
     ad.style.display = isPremium ? 'none' : '';
   });
   const mainAdBand = document.getElementById('mainAdBand');
-  if (mainAdBand) mainAdBand.style.display = isPremium ? 'none' : '';
+  if (mainAdBand) mainAdBand.style.display = '';
+  // Masaüstü/mobil reklam gösterimi
+  const desktopAd = document.querySelector('.adsterra-desktop');
+  const mobileAd = document.querySelector('.adsterra-mobile');
+  const isMob = window.innerWidth <= 768;
+  if (desktopAd) desktopAd.style.display = isMob ? 'none' : '';
+  if (mobileAd) mobileAd.style.display = isMob ? '' : 'none';
   // Reader reklamları - panel açıkken göster
   const readerPanel = document.getElementById('readerPanel');
   const isReaderOpen = readerPanel && readerPanel.classList.contains('open');
   const readerHeroAd = document.getElementById('readerHeroAd');
-  if (readerHeroAd) readerHeroAd.style.display = (!isPremium && isReaderOpen) ? '' : 'none';
+  if (readerHeroAd) readerHeroAd.style.display = isReaderOpen ? '' : 'none';
 }
 
 window.toggleUserMenu = () => {
@@ -955,7 +972,7 @@ function renderCards() {
   const isMobile = window.innerWidth <= 768;
   const adInterval = isMobile ? 5 : 18;
   visible.forEach((n, i) => {
-    if (i>0 && i%adInterval===0) html+=`<div class="ncard-ad"><span class="ncard-ad-label">Reklam</span><span class="ncard-ad-slot">728×90</span></div>`;
+    if (i>0 && i%adInterval===0) html+=`<div class="ncard-ad"><span class="ncard-ad-label">Reklam</span><div class="ncard-ad-native"><script async="async" data-cfasync="false" src="https://pl29430844.profitablecpmratenetwork.com/72b126c4f93363566e8c9570061deb89/invoke.js"><\/script><div id="container-72b126c4f93363566e8c9570061deb89"></div></div></div>`;
     const timeAgo = n.tarih ? Math.round((Date.now()-n.tarih.toDate().getTime())/3600000) : '';
     const catLabel = catMap[n.kategori]||n.kategori||'';
     const proxied = proxyImg(n.gorsel);
@@ -1203,7 +1220,7 @@ async function readerRenderTab(tab, haber) {
     <div class="reader-hero-right">${imgRight}</div>
   </div>`;
 
-  const adSlotHtml = `<div id="readerHeroAd" style="display:none;width:100%;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border)"><div style="height:90px;background:var(--bg3);display:flex;align-items:center;justify-content:center;gap:8px"><span style="font-size:9px;color:var(--text3);border:0.5px solid var(--border);padding:2px 6px;border-radius:2px;text-transform:uppercase;letter-spacing:1px">Ad</span><span style="font-size:12px;color:var(--text3);font-family:monospace">728 × 90</span></div></div>`;
+  const adSlotHtml = `<div id="readerHeroAd" style="width:100%;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);display:flex;justify-content:center;padding:8px 0;background:var(--bg2)"><script>atOptions={'key':'e056319fe13ec5885050eac8fad3674d','format':'iframe','height':250,'width':300,'params':{}};<\/script><script src="https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/invoke.js"><\/script></div>`;
 
   const metaHtml = `<div class="reader-content">
     <div class="reader-divider" style="margin-top:0;margin-bottom:1.25rem"></div>`;
