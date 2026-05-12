@@ -505,9 +505,15 @@ function renderAuthArea(user) {
 
 function updateAds() {
   const isPremium = false;
+  const cfg = LANG_CONFIG[lang] || LANG_CONFIG['global'];
+  const adLbl = cfg.adLabel || 'Ad';
   document.querySelectorAll('.ad-slot, .ad-band, .hero-ad-slot, .ncard-ad').forEach(ad => {
     ad.style.display = isPremium ? 'none' : '';
   });
+  // Tüm reklam etiketlerini dile göre güncelle
+  document.querySelectorAll('.ad-label-txt').forEach(el => el.textContent = adLbl);
+  document.querySelectorAll('.ncard-ad-label').forEach(el => el.textContent = adLbl);
+  document.querySelectorAll('.hero-ad-tag').forEach(el => el.textContent = adLbl);
   const mainAdBand = document.getElementById('mainAdBand');
   if (mainAdBand) mainAdBand.style.display = '';
   // Masaüstü/mobil reklam gösterimi
@@ -690,49 +696,49 @@ const LANG_CONFIG = {
       ozetLoading:'AI summary being prepared...',okumaLoading:'Loading content...',
       ozetErr:'Summary could not be loaded.',okumaErr:'Content could not be loaded from this site.',
       readSrc:'Read at Source',
-      paywallEmoji:'☕',paywallTitle:"This one\'s on us… almost.",paywallDesc:"Our AI reads the article, pulls out the key facts, and serves it in 4 sentences. Thousands of articles. One small upgrade.",paywallBtn:'⭐ Upgrade to Premium',paywallSub:'Instant access · Cancel anytime',blockSrc:'Block Source',
+      paywallEmoji:'☕',paywallTitle:"This one\'s on us… almost.",paywallDesc:"Our AI reads the article, pulls out the key facts, and serves it in 4 sentences. Thousands of articles. One small upgrade.",paywallBtn:'⭐ Upgrade to Premium',paywallSub:'Instant access · Cancel anytime',blockSrc:'Block Source',adLabel:'Ad',
       ozetPrompt:'You are an expert news editor. Write a concise, natural-sounding news summary in English. Use journalistic style: start with the most important fact, then add context. Write 3-4 flowing sentences as if for a quality newspaper. Be direct and informative. Output only the summary text, no headlines, no labels, no extra commentary.'},
   en:{flag:'🇬🇧',name:'EN',ticker:'LIVE',dl:'Daily Digest',dt:'AI Summary',dtl:'Theme of the Day',allKey:'Tümü',ago:'h ago',ph:'Search news...',
       rdrOzet:'✦ Summary',rdrOkuma:'◎ Reading Mode',rdrKaynak:'↗ Read Source',
       ozetLoading:'AI summary being prepared...',okumaLoading:'Loading content...',
       ozetErr:'Summary could not be loaded.',okumaErr:'Content could not be loaded from this site.',okumaFallback:'This site restricts direct access. Showing AI summary instead.',
       readSrc:'Read at Source',
-      paywallEmoji:'🤖',paywallTitle:'Brilliant summaries. Tiny price.',paywallDesc:"We trained an AI to read the boring bits so you don't have to. 4 sentences. All the facts. None of the fluff.",paywallBtn:'⭐ Get Premium',paywallSub:'Cancel whenever. No hard feelings.',blockSrc:'Block Source',
+      paywallEmoji:'🤖',paywallTitle:'Brilliant summaries. Tiny price.',paywallDesc:"We trained an AI to read the boring bits so you don't have to. 4 sentences. All the facts. None of the fluff.",paywallBtn:'⭐ Get Premium',paywallSub:'Cancel whenever. No hard feelings.',blockSrc:'Block Source',adLabel:'Ad',
       ozetPrompt:'You are an experienced news editor. Write a concise, natural-sounding news summary in English. Use journalistic style: start with the most important fact, then add context. Write 3-4 flowing sentences as if for a quality newspaper. Be direct and informative. Output only the summary text, no headlines, no labels, no extra commentary.'},
   fr:{flag:'🇫🇷',name:'FR',ticker:'LIVE',dl:'Résumé du jour',dt:'Résumé IA',dtl:'Thème du jour',allKey:'Tümü',ago:'h',ph:'Rechercher...',
       rdrOzet:'✦ Résumé',rdrOkuma:'◎ Mode lecture',rdrKaynak:'↗ Lire la source',
       ozetLoading:'Résumé IA en cours...',okumaLoading:'Chargement du contenu...',
       ozetErr:'Résumé non disponible.',okumaErr:'Contenu non disponible pour ce site.',okumaFallback:'Ce site bloque l\'accès direct. Affichage du résumé IA à la place.',
       readSrc:'Lire sur la source',
-      paywallEmoji:'🥐',paywallTitle:'L\'info en 4 phrases. Très chic.',paywallDesc:'Notre IA lit l\'article en entier — vous, vous avez mieux à faire. Un résumé élégant, l\'essentiel sans le superflu.',paywallBtn:'⭐ Passer en Premium',paywallSub:'Sans engagement · Résiliable à tout moment',blockSrc:'Bloquer la source',
+      paywallEmoji:'🥐',paywallTitle:'L\'info en 4 phrases. Très chic.',paywallDesc:'Notre IA lit l\'article en entier — vous, vous avez mieux à faire. Un résumé élégant, l\'essentiel sans le superflu.',paywallBtn:'⭐ Passer en Premium',paywallSub:'Sans engagement · Résiliable à tout moment',blockSrc:'Bloquer la source',adLabel:'Pub',
       ozetPrompt:'Tu es un rédacteur de presse expérimenté. Rédige un résumé naturel et fluide en français. Style journalistique: commence par le fait le plus important, puis ajoute du contexte. 3-4 phrases bien construites, comme pour un journal de qualité. Sois direct et informatif. Écris uniquement le texte du résumé, sans titre ni commentaire.'},
   de:{flag:'🇩🇪',name:'DE',ticker:'LIVE',dl:'Tagesüberblick',dt:'KI-Zusammenfassung',dtl:'Thema des Tages',allKey:'Tümü',ago:'Std.',ph:'Suchen...',
       rdrOzet:'✦ Zusammenfassung',rdrOkuma:'◎ Lesemodus',rdrKaynak:'↗ Quelle lesen',
       ozetLoading:'KI-Zusammenfassung wird erstellt...',okumaLoading:'Inhalt wird geladen...',
       ozetErr:'Zusammenfassung konnte nicht geladen werden.',okumaErr:'Inhalt von dieser Seite nicht verfügbar.',okumaFallback:'Diese Seite blockiert den Direktzugriff. Stattdessen wird die KI-Zusammenfassung angezeigt.',
       readSrc:'An der Quelle lesen',
-      paywallEmoji:'🔧',paywallTitle:'Präzise. Effizient. Premium.',paywallDesc:'Die KI liest den Artikel vollständig durch und liefert Ihnen die wichtigsten Fakten in 4 Sätzen. Typisch deutsch — aber diesmal von einer Maschine.',paywallBtn:'⭐ Premium werden',paywallSub:'Jederzeit kündbar · Keine versteckten Kosten',blockSrc:'Quelle blockieren',
+      paywallEmoji:'🔧',paywallTitle:'Präzise. Effizient. Premium.',paywallDesc:'Die KI liest den Artikel vollständig durch und liefert Ihnen die wichtigsten Fakten in 4 Sätzen. Typisch deutsch — aber diesmal von einer Maschine.',paywallBtn:'⭐ Premium werden',paywallSub:'Jederzeit kündbar · Keine versteckten Kosten',blockSrc:'Quelle blockieren',adLabel:'Anzeige',
       ozetPrompt:'Du bist ein erfahrener Nachrichtenredakteur. Schreibe eine natürliche, flüssige Zusammenfassung auf Deutsch. Journalistischer Stil: Beginne mit der wichtigsten Tatsache, dann füge Kontext hinzu. 3-4 gut formulierte Sätze, wie für eine Qualitätszeitung. Sei direkt und informativ. Schreibe nur den Zusammenfassungstext, ohne Überschrift oder Kommentar.'},
   es:{flag:'🇪🇸',name:'ES',ticker:'EN VIVO',dl:'Resumen del día',dt:'Resumen IA',dtl:'Tema del día',allKey:'Tümü',ago:'h',ph:'Buscar...',
       rdrOzet:'✦ Resumen',rdrOkuma:'◎ Modo lectura',rdrKaynak:'↗ Leer fuente',
       ozetLoading:'Preparando resumen IA...',okumaLoading:'Cargando contenido...',
       ozetErr:'No se pudo cargar el resumen.',okumaErr:'Contenido no disponible en este sitio.',okumaFallback:'Este sitio bloquea el acceso directo. Mostrando resumen IA en su lugar.',
       readSrc:'Leer en la fuente',
-      paywallEmoji:'💃',paywallTitle:'¡La noticia en 4 frases, tío!',paywallDesc:'Nuestra IA lee todo el artículo por ti — tú solo lees lo bueno. Rápido, directo y sin rodeos.',paywallBtn:'⭐ Hazte Premium',paywallSub:'Sin permanencia · Cancela cuando quieras',blockSrc:'Bloquear fuente',
+      paywallEmoji:'💃',paywallTitle:'¡La noticia en 4 frases, tío!',paywallDesc:'Nuestra IA lee todo el artículo por ti — tú solo lees lo bueno. Rápido, directo y sin rodeos.',paywallBtn:'⭐ Hazte Premium',paywallSub:'Sin permanencia · Cancela cuando quieras',blockSrc:'Bloquear fuente',adLabel:'Publicidad',
       ozetPrompt:'Eres un redactor de noticias experimentado. Escribe un resumen natural y fluido en español. Estilo periodístico: comienza con el hecho más importante, luego agrega contexto. 3-4 oraciones bien redactadas, como para un periódico de calidad. Sé directo e informativo. Escribe solo el texto del resumen, sin títulos ni comentarios.'},
   pt:{flag:'🇧🇷',name:'PT',ticker:'AO VIVO',dl:'Resumo do dia',dt:'Resumo IA',dtl:'Tema do dia',allKey:'Tümü',ago:'h',ph:'Pesquisar...',
       rdrOzet:'✦ Resumo',rdrOkuma:'◎ Modo leitura',rdrKaynak:'↗ Ler fonte',
       ozetLoading:'Preparando resumo IA...',okumaLoading:'Carregando conteúdo...',
       ozetErr:'Não foi possível carregar o resumo.',okumaErr:'Conteúdo não disponível neste site.',okumaFallback:'Este site bloqueia o acesso direto. Exibindo resumo de IA.',
       readSrc:'Ler na fonte',
-      paywallEmoji:'🎯',paywallTitle:'Direto ao ponto. Sem enrolação.',paywallDesc:'A nossa IA lê o artigo completo e entrega os factos essenciais em 4 frases. Só o que importa — e rápido.',paywallBtn:'⭐ Ser Premium',paywallSub:'Cancele quando quiser · Sem custos ocultos',blockSrc:'Bloquear fonte',
+      paywallEmoji:'🎯',paywallTitle:'Direto ao ponto. Sem enrolação.',paywallDesc:'A nossa IA lê o artigo completo e entrega os factos essenciais em 4 frases. Só o que importa — e rápido.',paywallBtn:'⭐ Ser Premium',paywallSub:'Cancele quando quiser · Sem custos ocultos',blockSrc:'Bloquear fonte',adLabel:'Anúncio',
       ozetPrompt:'Você é um redator de notícias experiente. Escreva um resumo natural e fluente em português. Estilo jornalístico: comece com o fato mais importante, depois adicione contexto. 3-4 frases bem elaboradas, como para um jornal de qualidade. Seja direto e informativo. Escreva apenas o texto do resumo, sem títulos ou comentários.'},
   tr:{flag:'🇹🇷',name:'TR',ticker:'CANLI',dl:'Günlük Özet',dt:'AI Özeti',dtl:'Günün Teması',allKey:'Tümü',ago:'sa önce',ph:'Haber ara...',
       rdrOzet:'✦ Özet',rdrOkuma:'◎ Okuma Modu',rdrKaynak:'↗ Kaynağından Oku',
       ozetLoading:'AI özet hazırlanıyor...',okumaLoading:'İçerik yükleniyor...',
       ozetErr:'Özet yüklenemedi.',okumaErr:'İçerik bu siteden yüklenemiyor.',okumaFallback:'Bu site doğrudan erişimi engelliyor. Bunun yerine AI özeti gösteriliyor.',
       readSrc:'Kaynağında Oku',
-      paywallEmoji:'🧇',paywallTitle:'Haberi okuduk, özeti sana bıraktık.',paywallDesc:'Yapay zekamız makaleyi baştan sona okudu, sen sadece 4 cümleyi okuyacaksın. Çayını iç, biz halledelim.',paywallBtn:"⭐ Premium'a Geç",paywallSub:'İstediğin zaman iptal · Gizli ücret yok',blockSrc:'Kaynağı Engelle',
+      paywallEmoji:'🧇',paywallTitle:'Haberi okuduk, özeti sana bıraktık.',paywallDesc:'Yapay zekamız makaleyi baştan sona okudu, sen sadece 4 cümleyi okuyacaksın. Çayını iç, biz halledelim.',paywallBtn:"⭐ Premium'a Geç",paywallSub:'İstediğin zaman iptal · Gizli ücret yok',blockSrc:'Kaynağı Engelle',adLabel:'Reklam',
       ozetPrompt:'Sen deneyimli bir haber editörüsün. Haberi Türkçe olarak akıcı ve doğal bir dille özetle. Gazetecilik üslubu kullan: en önemli bilgiyle başla, ardından bağlam ve detay ekle. Kaliteli bir gazetede yayımlanabilecek nitelikte, 3-4 iyi kurulmuş cümle yaz. Yalnızca özet metnini yaz, başlık veya ek açıklama ekleme.'}
 };
 const LOCALES = {global:'en-US',en:'en-US',fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-BR',tr:'tr-TR'};
@@ -985,7 +991,7 @@ function renderCards() {
   const isMobile = window.innerWidth <= 768;
   const adInterval = isMobile ? 5 : 18;
   visible.forEach((n, i) => {
-    if (i>0 && i%adInterval===0) html+=`<div class="ncard-ad" data-ad-slot="native-${i}"><span class="ncard-ad-label">Reklam</span><div class="ncard-ad-native" id="ncard-ad-${i}"></div></div>`;
+    if (i>0 && i%adInterval===0) html+=`<div class="ncard-ad" data-ad-slot="native-${i}"><span class="ncard-ad-label">${cfg.adLabel||'Ad'}</span><div class="ncard-ad-native" id="ncard-ad-${i}"></div></div>`;
     const timeAgo = n.tarih ? Math.round((Date.now()-n.tarih.toDate().getTime())/3600000) : '';
     const catLabel = catMap[n.kategori]||n.kategori||'';
     const proxied = proxyImg(n.gorsel);
@@ -1241,7 +1247,7 @@ async function readerRenderTab(tab, haber) {
     <div class="reader-hero-right">${imgRight}</div>
   </div>`;
 
-  const adSlotHtml = `<div id="readerHeroAd" style="width:100%;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);display:flex;justify-content:center;padding:8px 0;background:var(--bg2)"><script>atOptions={'key':'e056319fe13ec5885050eac8fad3674d','format':'iframe','height':250,'width':300,'params':{}};<\/script><script src="https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/invoke.js"><\/script></div>`;
+  const adSlotHtml = `<div id="readerHeroAd" style="width:100%;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0;background:var(--bg2)"><span style="font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">${cfg.adLabel||'Ad'}</span><script>atOptions={'key':'e056319fe13ec5885050eac8fad3674d','format':'iframe','height':250,'width':300,'params':{}};<\/script><script src="https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/invoke.js"><\/script></div>`;
 
   const metaHtml = `<div class="reader-content">
     <div class="reader-divider" style="margin-top:0;margin-bottom:1.25rem"></div>`;
