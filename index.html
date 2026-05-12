@@ -258,7 +258,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   .ad-band{padding:6px 1rem}.ad-slot{height:50px}
   .hero-slide{height:260px;display:block}.hero-left{display:none!important}.hero-right{position:absolute;inset:0;width:100%!important}.hero-img{position:absolute;inset:0;width:100%;height:100%}.hero-overlay{display:block!important}.hero-text{display:flex!important;padding:1.25rem 1.25rem}.hero-title{font-size:18px}
   .hero-controls{padding:6px 1rem}.filter-row{padding:.75rem 1rem}
-  .content{padding:0 1rem 1.5rem}.news-grid{grid-template-columns:1fr}.ncard-ad{height:80px}
+  .content{padding:0 1rem 1.5rem}.news-grid{grid-template-columns:1fr}.ncard-ad{min-height:280px;height:auto}
   .reader-panel{width:100vw}
   .reader-hero-split{flex-direction:column;height:auto}
   .reader-hero-right{width:100%;height:200px}
@@ -1025,11 +1025,12 @@ function renderCards() {
   grid.innerHTML = html;
   // Adsterra Native Banner script'lerini inject et
   grid.querySelectorAll('.ncard-ad-native').forEach((container, idx) => {
-    const s = document.createElement('script');
-    s.async = true;
-    s.setAttribute('data-cfasync', 'false');
-    s.src = 'https://pl29430844.profitablecpmratenetwork.com/72b126c4f93363566e8c9570061deb89/invoke.js';
-    container.appendChild(s);
+    const s1 = document.createElement('script');
+    s1.text = "atOptions={'key':'e056319fe13ec5885050eac8fad3674d','format':'iframe','height':250,'width':300,'params':{}};";
+    container.appendChild(s1);
+    const s2 = document.createElement('script');
+    s2.src = 'https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/invoke.js';
+    container.appendChild(s2);
   });
   // Sonsuz scroll — window scroll event
   if (visibleCount < filteredNews.length) {
