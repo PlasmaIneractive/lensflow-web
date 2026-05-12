@@ -883,15 +883,14 @@ function buildHero(news) {
       slide.className = 'hero-slide ad-slide';
       const adSlot = document.createElement('div');
       adSlot.className = 'hero-ad-slot';
-      const adDiv = document.createElement('div');
-      adDiv.id = 'container-hero-native-' + i;
-      adSlot.appendChild(adDiv);
+      // 300x250 iframe banner - dinamik alanlarda guvenilir calisir
+      const atScript = document.createElement('script');
+      atScript.text = "atOptions={'key':'e056319fe13ec5885050eac8fad3674d','format':'iframe','height':250,'width':300,'params':{}};";
+      adSlot.appendChild(atScript);
+      const invScript = document.createElement('script');
+      invScript.src = 'https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/invoke.js';
+      adSlot.appendChild(invScript);
       slide.appendChild(adSlot);
-      const adScript = document.createElement('script');
-      adScript.async = true;
-      adScript.setAttribute('data-cfasync', 'false');
-      adScript.src = 'https://pl29430844.profitablecpmratenetwork.com/72b126c4f93363566e8c9570061deb89/invoke.js';
-      adSlot.appendChild(adScript);
     } else {
       const timeAgo = s.tarih ? Math.round((Date.now()-s.tarih.toDate().getTime())/3600000) : '';
       slide.className = 'hero-slide';
