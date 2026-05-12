@@ -113,7 +113,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .hero-track-wrap:active{cursor:grabbing}
 .hero-track{display:flex;transition:transform .42s cubic-bezier(.25,.46,.45,.94)}
 .hero-slide{flex:0 0 calc(100% - 100px);position:relative;height:480px;overflow:hidden;border-radius:12px;margin:0 50px;cursor:pointer;display:flex;background:var(--bg2)}
-.hero-slide.ad-slide{display:flex;align-items:center;justify-content:center;height:120px;background:var(--bg2);cursor:default}
+.hero-slide.ad-slide{display:flex;align-items:center;justify-content:center;min-height:280px;background:var(--bg2);cursor:default}
 .hero-left{flex:1;position:relative;display:flex;flex-direction:column;justify-content:center;padding:3rem 3.5rem;z-index:2;overflow:hidden;min-width:0}
 .hero-left::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent,transparent 38px,rgba(48,213,200,0.045) 38px,rgba(48,213,200,0.045) 39px),repeating-linear-gradient(45deg,transparent,transparent 38px,rgba(48,213,200,0.03) 38px,rgba(48,213,200,0.03) 39px);pointer-events:none}
 .hero-right{width:48%;position:relative;flex-shrink:0}
@@ -132,7 +132,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .hero-meta{display:flex;align-items:center;gap:10px}
 .hero-src{font-size:12px;font-weight:500;color:var(--tk)}
 .hero-time{font-size:12px;color:rgba(255,255,255,0.45)}
-.hero-ad-slot{width:100%;max-width:728px;min-height:90px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero-ad-slot{display:flex;align-items:center;justify-content:center;overflow:hidden;padding:16px 0}
 .hero-ad-tag{font-size:9px;color:var(--text3);border:0.5px solid var(--border);padding:2px 6px;border-radius:2px;text-transform:uppercase;letter-spacing:1px}
 .hero-ad-txt{font-size:12px;color:var(--text3);font-family:monospace}
 .hero-controls{display:flex;align-items:center;justify-content:center;gap:1rem;padding:8px 2rem;border-top:0.5px solid var(--border2)}
