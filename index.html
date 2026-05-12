@@ -977,6 +977,7 @@ function renderGrid() {
   }
   if (searchQ) base=base.filter(n=>n.baslik?.toLowerCase().includes(searchQ));
   filteredNews = gridPuanla(base);
+  window.LF.news = filteredNews;
   visibleCount = PAGE_SIZE;
   renderCards();
 }
