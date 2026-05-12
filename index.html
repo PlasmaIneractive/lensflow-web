@@ -883,13 +883,7 @@ function buildHero(news) {
       slide.className = 'hero-slide ad-slide';
       const adSlot = document.createElement('div');
       adSlot.className = 'hero-ad-slot';
-      // 300x250 iframe banner - dinamik alanlarda guvenilir calisir
-      const atScript = document.createElement('script');
-      atScript.text = "atOptions={'key':'e056319fe13ec5885050eac8fad3674d','format':'iframe','height':250,'width':300,'params':{}};";
-      adSlot.appendChild(atScript);
-      const invScript = document.createElement('script');
-      invScript.src = 'https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/invoke.js';
-      adSlot.appendChild(invScript);
+      adSlot.dataset.adIdx = i;
       slide.appendChild(adSlot);
     } else {
       const timeAgo = s.tarih ? Math.round((Date.now()-s.tarih.toDate().getTime())/3600000) : '';
@@ -929,6 +923,19 @@ function updateHero() {
   const total = heroSlides.filter(s => s.type==='news').length;
   const cur = heroSlides.slice(0,heroIdx+1).filter(s => s.type==='news').length;
   document.getElementById('heroCounter').textContent = heroSlides[heroIdx]?.type==='ad' ? '' : `${cur} / ${total}`;
+  // Aktif slide reklam ise script inject et (henüz yapılmadıysa)
+  if (heroSlides[heroIdx]?.type === 'ad') {
+    const slot = document.querySelectorAll('.hero-ad-slot')[heroIdx];
+    if (slot && !slot.dataset.adLoaded) {
+      slot.dataset.adLoaded = '1';
+      const s1 = document.createElement('script');
+      s1.text = "atOptions={'key':'e056319fe13ec5885050eac8fad3674d','format':'iframe','height':250,'width':300,'params':{}};";
+      slot.appendChild(s1);
+      const s2 = document.createElement('script');
+      s2.src = 'https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/invoke.js';
+      slot.appendChild(s2);
+    }
+  }
 }
 function heroGoTo(i) { heroIdx=i; updateHero(); clearInterval(heroTimer); heroTimer=setInterval(()=>{heroIdx=(heroIdx+1)%heroSlides.length;updateHero();},5000); }
 window.heroGo = dir => heroGoTo((heroIdx+dir+heroSlides.length)%heroSlides.length);
