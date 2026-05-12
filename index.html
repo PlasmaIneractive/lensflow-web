@@ -925,7 +925,7 @@ function updateHero() {
   document.getElementById('heroCounter').textContent = heroSlides[heroIdx]?.type==='ad' ? '' : `${cur} / ${total}`;
   // Aktif slide reklam ise script inject et (henüz yapılmadıysa)
   if (heroSlides[heroIdx]?.type === 'ad') {
-    const slot = document.querySelectorAll('.hero-ad-slot')[heroIdx];
+    const slot = document.querySelector(`.hero-ad-slot[data-ad-idx="${heroIdx}"]`);
     if (slot && !slot.dataset.adLoaded) {
       slot.dataset.adLoaded = '1';
       const s1 = document.createElement('script');
