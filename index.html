@@ -1248,7 +1248,7 @@ async function readerRenderTab(tab, haber) {
     <div class="reader-hero-right">${imgRight}</div>
   </div>`;
 
-  const adSlotHtml = `<div id="readerHeroAd" style="width:100%;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0;background:var(--bg2)"><span style="font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">${cfg.adLabel||'Ad'}</span><div id="readerAdContainer"></div></div>`;
+  const adSlotHtml = `<div id="readerHeroAd" style="width:100%;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0;background:var(--bg2)"><span style="font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">${cfg.adLabel||'Ad'}</span><div id="readerAdContainer" style="display:flex;justify-content:center;width:100%"></div></div>`;
   // Reader ad inject - innerHTML ile script calismiyor, DOM ile inject et
   function injectReaderAd() {
     const container = document.getElementById('readerAdContainer');
