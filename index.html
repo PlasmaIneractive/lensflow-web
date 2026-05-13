@@ -1248,7 +1248,19 @@ async function readerRenderTab(tab, haber) {
     <div class="reader-hero-right">${imgRight}</div>
   </div>`;
 
-  const adSlotHtml = `<div id="readerHeroAd" style="width:100%;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0;background:var(--bg2)"><span style="font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">${cfg.adLabel||'Ad'}</span><script>atOptions={'key':'e056319fe13ec5885050eac8fad3674d','format':'iframe','height':250,'width':300,'params':{}};<\/script><script src="https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/invoke.js"><\/script></div>`;
+  const adSlotHtml = `<div id="readerHeroAd" style="width:100%;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0;background:var(--bg2)"><span style="font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">${cfg.adLabel||'Ad'}</span><div id="readerAdContainer"></div></div>`;
+  // Reader ad inject - innerHTML ile script calismiyor, DOM ile inject et
+  function injectReaderAd() {
+    const container = document.getElementById('readerAdContainer');
+    if (!container || container.dataset.loaded) return;
+    container.dataset.loaded = '1';
+    const s1 = document.createElement('script');
+    s1.text = "atOptions={'key':'e056319fe13ec5885050eac8fad3674d','format':'iframe','height':250,'width':300,'params':{}};";
+    container.appendChild(s1);
+    const s2 = document.createElement('script');
+    s2.src = 'https://www.highperformanceformat.com/e056319fe13ec5885050eac8fad3674d/invoke.js';
+    container.appendChild(s2);
+  }
 
   const metaHtml = `<div class="reader-content">
     <div class="reader-divider" style="margin-top:0;margin-bottom:1.25rem"></div>`;
@@ -1259,12 +1271,14 @@ async function readerRenderTab(tab, haber) {
     // Cache'den varsa direkt göster (her kullanıcı için)
     if (haber[ozetField]) {
       body.innerHTML = heroHtml + adSlotHtml + metaHtml + `<div class="reader-summary-text">${haber[ozetField]}</div></div>`;
+      injectReaderAd();
       setTimeout(updateAds, 50);
       return;
     }
 
     // Özeti yükle
     body.innerHTML = heroHtml + adSlotHtml + metaHtml + `<div class="reader-loading-msg"><div class="spin"></div> ${cfg.ozetLoading}</div></div>`;
+    injectReaderAd();
     setTimeout(updateAds, 50);
     try {
       const haberId = haber.id || haber.link?.split('/').pop()?.slice(0,100) || '';
@@ -1289,6 +1303,7 @@ async function readerRenderTab(tab, haber) {
     }
   } else if (tab === 'okuma') {
     body.innerHTML = heroHtml + adSlotHtml + metaHtml + `<div class="reader-loading-msg" id="articleContent"><div class="spin"></div> ${cfg.okumaLoading}</div></div>`;
+    injectReaderAd();
     const el = document.getElementById('articleContent');
 
     if (!haber.link || haber.link === '#') {
